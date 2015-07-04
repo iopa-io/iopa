@@ -1,0 +1,45 @@
+{
+  "name": "iopa",
+  "description": "Internet of Protocols Association (IOPA) Framework for Node.js, official respository",
+  "author": {
+    "name": "IOPA"
+  },
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iopa-source/iopa.git"
+  },
+  "dependencies": {
+    "bluebird": "*"
+  },
+  "keywords": [
+    "iopa",
+    "limerun",
+    "owin",
+    "middleware",
+    "router",
+    "route",
+    "http",
+    "connect",
+    "express",
+    "promise",
+    "async",
+    "framework",
+    "node",
+    "tasks"
+  ],
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "iopa",
+      "email": "build@iopa.io"
+    }
+  ],
+  "readmeFilename": "README.md",
+  "homepage": "http://iopa.io"
+}

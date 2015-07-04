@@ -1,0 +1,33 @@
+language: node_js
+
+node_js:
+  - 0.12
+
+build_image: shippableimages/ubuntu1404_nodejs
+
+notifications:
+     email:
+         on_success: change
+         on_failure: always
+
+env:
+ global:
+  - secure: WIY4d5thBFePzcPxggO/CwkuA4PkqH6Rzd07H106GONdCz2+RF9mrEW4Z9wAFue4o3JGfG0dJdIOVoj3keZLryP6JtKNNmPSKrZvcw278bIt5uUuljlnBgjQ6lXRMaO7ocPqJosdnk0agCiArmLBO3w1iFKLuH1kLCaahrh0DOPpDdxRB37jLvK0y1RR9KInbACQXwjrMmS3Jmpl3txFZZcdkUuXH91U6CoVyjheROFeP8hVKOBOxfzHfpSkp0bQI6ckLQEEn8NOiEmfoxpFOAreBqsVc9iiCT/R50obEabEJnm2+H7bekYZQR1lA/imgljL1tYngqhdLTrx8QY1sw==
+  before_install:
+  - source ~/.nvm/nvm.sh && nvm install $SHIPPABLE_NODE_VERSION
+  - node --version
+
+install:
+  - npm install
+
+after_success:
+  - git config user.email $GIT_EMAIL
+  - git config user.name $GIT_USER
+  - git config --global push.default matching
+  - git checkout $BRANCH
+  - echo "email=$NPM_EMAIL" > ~/.npmrc
+  - echo "_auth=$NPM_AUTH_TOKEN" >> ~/.npmrc
+  - npm version patch --message "auto-publish %s via SHIPPABLE [ci skip] [skip ci]"
+  - git remote set-url origin ssh://git@github.com/$REPO_NAME
+  - git push
+  - npm publish
