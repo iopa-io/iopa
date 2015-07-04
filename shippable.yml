@@ -12,8 +12,9 @@ notifications:
 
 env:
  global:
-  - secure: WIY4d5thBFePzcPxggO/CwkuA4PkqH6Rzd07H106GONdCz2+RF9mrEW4Z9wAFue4o3JGfG0dJdIOVoj3keZLryP6JtKNNmPSKrZvcw278bIt5uUuljlnBgjQ6lXRMaO7ocPqJosdnk0agCiArmLBO3w1iFKLuH1kLCaahrh0DOPpDdxRB37jLvK0y1RR9KInbACQXwjrMmS3Jmpl3txFZZcdkUuXH91U6CoVyjheROFeP8hVKOBOxfzHfpSkp0bQI6ckLQEEn8NOiEmfoxpFOAreBqsVc9iiCT/R50obEabEJnm2+H7bekYZQR1lA/imgljL1tYngqhdLTrx8QY1sw==
-  before_install:
+  - secure: BixZnNpz6XfFWNHfEyRKFxV307kt+GCEc198j+WRCPUq5Qwwo0rjdVrcq4eqeS9vdPa+xZRioHqmgoISNIFCSJWBM0KYamULZu9SdXo4l+SRcaobB2WQ9yUNGZ8vlX9CUjTIMfQRhiySMvtXtpANqilxZntq/9Wbrc6VJfOUTXjvg1VeQ9zv0Jpq0jB6gRAZ4CgofV1z1AUYbj4kT0o6khxPKn0DmjAybJYKwnir99bYr6kIMkmcywkXUgXqKlW1CAvE+7ricFs/v+7mUOdfFg/f272PibOKbc9WLn5tCdCGbKpugzUXwqXFJe/swhMqp1sWQTAQi+shfPMkL7cUFQ=
+  
+before_install:
   - source ~/.nvm/nvm.sh && nvm install $SHIPPABLE_NODE_VERSION
   - node --version
 
@@ -25,8 +26,7 @@ after_success:
   - git config user.name $GIT_USER
   - git config --global push.default matching
   - git checkout $BRANCH
-  - echo "email=$NPM_EMAIL" > ~/.npmrc
-  - echo "_auth=$NPM_AUTH_TOKEN" >> ~/.npmrc
+  - echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
   - npm version patch --message "auto-publish %s via SHIPPABLE [ci skip] [skip ci]"
   - git remote set-url origin ssh://git@github.com/$REPO_NAME
   - git push
