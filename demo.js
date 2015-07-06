@@ -38,7 +38,7 @@ appHttp.use(function(context, next){
 
 http.createServer(appHttp.buildHttp()).listen(8000);
 
-console.log("HTTP Server running at http://localhost:8000/");
+appHttp.log.info("HTTP Server running at http://localhost:8000/");
 
 
 /*
@@ -68,5 +68,5 @@ server.listen(function() {
   req.end()
 })
 
-console.log("COAP Server running at coap://localhost:5863/"); 
+appCoap.log.info("COAP Server running at coap://localhost:5863/"); 
  */
