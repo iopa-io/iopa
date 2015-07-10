@@ -22,6 +22,7 @@ exports.context = {
     expand: require('./lib/iopa/iopaExpand.js' ),
 }
 exports.constants = require ( './lib/util/constants.js' ) ;
+exports.shallow = require ( './lib/util/shallow.js' ) ;
 
 exports.connect = require ( './lib/iopa/iopaConnect.js' ) ;
 exports.http = require ( './lib/iopa/iopaHTTP.js' ) ;
