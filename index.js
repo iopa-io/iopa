@@ -18,7 +18,7 @@ exports.promise = require ( 'bluebird' ) ;
 exports.App = require ( './lib/appBuilder.js' ) ;
 exports.app = exports.App;
 exports.context = {
-	factory: require ( './lib/iopa/iopaContextFactory.js' ),
+	factory: require ( './lib/iopa/contextFactory.js' ),
     expand: require('./lib/iopa/iopaExpand.js' ),
 }
 exports.constants = require ( './lib/util/constants.js' ) ;
