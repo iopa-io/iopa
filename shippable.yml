@@ -3,8 +3,6 @@ language: node_js
 node_js:
   - 0.12
 
-build_image: shippableimages/ubuntu1404_nodejs
-
 notifications:
      email:
          on_success: change
@@ -20,13 +18,16 @@ before_install:
 
 install:
   - npm install
-
+  
+# script:
+#  - MOCHA_FILE=shippable/testresults/mocha.xml node ./node_modules/.bin/mocha --reporter mocha-junit-reporter test
+  
 after_success:
-  - git config user.email $GIT_EMAIL
-  - git config user.name $GIT_USER
+  - git config user.email "robot@shippable.com"
+  - git config user.name "Shippable"
   - git config --global push.default matching
   - git checkout $BRANCH
-  - echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+  - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ~/.npmrc
   - npm version patch --message "auto-publish %s via SHIPPABLE [ci skip] [skip ci]"
   - git remote set-url origin ssh://git@github.com/$REPO_NAME
   - git push
