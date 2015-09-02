@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-module.exports.merge = function (source, defaults) {
+exports.merge = function merge(source, defaults) {
     var target = {};
    
     if (!defaults) 
@@ -36,7 +36,7 @@ module.exports.merge = function (source, defaults) {
 };
 
 
-module.exports.copy = function (source, target) {
+exports.copy = function copy(source, target) {
   if (!source) 
         source = {};
         
@@ -50,11 +50,21 @@ module.exports.copy = function (source, target) {
     return target;
 };
 
-module.exports.clone = function (source) {
+exports.clone = function clone(source) {
     var clone = {};
            
     for (var key in source) {
         if (source.hasOwnProperty(key)) clone[key] = source[key];
+    }
+    
+    return clone;
+};
+
+exports.cloneFilter = function clone(source, blacklist) {
+    var clone = {};
+           
+    for (var key in source) {
+       if (source.hasOwnProperty(key) && (blacklist.indexOf(key) == -1)) clone[key] = source[key];
     }
     
     return clone;

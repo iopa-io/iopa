@@ -18,8 +18,19 @@
 /*
  * Module dependencies.
  */
-var Promise = require('bluebird');
-
+const constants = require('../iopa/constants'),
+    IOPA = constants.IOPA,
+    SERVER = constants.SERVER,
+    METHODS = constants.METHODS,
+    PORTS = constants.PORTS,
+    SCHEMES = constants.SCHEMES,
+    PROTOCOLS = constants.PROTOCOLS,
+    APP = constants.APP,
+    COMMONKEYS = constants.COMMONKEYS,
+    OPAQUE = constants.OPAQUE,
+    WEBSOCKET = constants.WEBSOCKET,
+    SECURITY = constants.SECURITY;
+    
 /**
  * Assures that the middleware is represented as IOPA middleware promise format (promise) fn(context, next)  where next = (promise) function()
  *
@@ -90,7 +101,11 @@ function Middleware(app, middleware){
     
 };
 
-module.exports = Middleware;
+
+ /**
+  * DEFAULT EXPORT
+  */
+exports.default = Middleware;
 
 // PRIVATE HELPER FUNCTIONS
 

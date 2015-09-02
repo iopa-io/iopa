@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-var util = require('util');
-
 /**
  * Create a new guid
  *
@@ -24,7 +22,7 @@ var util = require('util');
  * @returns guid (string)
  * @private
  */
-exports.guid = function() {
+function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
 }
@@ -41,3 +39,5 @@ function s4() {
     .toString(16)
     .substring(1);
 };
+
+exports.default = guid;

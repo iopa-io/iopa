@@ -17,56 +17,44 @@
 
 /*
  * DEPENDENCIES
- *     note: npm include coap before executing demo.js (coap not in package.json)
+ *     note: npm include 'bluebird' if no Promise object exists
  */
 
-var iopa = require('./index.js')
-    , http = require('http')
-    , util =require('util')
+const iopa = require('./index'),
+  IopaApp = iopa.default,
+  iopaFactory = iopa.factory,
+  iopaUtil = iopa.util,
 
-/*
- * HTTP DEMO
- */
+  constants = iopa.constants,
+  IOPA = constants.IOPA,
+  SERVER = constants.SERVER,
+  METHODS = constants.METHODS,
+  PORTS = constants.PORTS,
+  SCHEMES = constants.SCHEMES,
+  PROTOCOLS = constants.PROTOCOLS,
+  APP = constants.APP,
+  COMMONKEYS = constants.COMMONKEYS,
+  OPAQUE = constants.OPAQUE,
+  WEBSOCKET = constants.WEBSOCKET,
+  SECURITY = constants.SECURITY;
 
-var appHttp = new iopa.App();
+var test = new IopaApp();
+test.use(function (context, next) {
+  context.log.info("HELLO WORLD" + context.toString());
+  context[IOPA.Method] = "PUT";
+  return next();
+});
 
-appHttp.use(function(context, next){
-    context.response.writeHead(200, {'Content-Type': 'text/html'});
-    context.response.end("<html><head></head><body>Hello World from HTTP Server</body>");
-    return next();
-      });
-
-http.createServer(appHttp.buildHttp()).listen(8000);
-
-appHttp.log.info("HTTP Server running at http://localhost:8000/");
-
-
-/*
- * COAP DEMO
+test.use(function (next) {
+  this.log.info("HELLO WORLD" + this.toString());
+  return Promise.resolve(null); // stop processing in chain
+});
 
 
-var appCoap = new iopa.App();
-appCoap.use(function(next){
+var demo = test.build();
 
-  this.response.end('Hello World from COAP resource ' + this["iopa.RequestPath"].split('/')[1] + '\n');
-   return next();
-    });
+var context = iopaFactory.createContext();
 
-var server = coap.createServer();
-server.on('request', appCoap.buildCoap());
+demo(context);
 
-server.listen(function() {
-  var req = coap.request('coap://localhost/projector')
-
-  req.on('response', function(res) {
-    res.pipe(process.stdout)
-    res.on('end', function() {
-   //   process.exit(0)
-    })
-  })
-
-  req.end()
-})
-
-appCoap.log.info("COAP Server running at coap://localhost:5863/"); 
- */
+iopaFactory.dispose(context);

@@ -1,17 +1,21 @@
 {
   "name": "iopa",
-  "description": "Internet of Protocols Association (IOPA) Framework for Node.js, official respository",
-  "author": {
-    "name": "IOPA"
-  },
+  "main": "index.js",
+  "description": "Internet of Protocols Association (IOPA) Fabric for Node.js, official implementation",
+  "author": "IOPA",
+  "maintainers": [
+    {
+      "name": "iopa",
+      "email": "build@iopa.io"
+    }
+  ],
   "version": "1.0.22",
   "repository": {
     "type": "git",
     "url": "https://github.com/iopa-source/iopa.git"
   },
   "dependencies": {
-    "bluebird": "*"
-  },
+     },
   "keywords": [
     "iopa",
     "limerun",
@@ -33,13 +37,18 @@
       "type": "Apache-2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
-  ],
-  "maintainers": [
-    {
-      "name": "iopa",
-      "email": "build@iopa.io"
-    }
-  ],
+  ],  
+  "engines": {
+    "node": ">= 0.12.0"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec test"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "mocha-junit-reporter": "^1.6.1",
+    "should": "^7.0.2"
+  },
   "readmeFilename": "README.md",
   "homepage": "http://iopa.io"
 }

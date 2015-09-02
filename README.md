@@ -24,13 +24,13 @@ A broad ecosystem of servers and middleware, such as routers and view engines, e
 
 ## Summary
 
-An `IOPA` middleware/application is simply a `function(next)` that provides a single REST-server IOPA context for each request, where it is easy to access all the HTTP/COAP parameters  (`context.path`, `context.response.body` etc.).  "Tasks" (promises) are returned for full async programming without callbacks.
+An `IOPA` middleware/application is simply a `function(next)` that provides a single REST-server IOPA context for each request, where it is easy to access all the HTTP/COAP parameters  (`context.path`, `context.response.body` etc.).  "Tasks" (promises) are returned for full async programming without callbacks, and for compatibility with future ES7 async/await functionality.
 
 Middleware can be chained with `app.use(middleware1).use(middleware2)` etc.
 
-`IOPA` servers can also call regular Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
+With the [`iopa-connect`](https://github.com/iopa-source/iopa-connect) package, `IOPA` servers can also call regular Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
 
-`IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()`.    It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
+`IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()` when used with the [`iopa-connect`](https://github.com/iopa-source/iopa-connect) package.    It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
 
 
 ## For People, Animals, Devices and Things
@@ -43,13 +43,11 @@ Middleware can be chained with `app.use(middleware1).use(middleware2)` etc.
 
 This repository contains a Node Package Manager (NPM) package with helper functions for:
  
-* AppBuilder for chaining middleware and applications, with automatic bridging to async-based Tasks (Promises conforming to Promise/A specification), use of *this* for IopaContext instead of separate argument, and *next* argument for middleware chaining
-* Connect app bridge: An IOPA -> Connect/Express application bridge
-* HTTP server bridge:  A Node.js Http Server --> IOPA application bridge
-* COAP server bridge:  A node-coap Server --> IOPA application bridge
-* Promise:  Includes a dependency to the [bluebird](https://github.com/petkaantonov/bluebird) implementation which can be used by all other IOPA applications and middleware
+* IOPA constants for commonly used properties
+* AppBuilder for chaining middleware and applications, with automatic bridging to async-based Tasks (Promises), use of *this* for IopaContext instead of separate argument, and *next* argument for middleware chaining
+* Context factory for creating your own IOPA contexts (typically used by a server)
 
-This package is intended for use in Node.js applications that either run on a web server that conform to the IOPA specifications (such as the embedded webserver inside [nodekit.io](https://github.com/nodekit-io/nodekit)) or run using the included iopa-coap and iopa-http bridge for node-coap and node Http servers respectively.
+This package is intended for use in Node.js applications that either run on a web server that conform to the IOPA specifications (such as the embedded webserver inside [nodekit.io](https://github.com/nodekit-io/nodekit)) or run using the iopa-coap, iopa-mqtt, and iopa-http bridges when used with those respective packages.
 
 ## Middleware/Application Pipeline Builder: AppBuilder 
 ```js
@@ -80,22 +78,6 @@ app.build()
 ```
 returns an IOPA AppFunc `(promise) function(context)` that can be inserted into any IOPA server.
 
-## Bridges
-
-Three simple functions `iopa.connect()`, `iopa.COAP()` and `iopa.REST()` are provided to bridge between IOPA context applications/middleware and Node.js COAP and HTTP REST-style `function(req,res)` based  applications/middleware.   Often these are not used directly as the AppBuilder functionality automatically wraps legacy middleware and can even return a node.js-ready pipeline with `.buildREST()`
-
-Note: The bridges are low overhead functions, binding by reference not by value wherever possible, so middleware can be interwoven throughout the pipeline, and open up the IOPA world to the entire Connect/Express based ecosystem and vice versa.   
-
-We have not ported to Koa, Mach, Kraken or other similar frameworks but it would be relatively straightforward to do so.
-
-* `iopa.connect()` consumes a Connect-based application function (one that would normally be passed to the http.CreateServer method) and returns an IOPA **AppFunc**.
-* `iopa.http()` consumes an IOPA **AppFunc** and returns a function (that takes http.requestMessage and http.requestMessage as arguments) and one that can be passed directly to the http.createServer method    
-* `app.buildHttp()` is syntactic sugar to build the pipleine and returns a node.js-ready function (that takes http.requestMessage and http.requestMessage as arguments) and one that can be passed directly to the http.createServer method   
-* `iopa.coap()` consumes an IOPA **AppFunc** and returns a function (that takes http.requestMessage and http.requestMessage as arguments) and one that can be passed directly to the http.createServer method    
-* `app.buildCoap()` is syntactic sugar to build the pipleine and returns a node-coap-ready function (that takes req and res as arguments) and one that can be passed directly as server.on('request', ____) event handler   
-
-
-
 
 ## Example Usage
 
@@ -103,51 +85,70 @@ We have not ported to Koa, Mach, Kraken or other similar frameworks but it would
 ``` js
 npm install iopa
 ```
+ 
+### Basic Example
+``` js
+const iopa = require('./index'),
+  IopaApp = iopa,
+  iopaFactory = iopa.factory,
+  iopaUtil = iopa.util,
 
-#### To run HTTP demo:
-``` js
-git clone https://github.com/limerun/iopa.git
-cd iopa
-npm install
-node demo.js
-```
-    
-### Hello World Example
-``` js
-const iopa = require('iopa')
-    , http = require('http');
-var app = new iopa.App();
-app.use(function(context, next){
-       context.response["iopa.WriteHead"](200, {'Content-Type': 'text/html'});
-    context.response["iopa.Body"].end("<html><head></head><body>Hello World from HTTP Server</body>");
-     return next();
-    });
-http.createServer(app.build()).listen(); 
+  constants = iopa.constants,
+  IOPA = constants.IOPA,
+  SERVER = constants.SERVER,
+  METHODS = constants.METHODS,
+  PORTS = constants.PORTS,
+  SCHEMES = constants.SCHEMES,
+  PROTOCOLS = constants.PROTOCOLS,
+  APP = constants.APP,
+  COMMONKEYS = constants.COMMONKEYS,
+  OPAQUE = constants.OPAQUE,
+  WEBSOCKET = constants.WEBSOCKET,
+  SECURITY = constants.SECURITY;
+
+var app = new IopaApp();
+app.use(function (context, next) {
+  context.log.info("HELLO WORLD" + context.toString());
+  return Promise.resolve(null);
+});
+
+var demo = app.build();
+
+var context = iopaFactory.createContext();
+
+demo(context);
+
+iopaFactory.dispose(context); 
 ```
    
-### Automatic Connect Bridge to Legacy Connect/Express Middleware    
+### Automatic Connect Bridge to Legacy Connect/Express Middleware and Node HTTP Server  
 ``` js
 var iopa = require('iopa')
-  , http = require('http');
-var app = new iopa.App();  
+  , http = require('http')
+  , iopaConnect = require('iopa-connect')
+  
+var app = new iopa.App();
+app.use(iopaConnect);
 app.use(function(req, res) {
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end("<html><head></head><body>Hello World</body>");
 });
-http.createServer(app.build()).listen(); 
+http.createServer(app.buildHttp()).listen(); 
 ```    
 
-### IOPA - HTTP Bridge
+### IOPA - HTTP Bridge Only with IOPA Promise based middleware
     
 ``` js
-var iopa = require('iopa')
-  , http = require('http'); 
-var http = require('http');
+var iopa = require('iopa'),
+    http = require('http'),
+    iopaConnect = require('iopa-connect');
+
 var app = new iopa.App();
+app.use(iopaConnect);
 app.use(function(next){
     this.response.writeHead(200, {'Content-Type': 'text/html'});
     this.response.end("<html><head></head><body>Hello World</body>");
-return next();
+    return next();
 });
 http.createServer(app.buildHttp()).listen();
 ```  

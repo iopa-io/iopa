@@ -14,19 +14,14 @@
  * limitations under the License.
  */
  
-exports.promise = require ( 'bluebird' ) ;
-exports.App = require ( './lib/appBuilder.js' ) ;
-exports.app = exports.App;
-exports.context = {
-	factory: require ( './lib/iopa/contextFactory.js' ),
-    expand: require('./lib/iopa/iopaExpand.js' ),
-}
-exports.constants = require ( './lib/util/constants.js' ) ;
-exports.shallow = require ( './lib/util/shallow.js' ) ;
+const AppBuilder = require('./src/appBuilder/appBuilder').default,
+      Factory = require('./src/iopa/contextFactory').default,
+      constants = require('./src/iopa/constants'),
+      shallow = require('./src/util/shallow');
 
-exports.connect = require ( './lib/iopa/iopaConnect.js' ) ;
-exports.http = require ( './lib/iopa/iopaHTTP.js' ) ;
+exports = module.exports = AppBuilder;
+exports.default = exports;
+exports.factory = Factory;
+exports.constants = constants;
+exports.util = {"shallow": shallow.clone(shallow)};
 
-exports.app.prototype.buildHttp = function ( opts ) {
-	 return exports.http ( this.build ( opts ) ) ;  
- };

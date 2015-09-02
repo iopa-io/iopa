@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-module.exports = tokenSource;
-module.exports.empty = tokenSource().token;
 
 /**
  * A Cancellation Token Source
@@ -25,7 +23,6 @@ module.exports.empty = tokenSource().token;
  *
  * @method cancel  :signals cancel for all tokens issued by this source
  * @param reason (string)
- * @returns (void)
  *
  * @method token  : returns a cancellation token
  * @returns (token)
@@ -58,6 +55,7 @@ function tokenSource() {
     token: token(data)
     };
 }
+
 
 /**
  * Helper Method to return a Cancellation Token
@@ -96,3 +94,6 @@ function token(data) {
     }
     return exports;
 }
+
+exports.empty = tokenSource().token;
+exports.default = tokenSource;

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-exports.iopa = {
+ 
+exports.IOPA = {
     Scheme : "iopa.Scheme",
     Method : "iopa.Method",
     PathBase : "iopa.PathBase",
@@ -31,6 +31,7 @@ exports.iopa = {
     ReasonPhrase : "iopa.ReasonPhrase",
     
     CallCancelled : "iopa.CallCancelled",
+  
     IopaVersion : "iopa.Version",
 
     Error : "iopa.Error",
@@ -38,17 +39,65 @@ exports.iopa = {
     GetHeader : "iopa.GetHeader",
     RemoveHeader : "iopa.RemoveHeader",
     WriteHead : "iopa.WriteHead",
+    
     Id: "iopa.Id",
+    Version: "iopa.Version",
+    Seq: "iopa.Seq",
+    Events: "iopa.Events",
 };
 
-exports.app =
+exports.SERVER = {
+    Capabilities: "server.Capabilities",
+    Logger: "server.Logger",
+    CallCancelledSource : "server.CallCancelledSource",
+    IsLocalOrigin: "server.IsLocalOrigin",
+    OriginalUrl: "server.OriginalUrl",
+    RemoteAddress: "server.RemoteAddress",
+    RemotePort: "server.RemotePort",
+    TLS: "server.TLS",
+    AppId: "server.AppId",
+    
+};
+
+exports.METHODS = {
+    GET: "GET",
+    PUT: "PUT",
+    DELETE: "DELETE",
+    POST: "POST",
+}
+
+exports.PORTS = {
+    HTTP: 80,
+    HTTPS: 443,
+    COAP: 5683,
+    COAPS: 5684,
+    MQTT: 1883,
+    MQTTS: 8883
+}
+
+exports.SCHEMES = {
+    HTTP: "http:",
+    HTTPS: "https:",
+    COAP: "coap:",
+    COAPS: "coaps:",
+    MQTT: "mqtt:",
+    MQTTS: "mqtts:"
+}
+
+exports.PROTOCOLS = {
+    HTTP: "HTTP/1.1",
+    COAP: "COAP/1.0",
+    MQTT: "MQTT/3.1.1",
+ }
+
+exports.APP =
 {
     AddSignatureConversion : "app.AddSignatureConversion",
     DefaultApp : "app.DefaultApp",
     DefaultMiddleware : "app.DefaultMiddleware"
 };
 
-exports.commonkeys =
+exports.COMMONKEYS =
 {
     ClientCertificate : "ssl.ClientCertificate",
     RemoteAddress : "server.RemoteAddress",
@@ -70,7 +119,7 @@ exports.commonkeys =
     CallCancelledSource : "server.CallCancelledSource"
 };
 
-exports.sendfile =
+exports.SENDFILE =
 {
     Version : "sendfile.Version",
     Support : "sendfile.Support",
@@ -78,7 +127,7 @@ exports.sendfile =
     SendAsync : "sendfile.SendAsync"
 };
 
-exports.opaque =
+exports.OPAQUE =
 {
     // 3.1. Startup
     
@@ -94,7 +143,7 @@ exports.opaque =
     CallCancelled : "opaque.CallCancelled",
 };
 
-exports.websocket =
+exports.WEBSOCKET =
 {
     // 3.1. Startup
     Version : "websocket.Version",
@@ -114,8 +163,7 @@ exports.websocket =
     ClientCloseDescription : "websocket.ClientCloseDescription"
 };
 
-
-exports.security =
+exports.SECURITY =
 {
     // 3.2. Per Request
     User : "server.User",
@@ -127,4 +175,4 @@ exports.security =
     Challenge : "security.Challenge"
 };
 
-
+ 
