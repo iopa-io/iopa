@@ -56,7 +56,7 @@ exports.SERVER = {
     RemotePort: "server.RemotePort",
     TLS: "server.TLS",
     AppId: "server.AppId",
-    
+    IsChild: "server.IsChild"
 };
 
 exports.METHODS = {

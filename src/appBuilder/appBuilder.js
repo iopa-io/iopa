@@ -41,11 +41,6 @@
     WEBSOCKET = constants.WEBSOCKET,
     SECURITY = constants.SECURITY;
 
-const APPBUILDER =
-    {
-        ExpandContext: "appbuilder.ExpandContext",
-    }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /***
@@ -71,7 +66,6 @@ function AppBuilder() {
     this.log = this.properties[SERVER.Logger];
     this.middleware = [];
 
-    this.expand = this.properties[APPBUILDER.ExpandContext];
 }
 
 AppBuilder.prototype.use = function use(mw) {
@@ -113,7 +107,7 @@ exports.default = AppBuilder;
 
 function RespondMiddleware(context, next) {
 
-    //  if (this.expand)
+    //  if (!this.properties[SERVER.IsChild])
     //     expandContext.expandContext.call(this, context);
 
     var value = next();
@@ -125,13 +119,13 @@ function RespondMiddleware(context, next) {
     else
       return value.then(
         function (ret) {
-            //        if (this.expand)
+            //       if (!this.properties[SERVER.IsChild])
             //           expandContext.shrinkContext(context);
             return ret;
         },
         function (err) {
             DefaultError(context, err);
-            //      if (this.expand)
+            //      if (!this.properties[SERVER.IsChild])
             //         expandContext.shrinkContext(context);
             return Promise.resolve(null);
         });
