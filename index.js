@@ -19,8 +19,7 @@ const AppBuilder = require('./src/appBuilder/appBuilder').default,
       constants = require('./src/iopa/constants'),
       shallow = require('./src/util/shallow');
 
-exports = module.exports = AppBuilder;
-exports.default = exports;
+exports.app = AppBuilder;
 exports.factory = Factory;
 exports.constants = constants;
 exports.util = {"shallow": shallow.clone(shallow)};

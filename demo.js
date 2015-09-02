@@ -21,7 +21,7 @@
  */
 
 const iopa = require('./index'),
-  IopaApp = iopa.default,
+  IopaApp = iopa.app,
   iopaFactory = iopa.factory,
   iopaUtil = iopa.util,
 
