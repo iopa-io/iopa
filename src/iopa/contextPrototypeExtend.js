@@ -42,7 +42,7 @@
     merge = shallow.merge,
     copy = shallow.copy,
     clone = shallow.clone,
-    cloneFilter = shallow.cloneFilter.apply,
+    cloneFilter = shallow.cloneFilter,
     
     cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors;
 
