@@ -79,7 +79,6 @@
                  SERVER.Logger, 
                  "log", 
                  "response",
-                 "reqres",
                   IOPA.Events,
                   ]));
          
