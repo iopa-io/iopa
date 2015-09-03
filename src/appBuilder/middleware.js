@@ -74,7 +74,8 @@ function Middleware(app, middleware){
                 args =private_getParamNames(middleware);
                 if (arrayEqual(args,["req","res"]))
                 {
-                    return promiseFromConnect2(middleware);
+                    throw("must require iopaConnect to use Connect/Express style middleware");
+                    return function (context, next) { return next()};
                 } else
                    {
                      return middleware;
@@ -82,15 +83,17 @@ function Middleware(app, middleware){
                  
                 //fn(req,res,next)
             case 3:
-                return promiseFromConnect3(middleware);
-                
+                 throw("must require iopaConnect to use Connect/Express style middleware");
+                    return function (context, next) { return next()};
+               
                 //fn(err,req,res,next)
             case 4:
-                return promiseFromConnect4(middleware);
+                 throw("must require iopaConnect to use Connect/Express style middleware");
+                    return function (context, next) { return next()};
                 
             default:
                 throw("unknown middleware");
-                this.invoke = middleware;
+                return function (context, next) { return next()};
         }
     }
     else
@@ -127,7 +130,7 @@ function private_getParamNames(func) {
         }
 
 /**
- * Converts an IOPA promise-based Next() function  to an synchronous Connect-style Next() function
+ * Check if two arrays have same elements
  *
  * @method arrayEqual
  *
@@ -158,98 +161,4 @@ function arrayEqual (array1, array2) {
         }
     }
     return true;
-}
-
-/**
- * Converts an Connect Func to an IOPA AppFunc
- *
- * @method promiseFromConnect2
- *
- * @param (void) fn(req,res)    with next ignored
- * @returns (promise) fn()
- * @private
- */
-function promiseFromConnect2(fn) {
-    return function convertedPromiseFromConnect2(context) {
-        return new Promise(function (resolve, reject) {
-                           try {
-                           fn.call(context, context.req, context.res);
-                           context = null;
-                           resolve(null);
-                           } catch (ex) {
-                           reject(ex);
-                           }
-                           });
-    };
-}
-
-/**
- * Converts a Connect NextFunc to an IOPA AppFunc
- *
- * @method promiseFromConnect3
- *
- * @param (void) fn(req, res, next)
- * @returns (promise) fn(next)  with next translated from (promise) function() to (void) function()
- * @private
- */
-function promiseFromConnect3(fn) {
-    return function convertedPromiseFromConnect2(context, next) {
-        var nextAdjusted = nextSyncFromIopaNextPromise(next);
-        return new Promise(function (resolve, reject) {
-                           try {
-                           fn.call(context, context.req, context.res, nextAdjusted);
-                           context = null;
-                           nextAdjusted = null;
-                           resolve(null);
-                           } catch (ex) {
-                           reject(ex);
-                           }
-                           });
-    };
-}
-
-/**
- * Converts an IOPA NodeFunc to an IOPA AppFunc
- *
- * @method promiseFromConnect4
- *
- * @param (void) fn(err, req, res, next)
- * @returns (promise) fn(next) with next translated from (promise) function() to (void) function()
- * @private
- */
-function promiseFromConnect4(fn) {
-    return function convertedPromiseFromConnect2(context, next) {
-        var nextAdjusted = nextSyncFromIopaNextPromise(next);
-        return new Promise(function (resolve, reject) {
-                           try {
-                           fn.call(context, context["iopa.Error"], context.req, context.res, nextAdjusted);
-                           context = null;
-                           nextAdjusted= null;
-                           resolve(null);
-                           } catch (ex) {
-                           reject(ex);
-                           }
-                           });
-    };
-}
-
-/**
- * Converts an IOPA promise-based Next() function  to an synchronous Connect-style Next() function
- *
- * @method nextSyncFromIopaNextPromise
- *
- * @param (promise) fn()
- * @returns  (void) fn(err)
- * @private
- */
-function nextSyncFromIopaNextPromise(fn) {
-    return function NextConvertedFromPromiseSync(err) {
-        if (err)
-        {
-            this["iopa.Error"] = err;   // store err for subsequent Connect error handlers
-            fn.call(this).then();
-        }
-        else
-            fn.call(this).then();
-    }
 }

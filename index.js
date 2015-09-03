@@ -17,10 +17,10 @@
 const AppBuilder = require('./src/appBuilder/appBuilder').default,
       Factory = require('./src/iopa/contextFactory').default,
       constants = require('./src/iopa/constants'),
-      shallow = require('./src/util/shallow');
+      shallow = require('./src/util/shallow'),
+      iopaPrototype = require('../util/prototype');
 
 exports.app = AppBuilder;
 exports.factory = Factory;
 exports.constants = constants;
-exports.util = {"shallow": shallow.clone(shallow)};
-
+exports.util = {"shallow": shallow, "prototype": iopaPrototype};

@@ -51,16 +51,23 @@ declare module "iopa" {
         Version: string,
         Seq: string,
         Events: string,
+        HeadersSent: string,
+        MessageId: string,
     }
 
     interface SERVER {
         Capabilities: string,
         Logger: string,
-        CallCancelledSource: string,
+        CallCancelledSource : string,
         IsLocalOrigin: string,
         OriginalUrl: string,
         RemoteAddress: string,
         RemotePort: string,
+        LocalAddress: string,
+        LocalPort: string,
+        RawStream: string,
+        IsRequest: string,
+        SessionId: string,
         TLS: string,
         AppId: string,
         IsChild: string
@@ -202,10 +209,19 @@ declare module "iopa" {
 
 
     interface shallow {
+        merge(source, defaults): any;
+        copy(source, target): any;
+        clone(source): any;
+       clone(source, blacklist): any;
+    }
+    
+    interface iopaPrototype {
+        cloneKeyBehaviors(targetObjectPrototype, sourceObjectprototype, iopaContextKey: string, response: boolean): void;
     }
 
     interface IopaUtils {
-        shallow: shallow;
+        shallow: shallow,
+        prototype: iopaPrototype
     }
 
     export var constants: IopaConstants;

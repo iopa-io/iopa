@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2015 Limerun Project Contributors
- * Portions Copyright (c) 2015 Internet of Protocols Assocation (IOPA)
+ * Portions Copyright (c) 2015 Internet of Protocols Associaton (IOPA)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,6 @@ function AppBuilder() {
     this.properties = merge(properties, defaults);
     this.log = this.properties[SERVER.Logger];
     this.middleware = [];
-
 }
 
 AppBuilder.prototype.use = function use(mw) {

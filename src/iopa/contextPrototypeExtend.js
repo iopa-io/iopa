@@ -42,8 +42,10 @@
     merge = shallow.merge,
     copy = shallow.copy,
     clone = shallow.clone,
-    cloneFilter = shallow.cloneFilter;
- 
+    cloneFilter = shallow.cloneFilter.apply,
+    
+    cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors;
+
  var dog = IOPA.ad
  
 /**
@@ -57,10 +59,10 @@
      var context_prototype = Object.getPrototypeOf(context);
  
      // Put Stream/EventEmitter methods on context to proxy context["iopa.Body"] methods
-     _cloneBodyPrototypeAlias(context_prototype, EventEmitter.prototype, IOPA.Body);
-     _cloneBodyPrototypeAlias(context_prototype, Stream.prototype, IOPA.Body);
-     _cloneBodyPrototypeAlias(context_prototype, Readable.prototype, IOPA.Body);
-     _cloneBodyPrototypeAlias(context_prototype, Writable.prototype, IOPA.Body);
+     cloneKeyBehaviors(context_prototype, EventEmitter.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(context_prototype, Stream.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(context_prototype, Readable.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(context_prototype, Writable.prototype, IOPA.Body, true);
 
      // Put Header methods on context to proxy context["iopa.Header"] methods (note assume context and context.response share prototype)
      context_prototype.writeHead = function () { this[IOPA.WriteHead].apply(this, Array.prototype.slice.call(arguments)); };
@@ -174,43 +176,3 @@
      return false;
  }
 
- // PRIVATE HELPERS
-
- /**
-  * Create alias access methods on context.response for context body elemeent for given stream/readable/writable prototype
-  *
-  * Note: the alias will be a collection of both functions (which simply shell out to target function) and valuetypes (which
-  * have a getter and setter defined which each shell out to the target property)
-  *
-  * @method _cloneBodyPrototypeAlias
-  *
-  * @param targetObjectPrototype (__proto__)  the prototype object for the context.response object on which the alias properties are set
-  * @param sourceObjectprototype (__proto__)  the prototpye object for the generic stream/writable on which to enumerate all properties
-  * @param iopaContextKey (string) e.g., "iopa.Body" 
-  * @returns (void)
-  * @private
-  */
- function _cloneBodyPrototypeAlias(targetObjectPrototype, sourceObjectprototype, iopaContextKey) {
-     Object.getOwnPropertyNames(sourceObjectprototype).forEach(function (_property) {
-         if (typeof (sourceObjectprototype[_property]) === 'function') {
-             targetObjectPrototype[_property] = function () {
-                 var body = this[iopaContextKey];
-                 return body[_property].apply(body, Array.prototype.slice.call(arguments));
-             };
-         }
-         else {
-             Object.defineProperty(targetObjectPrototype, _property, {
-
-                 get: function () {
-                     return this[iopaContextKey][_property];
-                 },
-
-                 set: function (val) {
-                     this[iopaContextKey][_property] = val;
-                 }
-
-             });
-         }
-     });
-
- }

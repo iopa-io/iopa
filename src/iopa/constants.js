@@ -39,11 +39,13 @@ exports.IOPA = {
     GetHeader : "iopa.GetHeader",
     RemoveHeader : "iopa.RemoveHeader",
     WriteHead : "iopa.WriteHead",
+    HeadersSent: "iopa.HeadersSent",
     
     Id: "iopa.Id",
     Version: "iopa.Version",
     Seq: "iopa.Seq",
     Events: "iopa.Events",
+    MessasgeId: "iopa.MessageId",
 };
 
 exports.SERVER = {
@@ -54,6 +56,11 @@ exports.SERVER = {
     OriginalUrl: "server.OriginalUrl",
     RemoteAddress: "server.RemoteAddress",
     RemotePort: "server.RemotePort",
+    LocalAddress: "server.RemoteAddress",
+    LocalPort: "server.RemotePort",
+    RawStream: "server.RawStream",
+    IsRequest: "server.IsRequest",
+    SessionId: "server.SessionId",
     TLS: "server.TLS",
     AppId: "server.AppId",
     IsChild: "server.IsChild"
