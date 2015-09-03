@@ -65,10 +65,11 @@ function AppBuilder() {
     this.properties = merge(properties, defaults);
     this.log = this.properties[SERVER.Logger];
     this.middleware = [];
+    this.middlewareProxy = Middleware;
 }
 
 AppBuilder.prototype.use = function use(mw) {
-    this.middleware.push(Middleware(this, mw));
+    this.middleware.push(this.middlewareProxy(this, mw));
     return this;
 }
         
