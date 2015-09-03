@@ -31,14 +31,15 @@
   */
 exports.cloneKeyBehaviors = function cloneKeyBehaviors(targetObjectPrototype, sourceObjectprototype, iopaContextKey, response) {
     Object.getOwnPropertyNames(sourceObjectprototype).forEach(function (_property) {
-        var item;
-        if (response)
-            item = this[iopaContextKey];
-        else
-            item = this.response[iopaContextKey];
 
         if (typeof (sourceObjectprototype[_property]) === 'function') {
             targetObjectPrototype[_property] = function () {
+                var item;
+                if (response)
+                    item = this[iopaContextKey];
+                else
+                    item = this.response[iopaContextKey];
+
                 return item[_property].apply(item, Array.prototype.slice.call(arguments));
             };
         }
@@ -46,10 +47,22 @@ exports.cloneKeyBehaviors = function cloneKeyBehaviors(targetObjectPrototype, so
             Object.defineProperty(targetObjectPrototype, _property, {
 
                 get: function () {
+                    var item;
+                    if (response)
+                        item = this[iopaContextKey];
+                    else
+                        item = this.response[iopaContextKey];
+
                     return item[_property];
                 },
 
                 set: function (val) {
+                    var item;
+                    if (response)
+                        item = this[iopaContextKey];
+                    else
+                        item = this.response[iopaContextKey];
+
                     item[_property] = val;
                 }
 
