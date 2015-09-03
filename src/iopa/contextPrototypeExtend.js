@@ -79,9 +79,8 @@
                  SERVER.Logger, 
                  "log", 
                  "response",
-                 "req",
-                 "res",
-                 IOPA.Events,
+                 "reqres",
+                  IOPA.Events,
                   ]));
          
          ; //.replace(/\n/g, "\r");
