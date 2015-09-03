@@ -74,7 +74,7 @@ function Middleware(app, middleware){
                 args =private_getParamNames(middleware);
                 if (arrayEqual(args,["req","res"]))
                 {
-                    throw("must require iopaConnect to use Connect/Express style middleware");
+                    throw("must require 'iopa-connect' to use Connect/Express style middleware");
                     return function (context, next) { return next()};
                 } else
                    {
@@ -83,12 +83,12 @@ function Middleware(app, middleware){
                  
                 //fn(req,res,next)
             case 3:
-                 throw("must require iopaConnect to use Connect/Express style middleware");
+                 throw("must require 'iopa-connect' to use Connect/Express style middleware");
                     return function (context, next) { return next()};
                
                 //fn(err,req,res,next)
             case 4:
-                 throw("must require iopaConnect to use Connect/Express style middleware");
+                 throw("must require 'iopa-connect' to use Connect/Express style middleware");
                     return function (context, next) { return next()};
                 
             default:
