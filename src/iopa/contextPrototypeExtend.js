@@ -79,7 +79,6 @@
                  SERVER.Logger, 
                  "log", 
                  "response",
-                 "reqres",
                  "req",
                  "res",
                  IOPA.Events,
