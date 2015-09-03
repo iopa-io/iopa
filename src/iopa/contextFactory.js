@@ -165,13 +165,13 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, meth
         case SCHEMES.HTTP:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
             context[SERVER.TLS] = false;
-            context[IOPA.HEADERS]["Host"] = context[IOPA.Host];
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
             context[SERVER.RemotePort] = urlParsed.port || PORTS.HTTP;
             break;
         case SCHEMES.HTTPS:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
             context[SERVER.TLS] = false;
-            context[IOPA.HEADERS]["Host"] = context[IOPA.Host];
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
             context[SERVER.RemotePort] = urlParsed.port || PORTS.HTTPS;
             break;
         case SCHEMES.COAP:

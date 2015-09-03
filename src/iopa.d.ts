@@ -63,7 +63,7 @@ declare module "iopa" {
         RemotePort: string,
         TLS: string,
         AppId: string,
-        IsChild: boolean
+        IsChild: string
     }
 
     interface METHODS {
@@ -187,7 +187,7 @@ declare module "iopa" {
         use(mw: (req, res) => any): IopaAppBuilder;
         use(mw: (req, res, next) => any): IopaAppBuilder;
         use(mw: (app) => any): IopaAppBuilder;
-        build(): void;
+        build(): (context: any) => any;
         constructor(properties?: any);
     }
 
