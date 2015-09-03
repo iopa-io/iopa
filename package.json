@@ -41,7 +41,8 @@
     "node": ">= 0.12.0"
   },
   "scripts": {
-    "test": "mocha --reporter spec test"
+    "test": "mocha --reporter spec test",
+    "quick": "git add . -A && git commit -m 'dev test' && npm version patch && npm publish"
   },
   "devDependencies": {
     "mocha": "^2.2.5",
