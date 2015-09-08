@@ -62,7 +62,9 @@ exports.SERVER = {
     SessionId: "server.SessionId",
     TLS: "server.TLS",
     AppId: "server.AppId",
-    IsChild: "server.IsChild"
+    IsChild: "server.IsChild",
+    InProcess: "server.InProcess",
+    Fetch: "fetch"
 };
 
 exports.METHODS = {

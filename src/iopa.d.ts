@@ -79,7 +79,9 @@ declare module "iopa" {
         SessionId: string,
         TLS: string,
         AppId: string,
-        IsChild: string
+        IsChild: string,
+        Fetch: string,
+        InProcess: string
     }
 
     interface METHODS {
