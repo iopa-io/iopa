@@ -189,6 +189,7 @@ declare module "iopa" {
         PORTS: PORTS,
         SCHEMES: SCHEMES,
         PROTOCOLS: PROTOCOLS,
+        EVENTS: EVENTS,
         APP: APP,
         COMMONKEYS: COMMONKEYS,
         OPAQUE: OPAQUE,
