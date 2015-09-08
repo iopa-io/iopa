@@ -65,18 +65,24 @@ function AppBuilder() {
     this.properties = merge(properties, defaults);
     this.log = this.properties[SERVER.Logger];
     this.middleware = [];
-    this.middlewareProxy = Middleware;
 }
 
+AppBuilder.prototype.middlewareProxy = Middleware;
+
+/**
+* Add Middleware Function to AppBuilder pipeline
+*
+* @param mw the middleware to add 
+*/
 AppBuilder.prototype.use = function use(mw) {
     this.middleware.push(this.middlewareProxy(this, mw));
     return this;
 }
         
-/***
-* Method to Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
+/**
+* Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
 *
-* @return {function(context)} IOPA application 
+* @return {function(context): {Promise} IOPA application 
 * @public
 */
 AppBuilder.prototype.build = function build() {

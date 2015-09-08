@@ -45,15 +45,6 @@
 			"env": { },
 			// Use JavaScript source maps (if they exist).
 			"sourceMaps": false
-		},
-		{
-			"name": "Attach",
-			"type": "node",
-			// TCP/IP address. Default is "localhost".
-			"address": "localhost",
-			// Port to attach to.
-			"port": 5858,
-			"sourceMaps": false
 		}
 	]
 }

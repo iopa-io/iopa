@@ -1,17 +1,26 @@
 // Type definitions for iopa.io v1.0.0
 // Project: http://iopa.io/
-// Definitions by: Limerun Project <http://limerun.com>, DefinitelyTyped <https://github.com/borisyankov/DefinitelyTyped>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Definitions by: Internet of Protocols Alliance <http://iopa.io>
+
+/*
+ * Copyright (c) 2015 Internet of Protocols Alliance (IOPA)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /************************************************
 *                                               *
 *               iopa.io v1.0.0 API              *
-*                                               *
-************************************************/
-
-/************************************************
-*                                               *
-*                   GLOBAL                      *
 *                                               *
 ************************************************/
 
@@ -189,21 +198,75 @@ declare module "iopa" {
     }
     
     export class app extends IopaAppBuilder{  
-         use(mw: (context, next) => any): IopaAppBuilder;
-        use(mw: (next) => any): IopaAppBuilder;
-        use(mw: (req, res) => any): IopaAppBuilder;
+        /**
+        * Add IOPA Middleware Function to AppBuilder pipeline
+        *
+        * @param mw the middleware to add 
+        */   
+        use(mw: (context, next) => any): IopaAppBuilder;
+  
+  
+        /**
+        * Add IOPA Middleware Function to AppBuilder pipeline
+        *
+        * @param mw the middleware to add 
+        */   
+       use(mw: (next) => any): IopaAppBuilder;
+ 
+        /**
+        * Add Connect Middleware Function to AppBuilder pipeline
+        *
+        * @param mw the middleware to add 
+        */   
+       use(mw: (req, res) => any): IopaAppBuilder;
+
+        /**
+        * Add Connect Middleware Function to AppBuilder pipeline
+        *
+        * @param mw the middleware to add 
+        */   
         use(mw: (req, res, next) => any): IopaAppBuilder;
+
+        /**
+        * Add IOPA Middleware Function to AppBuilder pipeline
+        *
+        * @param mw the middleware to add 
+        */   
         use(mw: (app) => any): IopaAppBuilder;
-        build(): (context: any) => any;
+        
+        /***
+        * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
+        */
+        build(): () => ((context) => any);
+        
         constructor(properties?: any);
     }
 
     interface IopaContext extends Object { };
 
     interface IopaFactory {
+        
+       /**
+        * Release the memory used by a given IOPA Context
+        *
+        * @param context the context to free 
+        */   
         dispose(context: IopaContext): void;
+        
+        
+       /**
+        * Create a new IOPA Context, with default [iopa.*] values populated
+        */
         createContext(): IopaContext;
+        
+        /**
+        * Create a new IOPA Request, based on the given URL and scheme
+        */
         createRequest(urlStr: string, method: string): IopaContext;
+        
+        /**
+        * Create a new barebones IOPA Request with or without a response record
+        */
         _create(withoutResponse: boolean): IopaContext;
     }
 

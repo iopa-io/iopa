@@ -1,18 +1,23 @@
 {
   "name": "iopa",
   "main": "index.js",
-  "description": "Internet of Protocols Association (IOPA) Fabric for Node.js, official implementation",
+  "description": "Internet of Protocols Alliance (IOPA) Fabric for Node.js, official implementation",
   "author": "IOPA",
+  "license": "Apache-2.0",
+  "typings": "./src/iopa.d.ts",
+  "typescript": {
+    "definition": "./src/iopa.d.ts"
+  }, 
   "maintainers": [
     {
       "name": "iopa",
       "email": "build@iopa.io"
     }
   ],
-  "version": "1.0.36",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iopa-source/iopa.git"
+    "url": "https://github.com/iopa-io/iopa.git"
   },
   "dependencies": {},
   "keywords": [
@@ -31,13 +36,7 @@
     "node",
     "tasks"
   ],
-  "licenses": [
-    {
-      "type": "Apache-2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    }
-  ],
-  "engines": {
+    "engines": {
     "node": ">= 0.12.0"
   },
   "scripts": {
@@ -45,9 +44,9 @@
     "quick": "git add . -A && git commit -m 'dev test' && npm version patch && npm publish"
   },
   "devDependencies": {
-    "mocha": "^2.2.5",
-    "mocha-junit-reporter": "^1.6.1",
-    "should": "^7.0.2"
+    "mocha": "2.2.x",
+    "mocha-junit-reporter": "1.6.x",
+    "should": "7.0.x"
   },
   "readmeFilename": "README.md",
   "homepage": "http://iopa.io"

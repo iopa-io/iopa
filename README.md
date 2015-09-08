@@ -11,13 +11,13 @@ The Node.js package `iopa` is the reference implementation for IOPA, a lightweig
 
 It is an open-source, standards-based, drop-in replacement for Connect, Express, and Koa, with built-in seamless bridging to Node's built-in HTTP server, COAP servers such as [`node-coap`](https://github.com/mcollina/node-coap), and native IOPA servers such as [nodekit.io](https://github.com/limerun/nodekit)
 
-The [IOPA](https://github.com/iopa-source/iopa-spec) specification defines a standard interface between Node.js REST servers and application/device logic.   These include HTTP servers for web applications and COAP servers for Internet of Things (IOT) devices.
+The [IOPA](https://github.com/iopa-io/iopa-spec) specification defines a standard interface between Node.js REST servers and application/device logic.   These include HTTP servers for web applications and COAP servers for Internet of Things (IOT) devices.
 
 In fact, IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent.
 
 Published as open-source standards without dependence on any implementation or platform , the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.)
 
-In contrast to the [IOPA](https://github.com/iopa-source/iopa-spec) *specification*, this repository contains an **actual** IOPA reference **implementation** for node.js Javascript.  
+In contrast to the [IOPA](https://github.com/iopa-io/iopa-spec) *specification*, this repository contains an **actual** IOPA reference **implementation** for node.js Javascript.  
 
 A broad ecosystem of servers and middleware, such as routers and view engines, exist in the the [limerun Organization](https://github.com/limerun] on GitHub.
 
@@ -28,9 +28,9 @@ An `IOPA` middleware/application is simply a `function(next)` that provides a si
 
 Middleware can be chained with `app.use(middleware1).use(middleware2)` etc.
 
-With the [`iopa-connect`](https://github.com/iopa-source/iopa-connect) package, `IOPA` servers can also call regular Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
+With the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package, `IOPA` servers can also call regular Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
 
-`IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()` when used with the [`iopa-connect`](https://github.com/iopa-source/iopa-connect) package.    It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
+`IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()` when used with the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package.    It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
 
 
 ## For People, Animals, Devices and Things
@@ -168,4 +168,4 @@ http.createServer(app.buildHttp()).listen();
 
 [![IOPA](http://iopa.io/iopa.png)](http://iopa.io)
  
-[`IOPA-docs/IOPA-spec`](https://github.com/iopa-source/iopa-spec/blob/master/Specification.md)
+[`IOPA-docs/IOPA-spec`](https://github.com/iopa-io/iopa-spec/blob/master/Specification.md)
