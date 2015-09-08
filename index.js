@@ -20,7 +20,7 @@ const AppBuilder = require('./src/appBuilder/appBuilder').default,
       shallow = require('./src/util/shallow'),
       iopaPrototype = require('./src/util/prototype');
 
-exports.app = AppBuilder;
+exports.App = AppBuilder;
 exports.factory = Factory;
 exports.constants = constants;
 exports.util = {"shallow": shallow, "prototype": iopaPrototype};

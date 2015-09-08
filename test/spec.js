@@ -17,7 +17,7 @@
 const should = require('should');
 
 const iopa = require('../index'),
-  IopaApp = iopa.app,
+  IopaApp = iopa.App,
   iopaFactory = iopa.factory,
   iopaUtil = iopa.util,
 
