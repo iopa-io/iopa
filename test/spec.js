@@ -64,7 +64,7 @@ describe('#IOPA()', function () {
   it('should create app that updates context using both signatures', function () {
 
     var test = new IopaApp();
-            
+       
     // use standard IOPA signature with context
     test.use(function (context, next) {
       context[IOPA.Method] = "GET";

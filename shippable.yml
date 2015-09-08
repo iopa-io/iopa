@@ -1,3 +1,5 @@
+# best deployed using shippableimages/ubuntu1404_nodejs
+
 language: node_js
 
 node_js:
@@ -10,8 +12,8 @@ notifications:
 
 env:
  global:
-  - secure: BixZnNpz6XfFWNHfEyRKFxV307kt+GCEc198j+WRCPUq5Qwwo0rjdVrcq4eqeS9vdPa+xZRioHqmgoISNIFCSJWBM0KYamULZu9SdXo4l+SRcaobB2WQ9yUNGZ8vlX9CUjTIMfQRhiySMvtXtpANqilxZntq/9Wbrc6VJfOUTXjvg1VeQ9zv0Jpq0jB6gRAZ4CgofV1z1AUYbj4kT0o6khxPKn0DmjAybJYKwnir99bYr6kIMkmcywkXUgXqKlW1CAvE+7ricFs/v+7mUOdfFg/f272PibOKbc9WLn5tCdCGbKpugzUXwqXFJe/swhMqp1sWQTAQi+shfPMkL7cUFQ=
-  
+  - secure: x7HiAOHahpAPzowcSLSLY4cW/8NEIBgs+H/Zn7MoSTAbf5A9pfxcAcYaS81VOmATj0EwNaQ6B6lzFqls+0NimwH+kueLHQOZ4wYVpSkRKbZxngy2dspy5YCa6rszSuDIPKxCddJZ/dnbo0XWlhYXEpdJRpg6eUSbjd7UrYrmr/eHKQEuO71ZPuNAhIcKcJ5gDWwhTMX9sG71n6hcGcCT0s/VGW0ck7DJLDkL4jqyVr91igtWFHF64nx/iwSOExon8G+4gADEE+AH3WzGL7CY0qXzfuDh5ocyJvByUiFQvj8YCK1cZ8jGOWXeofZdhVwM3yM20pG9oX4JFvB+2mzDww==
+
 before_install:
   - source ~/.nvm/nvm.sh && nvm install $SHIPPABLE_NODE_VERSION
   - node --version
@@ -32,3 +34,4 @@ after_success:
   - git remote set-url origin ssh://git@github.com/$REPO_NAME
   - git push
   - npm publish
+
