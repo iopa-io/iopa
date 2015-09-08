@@ -98,6 +98,13 @@ exports.PROTOCOLS = {
     MQTT: "MQTT/3.1.1",
  }
 
+exports.EVENTS = {
+    request: "request",
+    response: "response",
+    finish: "finish",
+    disconnect: "disconnect"
+ }
+
 exports.APP =
 {
     AddSignatureConversion : "app.AddSignatureConversion",

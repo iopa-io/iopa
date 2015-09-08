@@ -113,6 +113,13 @@ declare module "iopa" {
         COAP: string,
         MQTT: string,
     }
+    
+    interface EVENTS {
+        request: string,
+        response: string,
+        finish: string,
+        disconnect: string
+    }
 
     interface APP {
         AddSignatureConversion: string,
