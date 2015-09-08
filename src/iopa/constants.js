@@ -99,10 +99,10 @@ exports.PROTOCOLS = {
  }
 
 exports.EVENTS = {
-    request: "request",
-    response: "response",
-    finish: "finish",
-    disconnect: "disconnect"
+    Request: "request",
+    Response: "response",
+    Finish: "finish",
+    Disconnect: "disconnect"
  }
 
 exports.APP =

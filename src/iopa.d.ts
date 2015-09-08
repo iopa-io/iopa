@@ -115,10 +115,10 @@ declare module "iopa" {
     }
     
     interface EVENTS {
-        request: string,
-        response: string,
-        finish: string,
-        disconnect: string
+        Request: string,
+        Response: string,
+        Finish: string,
+        Disconnect: string
     }
 
     interface APP {
