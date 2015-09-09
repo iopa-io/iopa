@@ -42,7 +42,7 @@
   "scripts": {
     "test": "mocha --reporter spec test",
     "quick": "git add . -A && git commit -m 'dev test' && npm version patch && npm publish",
-    "postinstall": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
+    "typings": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
   },
   "devDependencies": {
     "mocha": "latest",
