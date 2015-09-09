@@ -119,13 +119,13 @@ IopaContextFactory.prototype.dispose = function dispose(context) {
         //    console.log("Disposing " + context.response["iopa.Seq"]);
         
         var response = context.response;
-        for (var prop in response) { if (response.hasOwnProperty(prop)) { delete response[prop]; } }
+        for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
         this.free(response);
     }
             
     //   console.log("Disposing " + context["iopa.Seq"]);
             
-    for (var prop in context) { if (context.hasOwnProperty(prop)) { delete context[prop]; } };
+    for (var prop in context) { if (context.hasOwnProperty(prop)) { context[prop] = null; } };
 
     this.free(context);
 };
