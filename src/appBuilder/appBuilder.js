@@ -22,10 +22,7 @@
     Images = require('../util/images').default,
     guidFactory = require('../util/guid').default,
     
-    shallow = require('../util/shallow'),
-    merge = shallow.merge,
-    copy = shallow.copy,
-    clone = shallow.clone,
+   merge = require('../util/shallow').merge,
     
     constants = require('../iopa/constants'),
     IOPA = constants.IOPA,
@@ -49,7 +46,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 * @public
 */
 function AppBuilder() {
-    var properties = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    this.properties = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, AppBuilder);
 
@@ -61,7 +58,7 @@ function AppBuilder() {
     defaults[APP.DefaultMiddleware] = [RespondMiddleware];
     defaults[SERVER.AppId] = guidFactory();
 
-    this.properties = merge(properties, defaults);
+    merge(this.properties, defaults);
     this.log = this.properties[SERVER.Logger];
     this.middleware = [];
 }

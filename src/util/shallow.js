@@ -14,26 +14,56 @@
  * limitations under the License.
  */
 
-exports.merge = function merge(source, defaults) {
-    var target = {};
+ const constants = require('../iopa/constants'),
+    IOPA = constants.IOPA;
+
+exports.merge = function merge(target, defaults) {
+   if (!target) 
+        throw new Error("target must not be empty");
    
     if (!defaults) 
         defaults = {};
-        
-     if (!source) 
-        source = {};
-        
+            
     for (var key in defaults) {
         if (defaults.hasOwnProperty(key)) target[key] = defaults[key];
     }
-    
-    for (var key in source) {
-        if (source.hasOwnProperty(key)) target[key] = source[key];
-    }
-    
-    return target;
 };
 
+exports.mergeContext = function mergeContext(target, defaults) {
+   
+   if (!target) 
+        throw new Error("target must not be empty");
+     
+     if (!defaults) 
+        return; // nothing to do   
+        
+    for (var key in defaults) {
+        if (defaults.hasOwnProperty(key) && (key !== IOPA.Headers)) target[key] = defaults[key];
+    }
+    
+    if (defaults.hasOwnProperty(IOPA.Headers))
+    {
+        var targetHeaders = target[IOPA.Headers] || {};
+        var sourceHeaders = defaults[IOPA.Headers];
+                
+        for (var key in defaults[IOPA.Headers]) {
+            if (sourceHeaders.hasOwnProperty(key)) targetHeaders[key] = sourceHeaders[key];
+        }
+        
+        target[IOPA.Headers] = targetHeaders;
+        
+         for (var key in defaults) {
+            if ((key !== IOPA.Headers) && defaults.hasOwnProperty(key)) target[key] = defaults[key];
+        }
+        
+    } else {
+        
+        for (var key in defaults) {
+            if (defaults.hasOwnProperty(key)) target[key] = defaults[key];
+        }
+        
+    }
+};
 
 exports.copy = function copy(source, target) {
   if (!source) 

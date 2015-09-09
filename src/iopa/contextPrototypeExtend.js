@@ -37,15 +37,8 @@
     WEBSOCKET = constants.WEBSOCKET,
     SECURITY = constants.SECURITY,
             
-    shallow = require('../util/shallow'),
-    merge = shallow.merge,
-    copy = shallow.copy,
-    clone = shallow.clone,
-    cloneFilter = shallow.cloneFilter,
-    
+    cloneFilter = require('../util/shallow').cloneFilter,
     cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors;
-
- var dog = IOPA.ad
  
 /**
  * Extend Context Prototype

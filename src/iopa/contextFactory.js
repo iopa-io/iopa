@@ -33,7 +33,11 @@ const FreeList = require('freelist').FreeList,
     COMMONKEYS = constants.COMMONKEYS,
     OPAQUE = constants.OPAQUE,
     WEBSOCKET = constants.WEBSOCKET,
-    SECURITY = constants.SECURITY;
+    SECURITY = constants.SECURITY,
+    
+    mergeContext = require('../util/shallow').mergeContext;
+
+  
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -86,7 +90,10 @@ function IopaContextFactory() {
 
 util.inherits(IopaContextFactory, FreeList);
 
-IopaContextFactory.prototype._create = function _create(withoutResponse) {
+/**
+* Create a new barebones IOPA Request with or without a response record
+*/
+ IopaContextFactory.prototype._create = function _create(withoutResponse) {
 
     var context = this.alloc();
 
@@ -101,6 +108,11 @@ IopaContextFactory.prototype._create = function _create(withoutResponse) {
     return context;
 };
 
+/**
+* Release the memory used by a given IOPA Context
+*
+* @param context the context to free 
+*/   
 IopaContextFactory.prototype.dispose = function dispose(context) {
 
     if (context.response) {
@@ -118,6 +130,9 @@ IopaContextFactory.prototype.dispose = function dispose(context) {
     this.free(context);
 };
 
+/**
+* Create a new IOPA Context, with default [iopa.*] values populated
+*/
 IopaContextFactory.prototype.createContext = function createContext() {
     var context = this._create();
 
@@ -142,16 +157,22 @@ IopaContextFactory.prototype.createContext = function createContext() {
     return context;
 };
 
-IopaContextFactory.prototype.createRequest = function createRequest(urlStr, method) {
+IopaContextFactory.prototype.DisposableRequest = function DisposableRequest(urlStr, method) {
+    return _disposable(this.createContext());
+}
 
+/**
+* Create a new IOPA Context, with default [iopa.*] values populated
+*/
+IopaContextFactory.prototype.createRequest = function createRequest(urlStr, options) {
+    options = options || {};
+  
     var context = this._create(true);
     context[SERVER.IsLocalOrigin] = true;
     context[SERVER.OriginalUrl] = urlStr;
-
-    context[IOPA.Method] = method || METHODS.GET;
+    context[IOPA.Method] = options[IOPA.Method] || METHODS.GET;
 
     var urlParsed = URL.parse(urlStr);
-
     context[IOPA.PathBase] = "";
     context[IOPA.Path] = urlParsed.pathname || "";
     context[IOPA.QueryString] = urlParsed.query;
@@ -159,7 +180,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, meth
     context[SERVER.RemoteAddress] = urlParsed.hostname;
     context[IOPA.Host] = urlParsed.hostname;
     context[IOPA.Headers] = {};
-
+    
     switch (urlParsed.protocol) {
         case SCHEMES.HTTP:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
@@ -196,10 +217,27 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, meth
         default:
             return Promise.reject("invalid protocol");
     };
+    
+    mergeContext(context, options);
 
     return context;
 };
 
+IopaContextFactory.prototype.DisposableRequest = function DisposableRequest(urlStr, method) {
+    return _disposable(this.createRequest(urlStr, method));
+};
+
+function _disposable(context) {
+    var that = this;
+    var ctx = context
+    
+    return Promise.resolve(ctx)
+      .disposer(function(ctx, promise){
+          that.dispose(ctx);
+          ctx = null;
+          that = null;          
+      });
+};
 
 const maxSequence = Math.pow(2, 16);
 var _lastSequence = Math.floor(Math.random() * (maxSequence - 1));

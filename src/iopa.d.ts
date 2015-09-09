@@ -282,7 +282,8 @@ declare module "iopa" {
 
 
     interface shallow {
-        merge(source, defaults): any;
+        merge(target, defaults): any;
+        mergeContext(target, defaults): any;
         copy(source, target): any;
         clone(source): any;
        clone(source, blacklist): any;
