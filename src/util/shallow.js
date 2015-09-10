@@ -25,7 +25,7 @@ exports.merge = function merge(target, defaults) {
         defaults = {};
             
     for (var key in defaults) {
-        if (defaults.hasOwnProperty(key)) target[key] = defaults[key];
+        if (defaults.hasOwnProperty(key)  && !(target.hasOwnProperty(key))) target[key] = defaults[key];
     }
 };
 
