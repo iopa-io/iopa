@@ -37,7 +37,7 @@
     "tasks"
   ],
   "engines": {
-    "node": ">= 0.12.0"
+    "node": ">= 4.0.0"
   },
   "scripts": {
     "test": "mocha --reporter spec test",
@@ -47,8 +47,7 @@
   "devDependencies": {
     "mocha": "latest",
     "mocha-junit-reporter": "latest",
-    "should": "latest",
-    "tsd": "latest"
+    "should": "latest"
   },
   "readmeFilename": "README.md",
   "homepage": "http://iopa.io"
