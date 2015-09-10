@@ -62,6 +62,7 @@ declare module "iopa" {
         Events: string,
         HeadersSent: string,
         MessageId: string,
+        Token: string,
     }
 
     interface SERVER {

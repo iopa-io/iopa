@@ -45,6 +45,7 @@ exports.IOPA = {
     Seq: "iopa.Seq",
     Events: "iopa.Events",
     MessasgeId: "iopa.MessageId",
+    Token: "iopa.Token"
 };
 
 exports.SERVER = {
