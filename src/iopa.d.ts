@@ -131,7 +131,7 @@ declare module "iopa" {
      }
 
    
-    interface APP {
+    interface APPBUILDER {
         AddSignatureConversion: string,
         DefaultApp: string,
         DefaultMiddleware: string
@@ -196,7 +196,7 @@ declare module "iopa" {
     interface IopaConstants {
         IOPA: IOPA
         SERVER: SERVER,
-        APP: APP,
+        APPBUILDER: APPBUILDER,
         COMMONKEYS: COMMONKEYS,
         OPAQUE: OPAQUE,
         WEBSOCKET: WEBSOCKET,
