@@ -25,15 +25,6 @@ const FreeList = require('freelist').FreeList,
     constants = require('./constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
-    METHODS = constants.METHODS,
-    PORTS = constants.PORTS,
-    SCHEMES = constants.SCHEMES,
-    PROTOCOLS = constants.PROTOCOLS,
-    APP = constants.APP,
-    COMMONKEYS = constants.COMMONKEYS,
-    OPAQUE = constants.OPAQUE,
-    WEBSOCKET = constants.WEBSOCKET,
-    SECURITY = constants.SECURITY,
     
     mergeContext = require('../util/shallow').mergeContext;
 
@@ -170,7 +161,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
     var context = this._create(true);
     context[SERVER.IsLocalOrigin] = true;
     context[SERVER.OriginalUrl] = urlStr;
-    context[IOPA.Method] = options[IOPA.Method] || METHODS.GET;
+    context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET;
 
     var urlParsed = URL.parse(urlStr);
     context[IOPA.PathBase] = "";
@@ -180,6 +171,11 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
     context[SERVER.RemoteAddress] = urlParsed.hostname;
     context[IOPA.Host] = urlParsed.hostname;
     context[IOPA.Headers] = {};
+    
+    const SCHEMES = IOPA.SCHEMES,
+        PROTOCOLS = IOPA.PROTOCOLS,
+        PORTS = IOPA.PORTS
+  
     
     switch (urlParsed.protocol) {
         case SCHEMES.HTTP:

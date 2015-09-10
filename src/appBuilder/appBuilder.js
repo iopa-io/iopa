@@ -27,16 +27,8 @@
     constants = require('../iopa/constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
-    METHODS = constants.METHODS,
-    PORTS = constants.PORTS,
-    SCHEMES = constants.SCHEMES,
-    PROTOCOLS = constants.PROTOCOLS,
-    APP = constants.APP,
-    COMMONKEYS = constants.COMMONKEYS,
-    OPAQUE = constants.OPAQUE,
-    WEBSOCKET = constants.WEBSOCKET,
-    SECURITY = constants.SECURITY;
-
+    APPBUILDER = constants.APPBUILDER
+  
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /***
@@ -54,8 +46,8 @@ function AppBuilder() {
     defaults[SERVER.AppId] = guidFactory();
     defaults[SERVER.Capabilities] = {};
     defaults[SERVER.Logger] = console;
-    defaults[APP.DefaultApp] = DefaultApp;
-    defaults[APP.DefaultMiddleware] = [RespondMiddleware];
+    defaults[APPBUILDER.DefaultApp] = DefaultApp;
+    defaults[APPBUILDER.DefaultMiddleware] = [RespondMiddleware];
     defaults[SERVER.AppId] = guidFactory();
 
     merge(this.properties, defaults);
@@ -82,7 +74,7 @@ AppBuilder.prototype.use = function use(mw) {
 * @public
 */
 AppBuilder.prototype.build = function build() {
-    var middleware = this.properties[APP.DefaultMiddleware].concat(this.middleware).concat(this.properties[APP.DefaultApp]);
+    var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware).concat(this.properties[APPBUILDER.DefaultApp]);
     var app = this;
     var pipeline = function appbuilder_pipeline(context) {
         var i, prev, curr;
@@ -143,7 +135,7 @@ function DefaultApp(context, next) {
 }
 
 function DefaultError(context, err) {
-    if (context[IOPA.Protocol] == PROTOCOLS.HTTP) {
+    if (context[IOPA.Protocol] == IOPA.PROTOCOLS.HTTP) {
         DefaultErrorHttp(context, err);
     }
     else {

@@ -24,19 +24,8 @@
     Writable = Stream.Writable,
     util = require('util'),
 
-    constants = require('./constants'),
-    IOPA = constants.IOPA,
-    SERVER = constants.SERVER,
-    METHODS = constants.METHODS,
-    PORTS = constants.PORTS,
-    SCHEMES = constants.SCHEMES,
-    PROTOCOLS = constants.PROTOCOLS,
-    APP = constants.APP,
-    COMMONKEYS = constants.COMMONKEYS,
-    OPAQUE = constants.OPAQUE,
-    WEBSOCKET = constants.WEBSOCKET,
-    SECURITY = constants.SECURITY,
-            
+    IOPA = require('./constants').IOPA,
+             
     cloneFilter = require('../util/shallow').cloneFilter,
     cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors;
  

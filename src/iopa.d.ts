@@ -31,6 +31,45 @@
 ************************************************/
 
 declare module "iopa" {
+    
+     interface METHODS {
+        GET: string,
+        PUT: string,
+        DELETE: string,
+        POST: string,
+    }
+    
+    interface PORTS {
+        HTTP: number,
+        HTTPS: number,
+        COAP: number,
+        COAPS: number,
+        MQTT: number,
+        MQTTS: number
+    }
+
+    interface SCHEMES {
+        HTTP: string,
+        HTTPS: string,
+        COAP: string,
+        COAPS: string,
+        MQTT: string,
+        MQTTS: string
+    }
+
+    interface PROTOCOLS {
+        HTTP: string,
+        COAP: string,
+        MQTT: string,
+    }
+    
+    interface EVENTS {
+        Request: string,
+        Response: string,
+        Finish: string,
+        Disconnect: string
+    }
+
     interface IOPA {
         Scheme: string,
         Method: string,
@@ -63,6 +102,12 @@ declare module "iopa" {
         HeadersSent: string,
         MessageId: string,
         Token: string,
+        
+        METHODS: METHODS,
+        PORTS: PORTS,
+        SCHEMES: SCHEMES,
+        PROTOCOLS: PROTOCOLS,
+        EVENTS: EVENTS
     }
 
     interface SERVER {
@@ -82,46 +127,10 @@ declare module "iopa" {
         AppId: string,
         IsChild: string,
         Fetch: string,
-        InProcess: string
-    }
+        ParentContext: string
+     }
 
-    interface METHODS {
-        GET: string,
-        PUT: string,
-        DELETE: string,
-        POST: string,
-    }
-    interface PORTS {
-        HTTP: number,
-        HTTPS: number,
-        COAP: number,
-        COAPS: number,
-        MQTT: number,
-        MQTTS: number
-    }
-
-    interface SCHEMES {
-        HTTP: string,
-        HTTPS: string,
-        COAP: string,
-        COAPS: string,
-        MQTT: string,
-        MQTTS: string
-    }
-
-    interface PROTOCOLS {
-        HTTP: string,
-        COAP: string,
-        MQTT: string,
-    }
-    
-    interface EVENTS {
-        Request: string,
-        Response: string,
-        Finish: string,
-        Disconnect: string
-    }
-
+   
     interface APP {
         AddSignatureConversion: string,
         DefaultApp: string,
@@ -154,7 +163,7 @@ declare module "iopa" {
         Support: string,
         Concurrency: string,
         SendAsync: string
-    };
+    }
 
     interface OPAQUE {
         Version: string,
@@ -176,6 +185,7 @@ declare module "iopa" {
     }
 
     interface SECURITY {
+        ClientCertificate: string,
         User: string,
         Authenticate: string,
         SignIn: string,
@@ -186,11 +196,6 @@ declare module "iopa" {
     interface IopaConstants {
         IOPA: IOPA
         SERVER: SERVER,
-        METHODS: METHODS,
-        PORTS: PORTS,
-        SCHEMES: SCHEMES,
-        PROTOCOLS: PROTOCOLS,
-        EVENTS: EVENTS,
         APP: APP,
         COMMONKEYS: COMMONKEYS,
         OPAQUE: OPAQUE,

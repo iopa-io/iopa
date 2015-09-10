@@ -15,43 +15,81 @@
  */
  
 exports.IOPA = {
-    Scheme : "iopa.Scheme",
-    Method : "iopa.Method",
-    PathBase : "iopa.PathBase",
-    Path : "iopa.Path",
-    QueryString : "iopa.QueryString",
-    Protocol : "iopa.Protocol",
-    Headers : "iopa.Headers",
-    Body : "iopa.Body",
-    Host : "iopa.Host",
-   
-    response : "response",
-    StatusCode : "iopa.StatusCode",
-    ReasonPhrase : "iopa.ReasonPhrase",
-    
-    CallCancelled : "iopa.CallCancelled",
-  
-    IopaVersion : "iopa.Version",
+    Scheme: "iopa.Scheme",
+    Method: "iopa.Method",
+    PathBase: "iopa.PathBase",
+    Path: "iopa.Path",
+    QueryString: "iopa.QueryString",
+    Protocol: "iopa.Protocol",
+    Headers: "iopa.Headers",
+    Body: "iopa.Body",
+    Host: "iopa.Host",
 
-    Error : "iopa.Error",
-    SetHeader : "iopa.SetHeader",
-    GetHeader : "iopa.GetHeader",
-    RemoveHeader : "iopa.RemoveHeader",
-    WriteHead : "iopa.WriteHead",
+    response: "response",
+    StatusCode: "iopa.StatusCode",
+    ReasonPhrase: "iopa.ReasonPhrase",
+
+    CallCancelled: "iopa.CallCancelled",
+
+    IopaVersion: "iopa.Version",
+
+    Error: "iopa.Error",
+    SetHeader: "iopa.SetHeader",
+    GetHeader: "iopa.GetHeader",
+    RemoveHeader: "iopa.RemoveHeader",
+    WriteHead: "iopa.WriteHead",
     HeadersSent: "iopa.HeadersSent",
-    
+
     Id: "iopa.Id",
     Version: "iopa.Version",
     Seq: "iopa.Seq",
     Events: "iopa.Events",
     MessasgeId: "iopa.MessageId",
-    Token: "iopa.Token"
+    Token: "iopa.Token",
+
+    METHODS: {
+        GET: "GET",
+        PUT: "PUT",
+        DELETE: "DELETE",
+        POST: "POST",
+    },
+
+    PORTS: {
+        HTTP: 80,
+        HTTPS: 443,
+        COAP: 5683,
+        COAPS: 5684,
+        MQTT: 1883,
+        MQTTS: 8883
+    },
+
+    SCHEMES: {
+        HTTP: "http:",
+        HTTPS: "https:",
+        COAP: "coap:",
+        COAPS: "coaps:",
+        MQTT: "mqtt:",
+        MQTTS: "mqtts:"
+    },
+
+    PROTOCOLS: {
+        HTTP: "HTTP/1.1",
+        COAP: "COAP/1.0",
+        MQTT: "MQTT/3.1.1",
+    },
+
+    EVENTS: {
+        Request: "request",
+        Response: "response",
+        Finish: "finish",
+        Disconnect: "disconnect"
+    }
 };
 
 exports.SERVER = {
     Capabilities: "server.Capabilities",
     Logger: "server.Logger",
-    CallCancelledSource : "server.CallCancelledSource",
+    CallCancelledSource: "server.CallCancelledSource",
     IsLocalOrigin: "server.IsLocalOrigin",
     OriginalUrl: "server.OriginalUrl",
     RemoteAddress: "server.RemoteAddress",
@@ -64,131 +102,73 @@ exports.SERVER = {
     TLS: "server.TLS",
     AppId: "server.AppId",
     IsChild: "server.IsChild",
-    InProcess: "server.InProcess",
-    Fetch: "fetch"
+    ParentContext: "server.ParentContext",
+    Fetch: "fetch",
 };
 
-exports.METHODS = {
-    GET: "GET",
-    PUT: "PUT",
-    DELETE: "DELETE",
-    POST: "POST",
-}
-
-exports.PORTS = {
-    HTTP: 80,
-    HTTPS: 443,
-    COAP: 5683,
-    COAPS: 5684,
-    MQTT: 1883,
-    MQTTS: 8883
-}
-
-exports.SCHEMES = {
-    HTTP: "http:",
-    HTTPS: "https:",
-    COAP: "coap:",
-    COAPS: "coaps:",
-    MQTT: "mqtt:",
-    MQTTS: "mqtts:"
-}
-
-exports.PROTOCOLS = {
-    HTTP: "HTTP/1.1",
-    COAP: "COAP/1.0",
-    MQTT: "MQTT/3.1.1",
- }
-
-exports.EVENTS = {
-    Request: "request",
-    Response: "response",
-    Finish: "finish",
-    Disconnect: "disconnect"
- }
-
-exports.APP =
+exports.APPBUILDER =
 {
-    AddSignatureConversion : "app.AddSignatureConversion",
-    DefaultApp : "app.DefaultApp",
-    DefaultMiddleware : "app.DefaultMiddleware"
-};
-
-exports.COMMONKEYS =
-{
-    ClientCertificate : "ssl.ClientCertificate",
-    RemoteAddress : "server.RemoteAddress",
-    RemotePort : "server.RemotePort",
-    LocalAddress : "server.LocalAddress",
-    LocalPort : "server.LocalPort",
-    IsLocalOrigin : "server.IsLocalOrigin",
-    TraceOutput : "host.TraceOutput",
-    Addresses : "host.Addresses",
-    AppName : "host.AppName",
-    Capabilities : "server.Capabilities",
-    OnSendingHeaders : "server.OnSendingHeaders",
-    OnAppDisposing : "host.OnAppDisposing",
-    Scheme : "scheme",
-    Host : "host",
-    Port : "port",
-    Path : "path",
-    AppId: "server.AppId",
-    CallCancelledSource : "server.CallCancelledSource"
+    AddSignatureConversion: "app.AddSignatureConversion",
+    DefaultApp: "app.DefaultApp",
+    DefaultMiddleware: "app.DefaultMiddleware"
 };
 
 exports.SENDFILE =
 {
-    Version : "sendfile.Version",
-    Support : "sendfile.Support",
-    Concurrency : "sendfile.Concurrency",
-    SendAsync : "sendfile.SendAsync"
+    Version: "sendfile.Version",
+    Support: "sendfile.Support",
+    Concurrency: "sendfile.Concurrency",
+    SendAsync: "sendfile.SendAsync"
 };
 
 exports.OPAQUE =
 {
     // 3.1. Startup
     
-    Version : "opaque.Version",
+    Version: "opaque.Version",
     
     // 3.2. Per Request
     
-    Upgrade : "opaque.Upgrade",
+    Upgrade: "opaque.Upgrade",
     
     // 5. Consumption
     
-    Stream : "opaque.Stream",
-    CallCancelled : "opaque.CallCancelled",
+    Stream: "opaque.Stream",
+    CallCancelled: "opaque.CallCancelled",
 };
 
 exports.WEBSOCKET =
 {
     // 3.1. Startup
-    Version : "websocket.Version",
+    Version: "websocket.Version",
     
     // 3.2. Per Request
-    Accept : "websocket.Accept",
+    Accept: "websocket.Accept",
     
     // 4. Accept
-    SubProtocol : "websocket.SubProtocol",
+    SubProtocol: "websocket.SubProtocol",
     
     // 5. Consumption
-    SendAsync : "websocket.SendAsync",
-    ReceiveAsync : "websocket.ReceiveAsync",
-    CloseAsync : "websocket.CloseAsync",
-    CallCancelled : "websocket.CallCancelled",
-    ClientCloseStatus : "websocket.ClientCloseStatus",
-    ClientCloseDescription : "websocket.ClientCloseDescription"
+    SendAsync: "websocket.SendAsync",
+    ReceiveAsync: "websocket.ReceiveAsync",
+    CloseAsync: "websocket.CloseAsync",
+    CallCancelled: "websocket.CallCancelled",
+    ClientCloseStatus: "websocket.ClientCloseStatus",
+    ClientCloseDescription: "websocket.ClientCloseDescription"
 };
 
 exports.SECURITY =
 {
+
+    ClientCertificate: "ssl.ClientCertificate",
     // 3.2. Per Request
-    User : "server.User",
-    Authenticate : "security.Authenticate",
+    User: "server.User",
+    Authenticate: "security.Authenticate",
     
     // 3.3. Response
-    SignIn : "security.SignIn",
-    SignOut : "security.SignOut",
-    Challenge : "security.Challenge"
+    SignIn: "security.SignIn",
+    SignOut: "security.SignOut",
+    Challenge: "security.Challenge"
 };
 
  
