@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const FreeList = require('freelist').FreeList,
+const FreeList = require('../util/freelist.js').FreeList,
     Events = require('events'),
     URL = require('url'),
     util = require('util'),

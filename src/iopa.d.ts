@@ -170,7 +170,7 @@ declare module "iopa" {
         Upgrade: string,
         Stream: string,
         CallCancelled: string,
-    };
+    }
 
     interface WEBSOCKET {
         Version: string,
