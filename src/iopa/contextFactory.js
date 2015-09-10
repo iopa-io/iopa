@@ -156,8 +156,12 @@ IopaContextFactory.prototype.DisposableRequest = function DisposableRequest(urlS
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
 IopaContextFactory.prototype.createRequest = function createRequest(urlStr, options) {
+    
+    if (typeof options === 'string' || options instanceof String)
+       options = { "iopa.Method": options};
+       
     options = options || {};
-  
+      
     var context = this._create(true);
     context[SERVER.IsLocalOrigin] = true;
     context[SERVER.OriginalUrl] = urlStr;
