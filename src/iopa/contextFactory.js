@@ -215,7 +215,9 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
             context[SERVER.RemotePort] = urlParsed.port || PORTS.MQTTS;
             break;
         default:
-            return Promise.reject("invalid protocol");
+            context[IOPA.Protocol] = urlParsed.protocol;
+            context[SERVER.TLS] = false;
+            context[SERVER.RemotePort] = urlParsed.port || 0;
     };
     
     mergeContext(context, options);
