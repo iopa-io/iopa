@@ -284,6 +284,14 @@ declare module "iopa" {
         * Create a new barebones IOPA Request with or without a response record
         */
         _create(withoutResponse: boolean): IopaContext;
+        
+        /*
+        * ES6 finally/dispose pattern for IOPA Context
+        * @param context Iopa
+        * @param appfunc function(context): Promise
+        * returns Promise that always ultimately resolves to callback's result or rejects
+        */
+        using(context, appfunc): Promise<any>;
     }
 
 

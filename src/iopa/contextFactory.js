@@ -121,6 +121,44 @@ IopaContextFactory.prototype.dispose = function dispose(context) {
     this.free(context);
 };
 
+/*
+* ES6 finally/dispose pattern for IOPA Context
+* @param context Iopa
+* @param appfunc function(context): Promise
+* returns Promise that always ultimately resolves to callback's result or rejects
+*/
+IopaContextFactory.prototype.using = function using(context, appfunc) {
+
+    var self = this;
+   
+    /**  bluebird version only -- not used:
+    *  	 return Promise.using(Promise.resolve(context)
+    *	 .disposer(function(context, promise){
+    *		 self.dispose(context);
+    *		 context = null; 
+    *	 }), cb);
+    */
+
+    return new Promise(function (resolve, reject) {
+        var v = appfunc(context);
+        if (typeof v === 'undefined')
+            v = null;
+        resolve(v);
+    }).then(function (value) {
+        return Promise.resolve(function () {
+            self.dispose(context);
+            context = null;
+            return value;
+        } ());
+    },
+        function (err) {
+            context.log.error(err);
+            self.dispose(context);
+            context = null;
+            throw err;
+        });
+};
+
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
@@ -147,10 +185,6 @@ IopaContextFactory.prototype.createContext = function createContext() {
 
     return context;
 };
-
-IopaContextFactory.prototype.DisposableRequest = function DisposableRequest(urlStr, method) {
-    return _disposable(this.createContext());
-}
 
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
@@ -223,10 +257,6 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
     mergeContext(context, options);
 
     return context;
-};
-
-IopaContextFactory.prototype.DisposableRequest = function DisposableRequest(urlStr, method) {
-    return _disposable(this.createRequest(urlStr, method));
 };
 
 function _disposable(context) {
