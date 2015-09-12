@@ -62,7 +62,6 @@ IopaContext.prototype.init = function init() {
     this[IOPA.Seq] = _nextSequence();
     this[SERVER.Logger] = console;
     this.log = this[SERVER.Logger];
-
     return this;
 };
 
@@ -107,15 +106,12 @@ util.inherits(IopaContextFactory, FreeList);
 IopaContextFactory.prototype.dispose = function dispose(context) {
 
     if (context.response) {
-        //    console.log("Disposing " + context.response["iopa.Seq"]);
-        
+         
         var response = context.response;
         for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
         this.free(response);
     }
-            
-    //   console.log("Disposing " + context["iopa.Seq"]);
-            
+                    
     for (var prop in context) { if (context.hasOwnProperty(prop)) { context[prop] = null; } };
 
     this.free(context);
