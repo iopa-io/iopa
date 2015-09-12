@@ -192,6 +192,53 @@ declare module "iopa" {
         SignOut: string,
         Challenge: string
     };
+    
+    interface MQTT_METHODS {
+        CONNECT: string,
+        SUBSCRIBE: string,
+        UNSUBSCRIBE: string,
+        PUBLISH: string,
+        PINGREQ: string,
+        DISCONNECT: string,
+        CONNACK: string,
+        SUBACK: string,
+        UNSUBACK: string,
+        PUBACK: string,
+        PUBREC: string,
+        PUBREL: string,
+        PUBCOMP: string,
+        PINGRESP: string
+    }
+    
+    interface MQTT_RETURN_CODES
+    {
+        0: string,
+        1: string,
+        2: string,
+        3: string,
+        4: string,
+        5: string
+    }
+    
+    interface MQTT {
+        ProtocolId: string,
+        ProtocolVersion: string,
+        Clean: string,
+        ClientId: string,
+        KeepAlive: string,
+        UserName: string,
+        Password: string,
+        Will: string,
+        Qos: string,
+        Subscriptions: string,
+        Dup: string,
+        Retain: string,
+        SessionPresent: string,
+        Granted: string,
+        
+        METHODS: MQTT_METHODS,
+        RETURN_CODES: MQTT_RETURN_CODES
+    }
 
     interface IopaConstants {
         IOPA: IOPA
@@ -200,7 +247,8 @@ declare module "iopa" {
         COMMONKEYS: COMMONKEYS,
         OPAQUE: OPAQUE,
         WEBSOCKET: WEBSOCKET,
-        SECURITY: SECURITY;
+        SECURITY: SECURITY,
+        MQTT: MQTT
     }
 
     export class IopaAppBuilder {
