@@ -142,15 +142,19 @@ IopaContextFactory.prototype.using = function using(context, appfunc) {
         resolve(v);
     }).then(function (value) {
         return Promise.resolve(function () {
-            self.dispose(context);
-            context = null;
+            setTimeout(function(){
+                self.dispose(context);
+                context = null;
+            }, 1000)
             return value;
         } ());
     },
         function (err) {
             context.log.error(err);
-            self.dispose(context);
-            context = null;
+             setTimeout(function(){
+                self.dispose(context);
+                context = null;
+            }, 1000)
             throw err;
         });
 };
