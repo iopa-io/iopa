@@ -85,9 +85,7 @@ util.inherits(IopaContextFactory, FreeList);
 */
  IopaContextFactory.prototype._create = function _create(withoutResponse) {
 
-    var context = this.alloc();
-
-    context.init();
+    var context = this.alloc().init();
 
     if (!withoutResponse) {
         var response = this.alloc().init();
@@ -189,7 +187,29 @@ IopaContextFactory.prototype.createContext = function createContext() {
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
-IopaContextFactory.prototype.createRequest = function createRequest(urlStr, options) {
+IopaContextFactory.prototype.createRequestResponse = function createRequestResponse(urlStr, options) {
+    var context = this.createRequest(urlStr, options);
+    
+     var response = this._create(true);;
+     context.response = response;
+     context.response.parent = context;
+     
+     response[IOPA.Headers] = {};
+     response[IOPA.StatusCode] = null;
+     response[IOPA.ReasonPhrase] = "";
+     response[IOPA.Protocol] = context[IOPA.Protocol];
+     response[IOPA.Body] = null;
+     response[SERVER.TLS] = context[SERVER.TLS];
+     response[SERVER.RemoteAddress] = context[SERVER.RemoteAddress];
+     response[SERVER.RemotePort] = context[SERVER.RemotePort];
+     
+     return context;
+}
+
+/**
+* Create a new IOPA Context, with default [iopa.*] values populated
+*/
+IopaContextFactory.prototype.createRequest = function createRequest(urlStr, options, withResponse) {
     
     if (typeof options === 'string' || options instanceof String)
        options = { "iopa.Method": options};

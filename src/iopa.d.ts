@@ -327,8 +327,13 @@ declare module "iopa" {
         /**
         * Create a new IOPA Request, based on the given URL and scheme
         */
-        createRequest(urlStr: string, method: string): IopaContext;
+        createRequest(urlStr: string, options: any): IopaContext;
         
+        /**
+        * Create a new IOPA Request with Response, based on the given URL and scheme
+        */
+        createRequestResponse(urlStr: string, options: any): IopaContext;
+    
         /**
         * Create a new barebones IOPA Request with or without a response record
         */
