@@ -61,7 +61,7 @@ IopaContext.prototype.init = function init() {
     this[IOPA.Events] = new Events.EventEmitter();
     this[IOPA.Seq] = _nextSequence();
     this[SERVER.Logger] = console;
-    this.log = this[SERVER.Logger];
+    this.log = function(){return this[SERVER.Logger]}.bind(this);
     return this;
 };
 
@@ -180,7 +180,7 @@ IopaContextFactory.prototype.createContext = function createContext() {
     response[IOPA.Protocol] = "";
     response[IOPA.Body] = null;
     response[IOPA.Headers]["Content-Length"] = "-1";
-
+        
     return context;
 };
 
@@ -202,7 +202,10 @@ IopaContextFactory.prototype.createRequestResponse = function createRequestRespo
      response[SERVER.TLS] = context[SERVER.TLS];
      response[SERVER.RemoteAddress] = context[SERVER.RemoteAddress];
      response[SERVER.RemotePort] = context[SERVER.RemotePort];
-     
+     response[SERVER.IsLocalOrigin] = false;
+     response[SERVER.IsRequest] = false;
+     response[SERVER.Logger] = context[SERVER.Logger];
+
      return context;
 }
 
@@ -218,6 +221,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
       
     var context = this._create(true);
     context[SERVER.IsLocalOrigin] = true;
+    context[SERVER.IsRequest] = true;
     context[SERVER.OriginalUrl] = urlStr;
     context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET;
 
