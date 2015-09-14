@@ -49,8 +49,6 @@ test.use(function (next) {
   return Promise.resolve(null); // stop processing in chain
 });
 
-test.
-
 var demo = test.build();
 
 var context = iopaFactory.createContext();

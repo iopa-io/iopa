@@ -51,9 +51,12 @@ function AppBuilder() {
     defaults[SERVER.AppId] = guidFactory();
 
     merge(this.properties, defaults);
-    this.log = this.properties[SERVER.Logger];
     this.middleware = [];
 }
+
+ Object.defineProperty(AppBuilder.prototype, "log", {
+                       get: function () { return  this.properties[SERVER.Logger] ;
+                       }  });
 
 AppBuilder.prototype.middlewareProxy = Middleware;
 
@@ -88,7 +91,6 @@ AppBuilder.prototype.build = function build() {
         }
         return prev();
     };
-    pipeline.log = this.log;
     return pipeline;
 }
 

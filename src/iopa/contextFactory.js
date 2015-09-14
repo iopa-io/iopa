@@ -54,6 +54,7 @@ function IopaContext() {
 * @method Init
 */
 IopaContext.prototype.init = function init() {
+    var self = this;
     this[IOPA.Version] = "1.2";
     var _cancellationTokenSource = Cancellation();
     this[SERVER.CallCancelledSource] = _cancellationTokenSource;
@@ -61,9 +62,13 @@ IopaContext.prototype.init = function init() {
     this[IOPA.Events] = new Events.EventEmitter();
     this[IOPA.Seq] = _nextSequence();
     this[SERVER.Logger] = console;
-    this.log = function(){return this[SERVER.Logger]}.bind(this);
+    this.log = function log(){return self[SERVER.Logger]};
     return this;
 };
+
+ Object.defineProperty(IopaContext.prototype, "log", {
+                       get: function () { return  this[SERVER.Logger] ;
+                       }  });
 
 /**
  * Represents IopaContext Factory of up to 100 items
