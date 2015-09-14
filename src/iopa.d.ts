@@ -128,10 +128,12 @@ declare module "iopa" {
         AppId: string,
         IsChild: string,
         Fetch: string,
-        ParentContext: string
+        ParentContext: string,
+        WriteAck: string,
+        WriteErr: string,
+        Retry: string
      }
-
-   
+ 
     interface APPBUILDER {
         AddSignatureConversion: string,
         DefaultApp: string,
@@ -192,7 +194,7 @@ declare module "iopa" {
         SignIn: string,
         SignOut: string,
         Challenge: string
-    };
+    }
     
     interface MQTT_METHODS {
         CONNECT: string,
@@ -239,6 +241,68 @@ declare module "iopa" {
         
         METHODS: MQTT_METHODS,
         RETURN_CODES: MQTT_RETURN_CODES
+    }
+    
+    
+    interface COAP_CODES {
+        '0.01': string,
+        '0.02': string,
+        '0.03': string,
+        '0.04': string,
+    }
+
+    interface COAP_METHODS {
+        'GET': string,
+        'POST': string,
+         'PUT': string,
+         'DELETE': string,
+    }
+
+    interface COAP_STATUS_CODES {
+          "0.00": string, 
+          "0.01": string,
+          "0.02": string,
+          "0.03": string,
+          "0.04": string,
+          "2.01": string,
+          "2.02": string,
+          "2.03": string,
+          "2.04": string,
+          "2.05": string,
+          "4.00": string,
+          "4.01": string,
+          "4.02": string,
+          "4.03": string,
+          "4.04": string,
+          "4.05": string,
+          "4.06": string,
+          "4.12": string,
+          "4.13": string,
+          "4.15": string,
+          "5.00": string,
+          "5.01": string,
+          "5.02": string,
+          "5.03": string,
+          "5.04": string,
+          "5.05": string
+    }
+
+    
+    interface COAP {
+
+        Ack: string,
+        Reset: string,
+        Confirmable: string,
+        Code: string,
+        Options: string,
+    
+        MAXPACKETSIZE: number,
+        MULTICASTIPV4: string,
+        MULTICASTIPV6: string,
+        
+        CODES: COAP_CODES,
+        METHOS: COAP_METHODS,
+        STATUS_CODES: COAP_STATUS_CODES
     }
 
     interface IopaConstants {
@@ -307,7 +371,7 @@ declare module "iopa" {
         constructor(properties?: any);
     }
 
-    interface IopaContext extends Object { };
+    interface IopaContext extends Object { }
 
     interface IopaFactory {
         
