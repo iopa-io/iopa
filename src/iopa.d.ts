@@ -313,7 +313,8 @@ declare module "iopa" {
         OPAQUE: OPAQUE,
         WEBSOCKET: WEBSOCKET,
         SECURITY: SECURITY,
-        MQTT: MQTT
+        MQTT: MQTT,
+        COAP: COAP
     }
 
     export class IopaAppBuilder {
