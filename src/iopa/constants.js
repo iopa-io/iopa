@@ -97,6 +97,7 @@ exports.SERVER = {
     LocalAddress: "server.LocalAddress",
     LocalPort: "server.LocalPort",
     RawStream: "server.RawStream",
+    RawTransport: "server.RawTransport",
     IsRequest: "server.IsRequest",
     SessionId: "server.SessionId",
     TLS: "server.TLS",

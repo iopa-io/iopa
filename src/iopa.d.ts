@@ -121,6 +121,7 @@ declare module "iopa" {
         LocalAddress: string,
         LocalPort: string,
         RawStream: string,
+        RawTransport: string, 
         IsRequest: string,
         SessionId: string,
         TLS: string,
