@@ -1,8 +1,3 @@
-This component is inspired by the following open source projects but does 
-not intentionally reuse any source code from them
-
-
--------------------------------------------------------------------------
 Package: Node.js Freelist
 repository: nodejs / node,
 License: MIT
@@ -30,6 +25,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 -------------------------------------------------------------------------
+
+This component is inspired by the following open source projects but does 
+not intentionally reuse any source code from them
+
+
 Package: connect@3.0.0
 repository: senchalabs / connect,
 License: MIT

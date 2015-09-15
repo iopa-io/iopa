@@ -102,6 +102,29 @@ util.inherits(IopaContextFactory, FreeList);
 };
 
 /**
+* Create a new barebones IOPA Request with or without a response record
+*/
+ IopaContextFactory.prototype._createEmpty = function _create(withoutResponse) {
+
+    var context = this.alloc();
+                  
+    for (var prop in context) { if (context.hasOwnProperty(prop)) { delete context[prop]  } };
+    
+    context.init();
+
+    if (!withoutResponse) {
+        var response = this.alloc();
+          for (var prop in response) { if (response.hasOwnProperty(prop)) { delete response[prop]  } };
+  
+        response.init();
+        context.response = response;
+        context.response.parent = context;
+    }
+
+    return context;
+};
+
+/**
 * Release the memory used by a given IOPA Context
 *
 * @param context the context to free 
