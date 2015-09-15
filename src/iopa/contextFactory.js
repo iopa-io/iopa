@@ -107,14 +107,15 @@ util.inherits(IopaContextFactory, FreeList);
 * @param context the context to free 
 */   
 IopaContextFactory.prototype.dispose = function dispose(context) {
-
+   if (context == null || context[IOPA.Seq] == null) 
+      return;
+      
     if (context.response) {
-         
-        var response = context.response;
+           var response = context.response;
         for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
         this.free(response);
     }
-                    
+              
     for (var prop in context) { if (context.hasOwnProperty(prop)) { context[prop] = null; } };
 
     this.free(context);
