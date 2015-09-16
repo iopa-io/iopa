@@ -368,7 +368,9 @@ declare module "iopa" {
         "iopa.CallCancelled": any,
         "iopa.Events": any,
         "iopa.Seq": any,
-        "server.Logger": any
+        "server.Logger": any,
+        "dispose": () => void,
+        "using": (any) => Promise<any>,
      }
 
     export class Factory {
@@ -399,15 +401,7 @@ declare module "iopa" {
         * @param context the context to free 
         */   
         _dispose(context: IopaContext): void;
-        
-        /*
-        * ES6 finally/dispose pattern for IOPA Context
-        * @param context Iopa
-        * @param appfunc function(context): Promise
-        * returns Promise that always ultimately resolves to callback's result or rejects
-        */
-        using(context, appfunc): Promise<any>;
-        
+               
         constructor(options?: any);
     }
 
