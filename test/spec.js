@@ -102,7 +102,7 @@ describe('#IOPA()', function () {
 
     var context = factory.createContext();
 
-    context.disposeAfter(app).then(function (value) {
+    context.using(app).then(function (value) {
           value.should.equal("ABC");
           process.nextTick(function () {
              (context[IOPA.Method] == null).should.be.true;
@@ -115,7 +115,7 @@ describe('#IOPA()', function () {
 
     var context = factory.createContext();
 
-    context.disposeAfter(
+    context.using(
       (app(context).
         then(function (value) {
           context[IOPA.Method].should.equal("PUT");

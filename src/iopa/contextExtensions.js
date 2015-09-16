@@ -94,7 +94,7 @@
                        get: function () { return  this[SERVER.Logger] ;
                        }  });
                        
-     contextPrototype.disposeAfter = function(appFuncPromiseOrValue){
+     contextPrototype.using = function(appFuncPromiseOrValue){
          if (typeof(appFuncPromiseOrValue) === 'function')
             return _using(this, appFuncPromiseOrValue(this));
          else
