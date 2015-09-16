@@ -31,9 +31,9 @@
  */
 function tokenSource() {
     var data = {
-    reason: null,
-    isCancelled: false,
-    listeners: []
+        reason: null,
+        isCancelled: false,
+        listeners: []
     };
     function cancel(reason) {
         data.isCancelled = true;
@@ -41,17 +41,17 @@ function tokenSource() {
         if (typeof reason == 'string') reason = new Error(reason);
         reason.code = 'OperationCancelled';
         data.reason = reason;
-        setTimeout(function () {
-                   for (var i = 0; i < data.listeners.length; i++) {
-                   if (typeof data.listeners[i] === 'function') {
-                   data.listeners[i](reason);
-                   }
-                   }
-                   }, 0);
+        process.nextTick(function () {
+            for (var i = 0; i < data.listeners.length; i++) {
+                if (typeof data.listeners[i] === 'function') {
+                    data.listeners[i](reason);
+                }
+            }
+        });
     }
     return {
-    cancel: cancel,
-    token: token(data)
+        cancel: cancel,
+        token: token(data)
     };
 }
 
@@ -84,9 +84,9 @@ function token(data) {
     exports.onCancelled = onCancelled;
     function onCancelled(cb) {
         if (isCancelled()) {
-            setTimeout(function () {
-                       cb(data.reason);
-                       }, 0);
+            process.nextTick(function () {
+                cb(data.reason);
+            });
         } else {
             data.listeners.push(cb);
         }
