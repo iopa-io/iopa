@@ -82,11 +82,11 @@ AppBuilder.prototype.use = function use(mw) {
 AppBuilder.prototype.build = function build() {
     var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware).concat(this.properties[APPBUILDER.DefaultApp]);
     var app = this;
-    var capabilities = app.properties[SERVER.Capabilities];
-    
+    const capabilities = app.properties[SERVER.Capabilities];
+      
     var pipeline = function app_pipeline(context) {
         context[SERVER.Capabilities] = clone(capabilities);
-        
+       
         var i, prev, curr;
         i = middleware.length;
         prev = function () {
@@ -98,6 +98,8 @@ AppBuilder.prototype.build = function build() {
         }
         return prev();
     };
+    
+    pipeline.properties = app.properties;
     return pipeline;
 }
 

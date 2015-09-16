@@ -57,7 +57,6 @@ IopaContext.prototype.init = function init() {
     this[IOPA.CallCancelled] = _cancellationTokenSource.token;
     this[IOPA.Events] = new Events.EventEmitter();
     this[IOPA.Seq] = _nextSequence();
-    this[SERVER.Logger] = console;
     return this;
 };
 
@@ -77,6 +76,8 @@ function Factory(options) {
 
     options = options || {};
     var size = options["factory.Size"] || 100;
+    
+    this._logger = options[SERVER.Logger] || console;
 
     this._factory = new FreeList('IopaContext', size, function () { return IopaContext.apply(Object.create(IopaContext.prototype)); });
 }
@@ -85,20 +86,10 @@ function Factory(options) {
 * Create a new barebones IOPA Request with or without a response record
 */
 Factory.prototype._create = function factory_create() {
-
     var context = this._factory.alloc().init();
     context.dispose = this._dispose.bind(this, context);
+    context[SERVER.Logger] = this._logger;
     return context;
-   
-    /* var context = this._factory.alloc().init();
- 
-     if (!withoutResponse) {
-         var response = this._factory.alloc().init();
-         context.response = response;
-         context.response.parent = context;
-     }
- 
-     return context;*/
 };
 
 /**
