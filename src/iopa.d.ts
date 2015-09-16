@@ -87,8 +87,6 @@ declare module "iopa" {
 
         CallCancelled: string,
 
-        IopaVersion: string,
-
         Error: string,
         SetHeader: string,
         GetHeader: string,
@@ -131,34 +129,14 @@ declare module "iopa" {
         ParentContext: string,
         WriteAck: string,
         WriteErr: string,
-        Retry: string
+        Retry: string,
+        Version: string
      }
  
     interface APPBUILDER {
         AddSignatureConversion: string,
         DefaultApp: string,
         DefaultMiddleware: string
-    }
-
-    interface COMMONKEYS {
-        ClientCertificate: string,
-        RemoteAddress: string,
-        RemotePort: string,
-        LocalAddress: string,
-        LocalPort: string,
-        IsLocalOrigin: string,
-        TraceOutput: string,
-        Addresses: string,
-        AppName: string,
-        Capabilities: string,
-        OnSendingHeaders: string,
-        OnAppDisposing: string,
-        Scheme: string,
-        Host: string,
-        Port: string,
-        Path: string,
-        AppId: string,
-        CallCancelledSource: string
     }
 
     interface SENDFILE {

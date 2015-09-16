@@ -26,32 +26,33 @@ const iopa = require('./index'),
 
   constants = iopa.constants,
   IOPA = constants.IOPA,
-  SERVER = constants.SERVER,
-  METHODS = constants.METHODS,
-  PORTS = constants.PORTS,
-  SCHEMES = constants.SCHEMES,
-  PROTOCOLS = constants.PROTOCOLS,
-  APP = constants.APP,
-  COMMONKEYS = constants.COMMONKEYS,
-  OPAQUE = constants.OPAQUE,
-  WEBSOCKET = constants.WEBSOCKET,
-  SECURITY = constants.SECURITY;
-
+  SERVER = constants.SERVER
+ 
 var test = new IopaApp();
+var seq = 0;
 test.use(function (context, next) {
-  context.log.info("HELLO WORLD " + context.toString());
-  context[IOPA.Method] = "PUT";
+   context[IOPA.Method] = "PUT";
+   if (seq++ == 0)
+   {
+    context[SERVER.Capabilities]["iopa.Demo"] = "will only survive one record";
+    context[SERVER.Capabilities]["iopa.App"]["notused"] = "delete me";
+   }
+  context.log.info(context.toString());
   return next();
 });
 
 test.use(function (next) {
-  this.log.info("HELLO WORLD" + this.toString());
+  this.log.info("HELLO WORLD");
   return Promise.resolve("DONE"); // stop processing in chain
 });
 
 var demo = test.build();
 
 var context = iopaFactory.createContext();
+
+context.using(demo);
+
+context = iopaFactory.createContext();
 
 demo(context);
 

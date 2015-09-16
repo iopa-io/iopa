@@ -22,13 +22,16 @@
     Images = require('../util/images').default,
     guidFactory = require('../util/guid').default,
     
-   merge = require('../util/shallow').merge,
-    
+    merge = require('../util/shallow').merge,
+    clone = require('../util/shallow').cloneDoubleLayer,
+   
     constants = require('../iopa/constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
     APPBUILDER = constants.APPBUILDER
   
+const version = require('../../package.json').version;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /***
@@ -44,7 +47,7 @@ function AppBuilder() {
 
     var defaults = {};
     defaults[SERVER.AppId] = guidFactory();
-    defaults[SERVER.Capabilities] = {};
+    defaults[SERVER.Capabilities] = {"iopa.App": {"server.Version": version}};
     defaults[SERVER.Logger] = console;
     defaults[APPBUILDER.DefaultApp] = DefaultApp;
     defaults[APPBUILDER.DefaultMiddleware] = [RespondMiddleware];
@@ -79,7 +82,11 @@ AppBuilder.prototype.use = function use(mw) {
 AppBuilder.prototype.build = function build() {
     var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware).concat(this.properties[APPBUILDER.DefaultApp]);
     var app = this;
-    var pipeline = function appbuilder_pipeline(context) {
+    var capabilities = app.properties[SERVER.Capabilities];
+    
+    var pipeline = function app_pipeline(context) {
+        context[SERVER.Capabilities] = clone(capabilities);
+        
         var i, prev, curr;
         i = middleware.length;
         prev = function () {
@@ -103,27 +110,20 @@ exports.default = AppBuilder;
 
 function RespondMiddleware(context, next) {
 
-    //  if (!this.properties[SERVER.IsChild])
-    //     expandContext.expandContext.call(this, context);
-
     var value = next();
     
     if (value == undefined)
     {
-      context.log.error("Server/Middleware Error: One of the middleware functions on this server returned no value");
+      context.log.error("Server Error: One of the middleware functions on this server returned no value");
     }
     else
       return value.then(
         function (ret) {
-            //       if (!this.properties[SERVER.IsChild])
-            //           expandContext.shrinkContext(context);
-            return ret;
+             return ret;
         },
         function (err) {
             DefaultError(context, err);
-            //      if (!this.properties[SERVER.IsChild])
-            //         expandContext.shrinkContext(context);
-            return Promise.resolve(null);
+              return Promise.resolve(null);
         });
 }
 
@@ -141,7 +141,7 @@ function DefaultError(context, err) {
         DefaultErrorHttp(context, err);
     }
     else {
-        context.log.error("Server/Middleware Error: " + err);
+        context.log.error("Server Error: " + err);
         throw (err);
     }
 }

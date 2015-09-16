@@ -31,7 +31,7 @@ exports.IOPA = {
 
     CallCancelled: "iopa.CallCancelled",
 
-    IopaVersion: "iopa.Version",
+    Version: "iopa.Version",
 
     Error: "iopa.Error",
     SetHeader: "iopa.SetHeader",
@@ -41,7 +41,6 @@ exports.IOPA = {
     HeadersSent: "iopa.HeadersSent",
 
     Id: "iopa.Id",
-    Version: "iopa.Version",
     Seq: "iopa.Seq",
     Events: "iopa.Events",
     MessasgeId: "iopa.MessageId",
@@ -107,7 +106,8 @@ exports.SERVER = {
     Fetch: "fetch",
     WriteAck: "server.WriteAck",
     WriteErr: "server.WriteErr",
-    Retry: "server.Retry"
+    Retry: "server.Retry",
+    Version: "server.Version"
 };
 
 exports.APPBUILDER =

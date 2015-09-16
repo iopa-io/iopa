@@ -89,6 +89,27 @@ exports.clone = function clone(source) {
     return clone;
 };
 
+exports.cloneDoubleLayer = function clone(source) {
+    var clone = {};
+
+    for (var key1 in source) {
+        if (source.hasOwnProperty(key1)) {
+            var item = source[key1];
+            if (typeof item == "object") {
+                var targetItem = {};
+
+                for (var key2 in item) {
+                    if (item.hasOwnProperty(key2)) targetItem[key2] = item[key2];
+                }
+                clone[key1] = targetItem;
+            } else
+                clone[key1] = item;
+        }
+    }
+
+    return clone;
+};
+
 exports.cloneFilter = function clone(source, blacklist) {
     var clone = {};
            
