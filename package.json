@@ -45,9 +45,9 @@
     "typings": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
   },
   "devDependencies": {
-    "mocha": "latest",
-    "mocha-junit-reporter": "latest",
-    "should": "latest"
+    "mocha": "^2.3.2",
+    "mocha-junit-reporter": "^1.6.1",
+    "should": "^7.1.0"
   },
   "readmeFilename": "README.md",
   "homepage": "http://iopa.io"
