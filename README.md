@@ -90,7 +90,7 @@ npm install iopa
 ``` js
 const iopa = require('./index'),
   IopaApp = iopa,
-  iopaFactory = iopa.factory,
+  iopaFactory = new iopa.factory(),
   iopaUtil = iopa.util,
 
   constants = iopa.constants,
@@ -116,9 +116,8 @@ var demo = app.build();
 
 var context = iopaFactory.createContext();
 
-demo(context);
+context.thenDispose(demo(context));
 
-iopaFactory.dispose(context); 
 ```
    
 ### Automatic Connect Bridge to Legacy Connect/Express Middleware and Node HTTP Server  

@@ -15,10 +15,9 @@
  */
 
 const should = require('should');
+global.Promise = require('bluebird');
 
 const iopa = require('../index'),
-  IopaApp = iopa.App,
-  iopaFactory = iopa.factory,
   iopaUtil = iopa.util,
 
   constants = iopa.constants,
@@ -36,11 +35,11 @@ const iopa = require('../index'),
 
 describe('#IOPA()', function () {
 
-  var context, app;
+  var context, app, factory = new iopa.Factory({});
 
   it('should create empty context', function () {
 
-    context = iopaFactory.createContext();
+    context = factory.createContext();
 
     (context.hasOwnProperty(IOPA.Version) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.CallCancelled) == -1).should.be.false;
@@ -63,7 +62,7 @@ describe('#IOPA()', function () {
 
   it('should create app that updates context using both signatures', function () {
 
-    var test = new IopaApp();
+    var test = new iopa.App();
        
     // use standard IOPA signature with context
     test.use(function (context, next) {
@@ -89,15 +88,48 @@ describe('#IOPA()', function () {
 
   it('should call app with context updated', function (done) {
 
-    var context = iopaFactory.createContext();
+    var context = factory.createContext();
 
     app(context).then(function (value) {
       context[IOPA.Method].should.equal("PUT");
-      iopaFactory.dispose(context);
-      (context[IOPA.Method] == undefined).should.be.true;
-      value.should.equal("ABC");
-      done();
+      context.dispose();
+      (context[IOPA.Method] == null).should.be.true;
+        value.should.equal("ABC");
+         done();
     })
+  });
+  
+  it('should dispose context after running an AppFunc', function (done) {
+
+    var context = factory.createContext();
+
+    context.disposeAfter(app).then(function (value) {
+          value.should.equal("ABC");
+          process.nextTick(function () {
+             (context[IOPA.Method] == null).should.be.true;
+             done();
+        });
+    })
+  });
+  
+  it('should dispose context after satisfying a promise', function (done) {
+
+    var context = factory.createContext();
+
+    context.disposeAfter(
+      (app(context).
+        then(function (value) {
+          context[IOPA.Method].should.equal("PUT");
+          return value;
+        }))
+      )
+      .then(function (value) {
+        process.nextTick(function () {
+          (context[IOPA.Method] == null).should.be.true;
+          value.should.equal("ABC");
+          done();
+        });
+      })
   });
 
 });

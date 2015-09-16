@@ -316,24 +316,14 @@ declare module "iopa" {
         MQTT: MQTT,
         COAP: COAP
     }
-
-    export class IopaAppBuilder {
-        use(mw: (context, next) => any): IopaAppBuilder;
-        use(mw: (next) => any): IopaAppBuilder;
-        use(mw: (req, res) => any): IopaAppBuilder;
-        use(mw: (req, res, next) => any): IopaAppBuilder;
-        use(mw: (app) => any): IopaAppBuilder;
-        build(): void;
-        constructor(properties?: any);
-    }
     
-    export class app extends IopaAppBuilder{  
+    export class App{  
         /**
         * Add IOPA Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
         */   
-        use(mw: (context, next) => any): IopaAppBuilder;
+        use(mw: (context, next) => any): App;
   
   
         /**
@@ -341,28 +331,28 @@ declare module "iopa" {
         *
         * @param mw the middleware to add 
         */   
-       use(mw: (next) => any): IopaAppBuilder;
+       use(mw: (next) => any): App;
  
         /**
         * Add Connect Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
         */   
-       use(mw: (req, res) => any): IopaAppBuilder;
+       use(mw: (req, res) => any): App;
 
         /**
         * Add Connect Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
         */   
-        use(mw: (req, res, next) => any): IopaAppBuilder;
+        use(mw: (req, res, next) => any): App;
 
         /**
         * Add IOPA Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
         */   
-        use(mw: (app) => any): IopaAppBuilder;
+        use(mw: (app) => any): App;
         
         /***
         * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
@@ -372,18 +362,17 @@ declare module "iopa" {
         constructor(properties?: any);
     }
 
-    interface IopaContext extends Object { }
+    interface IopaContext extends Object {
+        "IOPA.Version": string,
+        "server.CallCancelledSource": any,
+        "iopa.CallCancelled": any,
+        "iopa.Events": any,
+        "iopa.Seq": any,
+        "server.Logger": any
+     }
 
-    interface IopaFactory {
-        
-       /**
-        * Release the memory used by a given IOPA Context
-        *
-        * @param context the context to free 
-        */   
-        dispose(context: IopaContext): void;
-        
-        
+    export class Factory {
+                     
        /**
         * Create a new IOPA Context, with default [iopa.*] values populated
         */
@@ -400,9 +389,16 @@ declare module "iopa" {
         createRequestResponse(urlStr: string, options: any): IopaContext;
     
         /**
-        * Create a new barebones IOPA Request with or without a response record
+        * Create a new barebones IOPA Request without a response record
         */
-        _create(withoutResponse: boolean): IopaContext;
+        _create(): IopaContext;
+        
+        /**
+        * Release the memory used by a given IOPA Context
+        *
+        * @param context the context to free 
+        */   
+        _dispose(context: IopaContext): void;
         
         /*
         * ES6 finally/dispose pattern for IOPA Context
@@ -411,6 +407,8 @@ declare module "iopa" {
         * returns Promise that always ultimately resolves to callback's result or rejects
         */
         using(context, appfunc): Promise<any>;
+        
+        constructor(options?: any);
     }
 
 
@@ -419,7 +417,7 @@ declare module "iopa" {
         mergeContext(target, defaults): any;
         copy(source, target): any;
         clone(source): any;
-       clone(source, blacklist): any;
+        clone(source, blacklist): any;
     }
     
     interface iopaPrototype {
@@ -432,7 +430,5 @@ declare module "iopa" {
     }
 
     export var constants: IopaConstants;
-    export var factory: IopaFactory;
     export var util: IopaUtils;
 }
-

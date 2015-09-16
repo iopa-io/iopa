@@ -21,7 +21,7 @@
 
 const iopa = require('./index'),
   IopaApp = iopa.App,
-  iopaFactory = iopa.factory,
+  iopaFactory = new iopa.Factory({"factory.Size": 100}),
   iopaUtil = iopa.util,
 
   constants = iopa.constants,
@@ -39,14 +39,14 @@ const iopa = require('./index'),
 
 var test = new IopaApp();
 test.use(function (context, next) {
-  context.log.info("HELLO WORLD" + context.toString());
+  context.log.info("HELLO WORLD " + context.toString());
   context[IOPA.Method] = "PUT";
   return next();
 });
 
 test.use(function (next) {
   this.log.info("HELLO WORLD" + this.toString());
-  return Promise.resolve(null); // stop processing in chain
+  return Promise.resolve("DONE"); // stop processing in chain
 });
 
 var demo = test.build();
@@ -55,4 +55,5 @@ var context = iopaFactory.createContext();
 
 demo(context);
 
-iopaFactory.dispose(context);
+context.dispose();
+console.log("CLOSE " + context.toString());

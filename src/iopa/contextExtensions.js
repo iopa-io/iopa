@@ -38,22 +38,20 @@
  * @returns (void)
  * @private
  */
- function PrototypeExtend(context) {
-     var context_prototype = Object.getPrototypeOf(context);
- 
+ function PrototypeExtend(contextPrototype) {
      // Put Stream/EventEmitter methods on context to proxy context["iopa.Body"] methods
-     cloneKeyBehaviors(context_prototype, EventEmitter.prototype, IOPA.Body, false);
-     cloneKeyBehaviors(context_prototype, Stream.prototype, IOPA.Body, false);
-     cloneKeyBehaviors(context_prototype, Readable.prototype, IOPA.Body, false);
-     cloneKeyBehaviors(context_prototype, Writable.prototype, IOPA.Body, true);
+     cloneKeyBehaviors(contextPrototype, EventEmitter.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(contextPrototype, Stream.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(contextPrototype, Readable.prototype, IOPA.Body, false);
+     cloneKeyBehaviors(contextPrototype, Writable.prototype, IOPA.Body, true);
 
      // Put Header methods on context to proxy context["iopa.Header"] methods (note assume context and context.response share prototype)
-     context_prototype.writeHead = function () { this[IOPA.WriteHead].apply(this, Array.prototype.slice.call(arguments)); };
-     context_prototype.getHeader = function () { this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
-     context_prototype.removeHeader = function () { this[IOPA.RemoveHeader].apply(this, Array.prototype.slice.call(arguments)); };
-     context_prototype.setHeader = function () { this[IOPA.SetHeader].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.writeHead = function () { this[IOPA.WriteHead].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.getHeader = function () { this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.removeHeader = function () { this[IOPA.RemoveHeader].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.setHeader = function () { this[IOPA.SetHeader].apply(this, Array.prototype.slice.call(arguments)); };
 
-     context_prototype.toString = function () {
+     contextPrototype.toString = function () {
          
       //  return JSON.stringify(this, null, 4)
          return util.inspect(cloneFilter(this, 
@@ -68,7 +66,7 @@
          ; //.replace(/\n/g, "\r");
      }
 
-     context_prototype[IOPA.WriteHead] = function iopa_WriteHead(statusCode, headers) {
+     contextPrototype[IOPA.WriteHead] = function iopa_WriteHead(statusCode, headers) {
          this[IOPA.StatusCode] = statusCode;
 
          var keys = Object.keys(headers);
@@ -80,24 +78,68 @@
          }
      };
 
-     context_prototype[IOPA.SetHeader] = function iopa_SetHeader(key, val) {
+     contextPrototype[IOPA.SetHeader] = function iopa_SetHeader(key, val) {
          _setIgnoreCase(this[IOPA.Headers], key, val);
      }
 
-     context_prototype[IOPA.GetHeader] = function iopa_GetHeader(key) {
+     contextPrototype[IOPA.GetHeader] = function iopa_GetHeader(key) {
          return _getIgnoreCase(this[IOPA.Headers], key);
      }
 
-     context_prototype[IOPA.RemoveHeader] = function iopa_RemoveHeader(key, value) {
+     contextPrototype[IOPA.RemoveHeader] = function iopa_RemoveHeader(key, value) {
          return _deleteIgnoreCase(this[IOPA.Headers], key);
      }    
+     
+     Object.defineProperty(contextPrototype, "log", {
+                       get: function () { return  this[SERVER.Logger] ;
+                       }  });
+                       
+     contextPrototype.disposeAfter = function(appFuncPromiseOrValue){
+         if (typeof(appFuncPromiseOrValue) === 'function')
+            return _using(this, appFuncPromiseOrValue(this));
+         else
+           return _using(this, appFuncPromiseOrValue);
+     }          
  }
+ 
+ /*
+* ES6 finally/dispose pattern for IOPA Context
+* @param context Iopa
+* @param p Promise or value
+* returns Promise that always ultimately resolves to callback's result or rejects
+*/
+function _using(context, p) {
+
+    /**  bluebird version only -- not used:
+    *  	 return Promise.using(Promise.resolve(context)
+    *	 .disposer(function(context, promise){
+    *		  context.dispose();
+              context = null; 
+    *	 }), cb);
+    */
+
+    return new Promise(function (resolve, reject) {
+       if (typeof p === 'undefined')
+            p = null;
+        resolve(p);
+    }).then(function (value) {
+        return Promise.resolve(function () {
+            process.nextTick(context.dispose);
+            return value;
+        } ());
+    },
+        function (err) {
+            context.log.error(err);
+            process.nextTick(context.dispose);
+            throw err;
+    });
+};
  
  
  /**
   * DEFAULT EXPORT
   */
- exports.default = PrototypeExtend;
+ exports.addTo = PrototypeExtend;
  
  /**
   * Adds or updates a javascript object, case insensitive for key property

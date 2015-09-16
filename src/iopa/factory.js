@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-const FreeList = require('../util/freelist.js').FreeList,
+const FreeList = require('../util/freelist').FreeList,
     Events = require('events'),
     URL = require('url'),
-    util = require('util'),
-
+ 
     Cancellation = require('../util/cancellation').default,
-    PrototypeExtend = require('./contextPrototypeExtend').default,
+    contextExtensionsAddTo = require('./contextExtensions').addTo,
 
     constants = require('./constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
-    
-    mergeContext = require('../util/shallow').mergeContext;
 
-  
+    mergeContext = require('../util/shallow').mergeContext;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -44,7 +41,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @constructor
  */
 function IopaContext() {
-     return this;
+    return this;
 }
     
 /**
@@ -54,7 +51,6 @@ function IopaContext() {
 * @method Init
 */
 IopaContext.prototype.init = function init() {
-    var self = this;
     this[IOPA.Version] = "1.2";
     var _cancellationTokenSource = Cancellation();
     this[SERVER.CallCancelledSource] = _cancellationTokenSource;
@@ -62,13 +58,11 @@ IopaContext.prototype.init = function init() {
     this[IOPA.Events] = new Events.EventEmitter();
     this[IOPA.Seq] = _nextSequence();
     this[SERVER.Logger] = console;
-    this.log = function log(){return self[SERVER.Logger]};
     return this;
 };
 
- Object.defineProperty(IopaContext.prototype, "log", {
-                       get: function () { return  this[SERVER.Logger] ;
-                       }  });
+// INITIALIZATION
+contextExtensionsAddTo(IopaContext.prototype);
 
 /**
  * Represents IopaContext Factory of up to 100 items
@@ -78,119 +72,63 @@ IopaContext.prototype.init = function init() {
  * @method alloc()  get new IopaContext from pool or by creation if none available; remember to call context.init();
  * @method free(context)   return IopaContext to the pool for reuse
  */
-function IopaContextFactory() {
-    _classCallCheck(this, IopaContextFactory);
-    FreeList.call(this, 'IopaContext', 100, function () { return IopaContext.apply(Object.create(IopaContext.prototype)); });
- }
+function Factory(options) {
+    _classCallCheck(this, Factory);
 
-util.inherits(IopaContextFactory, FreeList);
+    options = options || {};
+    var size = options["factory.Size"] || 100;
 
-/**
-* Create a new barebones IOPA Request with or without a response record
-*/
- IopaContextFactory.prototype._create = function _create(withoutResponse) {
-
-    var context = this.alloc().init();
-
-    if (!withoutResponse) {
-        var response = this.alloc().init();
-        context.response = response;
-        context.response.parent = context;
-    }
-
-    return context;
-};
+    this._factory = new FreeList('IopaContext', size, function () { return IopaContext.apply(Object.create(IopaContext.prototype)); });
+}
 
 /**
 * Create a new barebones IOPA Request with or without a response record
 */
- IopaContextFactory.prototype._createEmpty = function _create(withoutResponse) {
+Factory.prototype._create = function factory_create() {
 
-    var context = this.alloc();
-                  
-    for (var prop in context) { if (context.hasOwnProperty(prop)) { delete context[prop]  } };
-    
-    context.init();
-
-    if (!withoutResponse) {
-        var response = this.alloc();
-          for (var prop in response) { if (response.hasOwnProperty(prop)) { delete response[prop]  } };
-  
-        response.init();
-        context.response = response;
-        context.response.parent = context;
-    }
-
+    var context = this._factory.alloc().init();
+    context.dispose = this._dispose.bind(this, context);
     return context;
+   
+    /* var context = this._factory.alloc().init();
+ 
+     if (!withoutResponse) {
+         var response = this._factory.alloc().init();
+         context.response = response;
+         context.response.parent = context;
+     }
+ 
+     return context;*/
 };
 
 /**
 * Release the memory used by a given IOPA Context
 *
 * @param context the context to free 
-*/   
-IopaContextFactory.prototype.dispose = function dispose(context) {
-   if (context == null || context[IOPA.Seq] == null) 
-      return;
-      
+*/
+Factory.prototype._dispose = function factory_dispose(context) {
+    if (context == null || context[IOPA.Seq] == null)
+        return;
+
     if (context.response) {
-           var response = context.response;
+        var response = context.response;
         for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
-        this.free(response);
+        this._factory.free(response);
     }
-              
+
     for (var prop in context) { if (context.hasOwnProperty(prop)) { context[prop] = null; } };
 
-    this.free(context);
-};
-
-/*
-* ES6 finally/dispose pattern for IOPA Context
-* @param context Iopa
-* @param appfunc function(context): Promise
-* returns Promise that always ultimately resolves to callback's result or rejects
-*/
-IopaContextFactory.prototype.using = function using(context, appfunc) {
-
-    var self = this;
-   
-    /**  bluebird version only -- not used:
-    *  	 return Promise.using(Promise.resolve(context)
-    *	 .disposer(function(context, promise){
-    *		 self.dispose(context);
-    *		 context = null; 
-    *	 }), cb);
-    */
-
-    return new Promise(function (resolve, reject) {
-        var v = appfunc(context);
-        if (typeof v === 'undefined')
-            v = null;
-        resolve(v);
-    }).then(function (value) {
-        return Promise.resolve(function () {
-            setTimeout(function(){
-                self.dispose(context);
-                context = null;
-            }, 1000)
-            return value;
-        } ());
-    },
-        function (err) {
-            context.log.error(err);
-             setTimeout(function(){
-                self.dispose(context);
-                context = null;
-            }, 1000)
-            throw err;
-        });
+    this._factory.free(context);
 };
 
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
-IopaContextFactory.prototype.createContext = function createContext() {
+Factory.prototype.createContext = function factory_createContext() {
     var context = this._create();
+    var response = this._create();
+    context.response = response;
+    context.response.parent = context;
 
     context[IOPA.Headers] = {};
     context[IOPA.Method] = "";
@@ -202,53 +140,28 @@ IopaContextFactory.prototype.createContext = function createContext() {
     context[IOPA.Scheme] = "";
     context[IOPA.Body] = null;
 
-    var response = context.response;
     response[IOPA.Headers] = {};
     response[IOPA.StatusCode] = null;
     response[IOPA.ReasonPhrase] = "";
     response[IOPA.Protocol] = "";
     response[IOPA.Body] = null;
     response[IOPA.Headers]["Content-Length"] = "-1";
-        
+
     return context;
 };
 
-/**
-* Create a new IOPA Context, with default [iopa.*] values populated
-*/
-IopaContextFactory.prototype.createRequestResponse = function createRequestResponse(urlStr, options) {
-    var context = this.createRequest(urlStr, options);
-    
-     var response = this._create(true);;
-     context.response = response;
-     context.response.parent = context;
-     
-     response[IOPA.Headers] = {};
-     response[IOPA.StatusCode] = null;
-     response[IOPA.ReasonPhrase] = "";
-     response[IOPA.Protocol] = context[IOPA.Protocol];
-     response[IOPA.Body] = null;
-     response[SERVER.TLS] = context[SERVER.TLS];
-     response[SERVER.RemoteAddress] = context[SERVER.RemoteAddress];
-     response[SERVER.RemotePort] = context[SERVER.RemotePort];
-     response[SERVER.IsLocalOrigin] = false;
-     response[SERVER.IsRequest] = false;
-     response[SERVER.Logger] = context[SERVER.Logger];
-
-     return context;
-}
 
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
-IopaContextFactory.prototype.createRequest = function createRequest(urlStr, options, withResponse) {
-    
+Factory.prototype.createRequest = function createRequest(urlStr, options, withResponse) {
+
     if (typeof options === 'string' || options instanceof String)
-       options = { "iopa.Method": options};
-       
+        options = { "iopa.Method": options };
+
     options = options || {};
-      
-    var context = this._create(true);
+
+    var context = this._create();
     context[SERVER.IsLocalOrigin] = true;
     context[SERVER.IsRequest] = true;
     context[SERVER.OriginalUrl] = urlStr;
@@ -262,12 +175,11 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
     context[SERVER.RemoteAddress] = urlParsed.hostname;
     context[IOPA.Host] = urlParsed.hostname;
     context[IOPA.Headers] = {};
-    
+
     const SCHEMES = IOPA.SCHEMES,
         PROTOCOLS = IOPA.PROTOCOLS,
         PORTS = IOPA.PORTS
-  
-    
+
     switch (urlParsed.protocol) {
         case SCHEMES.HTTP:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
@@ -277,7 +189,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
             break;
         case SCHEMES.HTTPS:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
-            context[SERVER.TLS] = false;
+            context[SERVER.TLS] = true;
             context[IOPA.Headers]["Host"] = context[IOPA.Host];
             context[SERVER.RemotePort] = urlParsed.port || PORTS.HTTPS;
             break;
@@ -288,7 +200,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
             break;
         case SCHEMES.COAPS:
             context[IOPA.Protocol] = PROTOCOLS.COAP;
-            context[SERVER.TLS] = false;
+            context[SERVER.TLS] = true;
             context[SERVER.RemotePort] = urlParsed.port || PORTS.COAPS;
             break;
         case SCHEMES.MQTT:
@@ -298,7 +210,7 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
             break;
         case SCHEMES.MQTTS:
             context[IOPA.Protocol] = PROTOCOLS.MQTT;
-            context[SERVER.TLS] = false;
+            context[SERVER.TLS] = true;
             context[SERVER.RemotePort] = urlParsed.port || PORTS.MQTTS;
             break;
         default:
@@ -306,23 +218,36 @@ IopaContextFactory.prototype.createRequest = function createRequest(urlStr, opti
             context[SERVER.TLS] = false;
             context[SERVER.RemotePort] = urlParsed.port || 0;
     };
-    
+
     mergeContext(context, options);
 
     return context;
 };
 
-function _disposable(context) {
-    var that = this;
-    var ctx = context
-    
-    return Promise.resolve(ctx)
-      .disposer(function(ctx, promise){
-          that.dispose(ctx);
-          ctx = null;
-          that = null;          
-      });
-};
+/**
+* Create a new IOPA Context, with default [iopa.*] values populated
+*/
+Factory.prototype.createRequestResponse = function createRequestResponse(urlStr, options) {
+    var context = this.createRequest(urlStr, options);
+
+    var response = this._create();
+    context.response = response;
+    context.response.parent = context;
+
+    response[IOPA.Headers] = {};
+    response[IOPA.StatusCode] = null;
+    response[IOPA.ReasonPhrase] = "";
+    response[IOPA.Protocol] = context[IOPA.Protocol];
+    response[IOPA.Body] = null;
+    response[SERVER.TLS] = context[SERVER.TLS];
+    response[SERVER.RemoteAddress] = context[SERVER.RemoteAddress];
+    response[SERVER.RemotePort] = context[SERVER.RemotePort];
+    response[SERVER.IsLocalOrigin] = false;
+    response[SERVER.IsRequest] = false;
+    response[SERVER.Logger] = context[SERVER.Logger];
+
+    return context;
+}
 
 const maxSequence = Math.pow(2, 16);
 var _lastSequence = Math.floor(Math.random() * (maxSequence - 1));
@@ -331,22 +256,8 @@ function _nextSequence() {
     if (++_lastSequence === maxSequence)
         _lastSequence = 1;
 
-    return "#" + _lastSequence.toString();
+    return _lastSequence.toString();
 };
 
-var _factoryInstance = new IopaContextFactory();
-exports.default = _factoryInstance;
-  
-/**
-* DEFAULT EXPORT AND SELF INITIALIZATION
-*/
-var _factoryInstance = new IopaContextFactory();
-exports.default = _factoryInstance;
-
-function runonce(){
-     var _context = _factoryInstance.createContext();   //  for adding prototype properties only
-    PrototypeExtend(_context);
-    _factoryInstance.free(_context);
-    _context = null;
-};
-runonce();
+// EXPORTS  
+exports.default = Factory;

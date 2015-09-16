@@ -15,12 +15,12 @@
  */
  
 const AppBuilder = require('./src/appBuilder/appBuilder').default,
-      Factory = require('./src/iopa/contextFactory').default,
+      Factory = require('./src/iopa/factory').default,
       constants = require('./src/iopa/constants'),
       shallow = require('./src/util/shallow'),
       iopaPrototype = require('./src/util/prototype');
 
 exports.App = AppBuilder;
-exports.factory = Factory;
+exports.Factory = Factory;
 exports.constants = constants;
 exports.util = {"shallow": shallow, "prototype": iopaPrototype};
