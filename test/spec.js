@@ -15,7 +15,6 @@
  */
 
 const should = require('should');
-global.Promise = require('bluebird');
 
 const iopa = require('../index'),
   iopaUtil = iopa.util,
