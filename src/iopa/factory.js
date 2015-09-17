@@ -121,7 +121,7 @@ Factory.prototype.createContext = function factory_createContext() {
     var context = this._create();
     var response = this._create();
     context.response = response;
-    context.response.parent = context;
+    context.response[SERVER.ParentContext] = context;
 
     context[IOPA.Headers] = {};
     context[IOPA.Method] = "";
@@ -225,7 +225,7 @@ Factory.prototype.createRequestResponse = function createRequestResponse(urlStr,
 
     var response = this._create();
     context.response = response;
-    context.response.parent = context;
+    context.response[SERVER.ParentContext] = context;
 
     response[IOPA.Headers] = {};
     response[IOPA.StatusCode] = null;
