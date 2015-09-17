@@ -69,6 +69,16 @@ declare module "iopa" {
         Finish: string,
         Disconnect: string
     }
+    
+   interface CAPABILITIES {
+        Publish: string,
+        Subscribe: string,
+        Send: string,
+        Observe: string,
+        SendFile: string,
+        Opaque: string,
+        WebSocket: string
+    }
 
     interface IOPA {
         Scheme: string,
@@ -105,7 +115,8 @@ declare module "iopa" {
         PORTS: PORTS,
         SCHEMES: SCHEMES,
         PROTOCOLS: PROTOCOLS,
-        EVENTS: EVENTS
+        EVENTS: EVENTS,
+        CAPABILITIES: CAPABILITIES
     }
 
     interface SERVER {

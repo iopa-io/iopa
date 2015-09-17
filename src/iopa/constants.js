@@ -82,6 +82,16 @@ exports.IOPA = {
         Response: "response",
         Finish: "finish",
         Disconnect: "disconnect"
+    },
+    
+    CAPABILITIES: {
+        Publish: "urn:io.iopa:publish",
+        Subscribe: "urn:io.iopa:subscribe",
+        Send: "urn:io.iopa:send",
+        Observe: "urn:io.iopa:observe",
+        SendFile: "urn:io.iopa:sendfile",
+        Opaque: "urn:io.iopa:opaque",
+        WebSocket: "urn:io.iopa.websocket"
     }
 };
 
