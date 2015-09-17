@@ -83,6 +83,12 @@ function Factory(options) {
     this._factory = new FreeList('IopaContext', size, function () { return IopaContext.apply(Object.create(IopaContext.prototype)); });
 }
 
+Object.defineProperty(Factory.prototype, SERVER.Logger, {
+    get: function () { return this._logger; },
+    set: function (value) { this._logger = value; }
+});
+
+
 /**
 * Create a new barebones IOPA Request with or without a response record
 */
