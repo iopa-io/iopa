@@ -43,7 +43,7 @@ exports.IOPA = {
     Id: "iopa.Id",
     Seq: "iopa.Seq",
     Events: "iopa.Events",
-    MessasgeId: "iopa.MessageId",
+    MessageId: "iopa.MessageId",
     Token: "iopa.Token",
 
     METHODS: {
