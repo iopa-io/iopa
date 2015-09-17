@@ -118,23 +118,22 @@ function _using(context, p) {
     *	 }), cb);
     */
 
-    return new Promise(function (resolve, reject) {
-       if (typeof p === 'undefined')
-            p = null;
-        resolve(p);
-    }).then(function (value) {
-        return Promise.resolve(function () {
-            process.nextTick(context.dispose);
-            return value;
-        } ());
-    },
-        function (err) {
-            context.log.error(err);
-            process.nextTick(context.dispose);
-            throw err;
-    });
-};
- 
+     return new Promise(function (resolve, reject) {
+         if (typeof p === 'undefined')
+             p = null;
+         resolve(p);
+     }).then(function (value) {
+         return Promise.resolve(function () {
+             process.nextTick(function () { if (context.dispose) context.dispose() });
+             return value;
+         } ());
+     },
+         function (err) {
+             context.log.error(err);
+             process.nextTick(function () { if (context.dispose) context.dispose() });
+             throw err;
+         });
+ };
  
  /**
   * DEFAULT EXPORT
