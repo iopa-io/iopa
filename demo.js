@@ -34,8 +34,8 @@ test.use(function (context, next) {
    context[IOPA.Method] = "PUT";
    if (seq++ == 0)
    {
-    context[SERVER.Capabilities]["iopa.Demo"] = "will only survive one record";
-    context[SERVER.Capabilities]["iopa.App"]["notused"] = "delete me";
+    context[SERVER.Capabilities]["urn:io.iopa:demo"] = "will only survive one record";
+    context[SERVER.Capabilities]["urn:io.iopa:app"]["notused"] = "delete me";
    }
   context.log.info(context.toString());
   return next();

@@ -71,6 +71,7 @@ declare module "iopa" {
     }
     
    interface CAPABILITIES {
+        App: string, 
         Publish: string,
         Subscribe: string,
         Send: string,

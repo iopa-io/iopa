@@ -85,8 +85,9 @@ exports.IOPA = {
     },
     
     CAPABILITIES: {
-        Publish: "urn:io.iopa:publish",
-        Subscribe: "urn:io.iopa:subscribe",
+        App: "urn:io.iopa:app",
+        Publish: "urn:io.iopa:pubsub:publish",
+        Subscribe: "urn:io.iopa:pubsub:subscribe",
         Send: "urn:io.iopa:send",
         Observe: "urn:io.iopa:observe",
         SendFile: "urn:io.iopa:sendfile",

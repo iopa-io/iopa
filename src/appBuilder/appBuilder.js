@@ -30,7 +30,7 @@
     SERVER = constants.SERVER,
     APPBUILDER = constants.APPBUILDER
   
-const version = require('../../package.json').version;
+const packageVersion = require('../../package.json').version;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -47,7 +47,9 @@ function AppBuilder() {
 
     var defaults = {};
     defaults[SERVER.AppId] = guidFactory();
-    defaults[SERVER.Capabilities] = {"iopa.App": {"server.Version": version}};
+    defaults[SERVER.Capabilities] = {}
+    defaults[SERVER.Capabilities][IOPA.CAPABILITIES.App] = {}
+    defaults[SERVER.Capabilities][IOPA.CAPABILITIES.App][SERVER.Version] = packageVersion;
     defaults[SERVER.Logger] = console;
     defaults[APPBUILDER.DefaultApp] = DefaultApp;
     defaults[APPBUILDER.DefaultMiddleware] = [RespondMiddleware];
