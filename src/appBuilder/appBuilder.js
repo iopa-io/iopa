@@ -85,7 +85,7 @@ AppBuilder.prototype.build = function build() {
     const capabilities = app.properties[SERVER.Capabilities];
       
     var pipeline = function app_pipeline(context) {
-        context[SERVER.Capabilities] = clone(capabilities);
+         merge(context[SERVER.Capabilities], clone(capabilities));
        
         var i, prev, curr;
         i = middleware.length;
