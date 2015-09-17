@@ -25,7 +25,9 @@ const FreeList = require('../util/freelist').FreeList,
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
 
-    mergeContext = require('../util/shallow').mergeContext;
+    mergeContext = require('../util/shallow').mergeContext,
+    cloneDoubleLayer = require('../util/shallow').cloneDoubleLayer,
+    merge = require('../util/shallow').merge
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -57,7 +59,7 @@ IopaContext.prototype.init = function init() {
     this[SERVER.Capabilities] = {};
     this[IOPA.CallCancelled] = _cancellationTokenSource.token;
     this[IOPA.Events] = new Events.EventEmitter();
-    this[IOPA.Seq] = _nextSequence();
+    this[IOPA.Seq] = "#" + _nextSequence();
     return this;
 };
 
@@ -97,7 +99,7 @@ Factory.prototype._create = function factory_create() {
     context.dispose = this._dispose.bind(this, context);
     context[SERVER.Logger] = this._logger;
     context[SERVER.Factory] = this;
-    return context;
+     return context;
 };
 
 /**
@@ -147,6 +149,15 @@ Factory.prototype.createContext = function factory_createContext() {
     response[IOPA.Headers]["Content-Length"] = "-1";
 
     return context;
+};
+
+/**
+* Create a new IOPA Context, with default [iopa.*] values populated
+*/
+Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childContext, parentContext) {
+   
+    childContext[SERVER.ParentContext] = parentContext;
+    merge(childContext[SERVER.Capabilities], cloneDoubleLayer(parentContext[SERVER.Capabilities]));
 };
 
 

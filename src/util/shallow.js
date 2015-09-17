@@ -110,6 +110,41 @@ exports.cloneDoubleLayer = function clone(source) {
     return clone;
 };
 
+exports.cloneTripleLayer = function clone(source) {
+    var clone = {};
+
+    for (var key1 in source) {
+        if (source.hasOwnProperty(key1)) {
+            var item = source[key1];
+            if (typeof item == "object") {
+                var targetItem = {};
+
+                for (var key2 in item) {
+                    if (item.hasOwnProperty(key2)) {
+
+                        var item2 = item[key2];
+                        if (typeof item2 == "object") {
+                            var targetItem2 = {};
+
+                            for (var key3 in item2) {
+                                if (item2.hasOwnProperty(key3)) {
+                                    targetItem2[key3] = item[key3];
+                                }
+                            }
+                            targetItem[key2] = targetItem2;
+                        } else
+                            targetItem[key2] = item2;
+                    }
+                }
+                clone[key1] = targetItem;
+            } else
+                clone[key1] = item;
+        }
+    }
+
+    return clone;
+};
+
 exports.cloneFilter = function clone(source, blacklist) {
     var clone = {};
            
