@@ -107,7 +107,8 @@ exports.SERVER = {
     WriteAck: "server.WriteAck",
     WriteErr: "server.WriteErr",
     Retry: "server.Retry",
-    Version: "server.Version"
+    Version: "server.Version",
+    Factory: "server.Factory"
 };
 
 exports.APPBUILDER =

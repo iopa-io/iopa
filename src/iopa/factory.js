@@ -90,6 +90,7 @@ Factory.prototype._create = function factory_create() {
     var context = this._factory.alloc().init();
     context.dispose = this._dispose.bind(this, context);
     context[SERVER.Logger] = this._logger;
+    context[SERVER.Factory] = this;
     return context;
 };
 

@@ -130,7 +130,8 @@ declare module "iopa" {
         WriteAck: string,
         WriteErr: string,
         Retry: string,
-        Version: string
+        Version: string,
+        Factory: string
      }
  
     interface APPBUILDER {
@@ -287,7 +288,6 @@ declare module "iopa" {
         IOPA: IOPA
         SERVER: SERVER,
         APPBUILDER: APPBUILDER,
-        COMMONKEYS: COMMONKEYS,
         OPAQUE: OPAQUE,
         WEBSOCKET: WEBSOCKET,
         SECURITY: SECURITY,
