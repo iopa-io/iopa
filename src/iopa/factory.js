@@ -158,6 +158,10 @@ Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childCo
    
     childContext[SERVER.ParentContext] = parentContext;
     merge(childContext[SERVER.Capabilities], cloneDoubleLayer(parentContext[SERVER.Capabilities]));
+   
+    if (childContext.response)
+       merge(childContext[SERVER.Capabilities], cloneDoubleLayer(parentContext[SERVER.Capabilities]));
+
 };
 
 

@@ -88,7 +88,9 @@ AppBuilder.prototype.build = function build() {
       
     var pipeline = function app_pipeline(context) {
          merge(context[SERVER.Capabilities], clone(capabilities));
-       
+         if (context.response)
+           merge(context.response[SERVER.Capabilities], clone(capabilities));
+        
         var i, prev, curr;
         i = middleware.length;
         prev = function () {
