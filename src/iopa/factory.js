@@ -174,6 +174,7 @@ Factory.prototype.createRequest = function createRequest(urlStr, options, withRe
     context[SERVER.RemoteAddress] = urlParsed.hostname;
     context[IOPA.Host] = urlParsed.hostname;
     context[IOPA.Headers] = {};
+    context[IOPA.Body] = null;
 
     const SCHEMES = IOPA.SCHEMES,
         PROTOCOLS = IOPA.PROTOCOLS,
