@@ -140,6 +140,7 @@ declare module "iopa" {
         AppId: string,
         IsChild: string,
         Fetch: string,
+        Dispatch: string,
         ParentContext: string,
         WriteAck: string,
         WriteErr: string,

@@ -117,6 +117,7 @@ exports.SERVER = {
     IsChild: "server.IsChild",
     ParentContext: "server.ParentContext",
     Fetch: "fetch",
+    Dispatch: "dispatch",
     WriteAck: "server.WriteAck",
     WriteErr: "server.WriteErr",
     Retry: "server.Retry",
