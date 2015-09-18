@@ -56,7 +56,8 @@ function AppBuilder() {
     defaults[SERVER.AppId] = guidFactory();
 
     merge(this.properties, defaults);
-    this.middleware = [];
+    this.serverMiddleware = [];
+    this.clientMiddleware = [];
 }
 
  Object.defineProperty(AppBuilder.prototype, "log", {
@@ -71,7 +72,7 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 * @param mw the middleware to add 
 */
 AppBuilder.prototype.use = function use(mw) {
-    this.middleware.push(this.middlewareProxy(this, mw));
+    this.middlewareProxy(this, this.serverMiddleware, this.connectMiddleware, mw)
     return this;
 }
         
@@ -82,7 +83,26 @@ AppBuilder.prototype.use = function use(mw) {
 * @public
 */
 AppBuilder.prototype.build = function build() {
-    var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware).concat(this.properties[APPBUILDER.DefaultApp]);
+    var pipeline = this.compose(this.serverMiddleware);
+    
+    if (this.clientMiddleware.length > 0)    
+       pipeline.connect = this.compose(this.clientMiddleware);
+    else
+       pipeline.connect =  function () {return Promise.reject(new Error("Client pipeline not available on this server"));};
+    
+    pipeline.properties = this.properties;
+   
+    return pipeline;
+}
+
+/**
+* Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
+*
+* @return {function(context): {Promise} IOPA application 
+* @public
+*/
+AppBuilder.prototype.compose = function compose(middlewareArray) {
+    var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(middlewareArray).concat(this.properties[APPBUILDER.DefaultApp]);
     var app = this;
     const capabilities = app.properties[SERVER.Capabilities];
       
@@ -108,7 +128,6 @@ AppBuilder.prototype.build = function build() {
         return prev();
     };
     
-    pipeline.properties = app.properties;
     return pipeline;
 }
 

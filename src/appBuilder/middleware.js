@@ -27,7 +27,7 @@
  * @param middleware (function)  the function which may already be in IOPA format or may be an Express/Connect middleware component
  * @returns (function)   the same middleware, wrapped as needed, to assure it is a (promise) function(next)
  */
-function Middleware(app, middleware){
+function Middleware(app, serverArray, clientArray, middleware){
     var args;
     if (typeof middleware === 'function')
     {
@@ -36,52 +36,53 @@ function Middleware(app, middleware){
                 //fn() with this=app   and fn.invoke(next) with this = context
             case 0:
                 middleware.call(app);
-                return function middleware_invoker0(context, next) {
-                     return middleware.invoke.call(context, next);
-                   };
+                serverArray.push(function (context, next) {return middleware.invoke.call(context, next);} );
+                break;
                
                 //fn(next) or fn(app) and fn.invoke(context, next) 
             case 1:
                 args =private_getParamNames(middleware);
                  if (arrayEqual(args,["next"]))
-                 {
-                   return function middleware_invoker1(context, next) {
-                      return middleware.call(context, next);
-                   };
-                 }
+                    serverArray.push(function (context, next) { return middleware.call(context, next);}); 
+                
                  else
                  {
                     var mw = Object.create(middleware.prototype); 
                     middleware.call(mw, app);
-                    return mw.invoke.bind(mw);        
-                 }
-                  
-                //fn(req,res) or fn(context, next)
-            case 2:
+                   
+                    serverArray.push(mw.invoke.bind(mw));
+                 
+                    if (typeof mw.connect === 'function')
+                          clientArray.push(mw.invoke.bind(mw));
+                  }
+                  break;
                 
+                //fn(req,res) or fn(context, next)
+            case 2:      
                 args =private_getParamNames(middleware);
                 if (arrayEqual(args,["req","res"]))
                 {
                     throw("must require 'iopa-connect' to use Connect/Express style middleware");
-                    return function (context, next) { return next()};
                 } else
-                   {
-                     return middleware;
-                 }
+                {
+                    serverArray.push(middleware);
+                }
+                 break;
                  
                 //fn(req,res,next)
             case 3:
                  throw("must require 'iopa-connect' to use Connect/Express style middleware");
-                    return function (context, next) { return next()};
-               
+                 break;
+                  
                 //fn(err,req,res,next)
             case 4:
                  throw("must require 'iopa-connect' to use Connect/Express style middleware");
-                    return function (context, next) { return next()};
-                
+                 break;
+             
             default:
                 throw("unknown middleware");
-                return function (context, next) { return next()};
+                 break;
+        
         }
     }
     else
