@@ -47,6 +47,7 @@ exports.IOPA = {
     Token: "iopa.Token",
 
     METHODS: {
+        IOPACONNECT: "urn:io.iopa.connect",
         GET: "GET",
         PUT: "PUT",
         DELETE: "DELETE",

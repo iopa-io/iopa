@@ -33,6 +33,7 @@
 declare module "iopa" {
     
      interface METHODS {
+        IOPACONNECT: string,
         GET: string,
         PUT: string,
         DELETE: string,

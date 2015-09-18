@@ -96,9 +96,14 @@ AppBuilder.prototype.build = function build() {
         prev = function () {
             return Promise.resolve(null);
         };
+        prev.dispatch =  function () {
+            return Promise.resolve(null);
+        };
         while (i--) {
             curr = middleware[i];
+            var dispatch = (function(curr, prev, newContext){curr.call(this, newContext, prev)}).bind(app, curr, prev);
             prev = curr.bind(app, context, prev);
+            prev.dispatch = dispatch;
         }
         return prev();
     };
