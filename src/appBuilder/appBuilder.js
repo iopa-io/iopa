@@ -162,7 +162,7 @@ function DefaultApp(context, next) {
         return Promise.reject(context[IOPA.Error]);
     }
     else {
-        return Promise.resolve(null);
+        return Promise.resolve(context);
     }
 }
 
