@@ -71,7 +71,37 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 * @param mw the middleware to add 
 */
 AppBuilder.prototype.use = function use(mw) {
-    this.middleware.invoke.push(this.middlewareProxy(this, mw));
+    
+    var params = private_getParams(mw);
+    if (params === 'app')
+       {  var mw_instance = Object.create(mw.prototype); 
+          mw.call(mw_instance, this);
+          
+          if (typeof mw_instance.invoke === 'function')
+             this.middleware.invoke.push(mw_instance.invoke.bind(mw_instance));
+           
+          if (typeof mw_instance.channel === 'function')
+             this.middleware.channel.push(mw_instance.invoke.bind(mw_instance));
+             
+          if (typeof mw_instance.connect === 'function')
+             this.middleware.connect.push(mw_instance.invoke.bind(mw_instance));
+             
+          if (typeof mw_instance.dispatch === 'function')
+             this.middleware.dispatch.push(mw_instance.invoke.bind(mw_instance));
+       }
+       else
+           this.middleware.invoke.push(this.middlewareProxy(this, mw));
+           
+    return this;
+}
+
+/**
+* Add Middleware Function to AppBuilder pipeline
+*
+* @param mw the middleware to add 
+*/
+AppBuilder.prototype.invokeuse = function use(mw) {
+    this.middleware.invoke.push(this.middlewareProxy(this, mw, "invoke"));
     return this;
 }
 
@@ -222,3 +252,21 @@ function DefaultErrorHttp(context, err) {
         context.response.end('<h1>500 Server Error</h1><p>An error has occurred:</p><xmb>' + err + '</xmb> ');
     }
 }
+
+/**
+ * Gets the parameter names of a javascript function
+ *
+ * @method private_getParamNames
+ * @param func (function)  the function to parse
+ * @returns string  the names of each argument (e.g., function (a,b) returns ['a', 'b']
+ * @private
+ */
+var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+function private_getParams(func) {
+    var fnStr = func.toString().replace(STRIP_COMMENTS, '')
+    var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(/([^\s,]+)/g)
+    if(result === null)
+        result = []
+    result = result.join();
+    return result
+        }
