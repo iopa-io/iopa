@@ -148,8 +148,8 @@ AppBuilder.prototype.compose = function compose(middleware) {
         
         var i, prev, curr;
         i = middleware.length;
-        prev = function () {
-            return Promise.resolve(null);
+        prev = function (context) {
+            return Promise.resolve(context);
         };
         prev.dispatch =  function () {
             return Promise.resolve(null);
