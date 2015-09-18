@@ -72,7 +72,7 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 * @param mw the middleware to add 
 */
 AppBuilder.prototype.use = function use(mw) {
-    this.middlewareProxy(this, this.serverMiddleware, this.connectMiddleware, mw)
+    this.middlewareProxy(this, this.serverMiddleware, this.clientMiddleware, mw)
     return this;
 }
         
