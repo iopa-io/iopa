@@ -123,7 +123,7 @@ AppBuilder.prototype.build = function build() {
        pipeline.connect =  function (context) {return Promise.resolve(context);};
        
      if (this.middleware.dispatch.length > 0)    
-       pipeline.dispatch = this.compose(this.middleware.dispatch.reverse);
+       pipeline.dispatch = this.compose(this.middleware.dispatch.reverse());
      else
        pipeline.dispatch =  function (context) {return Promise.resolve(context);};
     
