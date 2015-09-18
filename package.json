@@ -14,7 +14,7 @@
       "email": "build@iopa.io"
     }
   ],
-  "version": "1.2.67",
+  "version": "1.2.68",
   "repository": {
     "type": "git",
     "url": "https://github.com/iopa-io/iopa.git"
@@ -41,8 +41,8 @@
   },
   "scripts": {
     "test": "mocha --reporter spec test",
-     "quick": "git add . -A && git commit --allow-empty -m 'dev test' && npm version patch && npm publish",
-     "typings": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
+    "quick": "git add . -A && git commit --allow-empty -m 'dev test' && npm version patch && npm publish",
+    "typings": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
   },
   "devDependencies": {
     "mocha": "^2.3.2",
