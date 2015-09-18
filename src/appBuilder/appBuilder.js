@@ -88,7 +88,7 @@ AppBuilder.prototype.build = function build() {
     if (this.clientMiddleware.length > 0)    
        pipeline.connect = this.compose(this.clientMiddleware);
     else
-       pipeline.connect =  function () {return Promise.resolve(null);};
+       pipeline.connect =  function (context) {return Promise.resolve(context);};
     
     pipeline.properties = this.properties;
    
