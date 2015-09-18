@@ -88,7 +88,7 @@ AppBuilder.prototype.build = function build() {
     if (this.clientMiddleware.length > 0)    
        pipeline.connect = this.compose(this.clientMiddleware);
     else
-       pipeline.connect =  function () {return Promise.reject(new Error("Client pipeline not available on this server"));};
+       pipeline.connect =  function () {return Promise.resolve(null);};
     
     pipeline.properties = this.properties;
    

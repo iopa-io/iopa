@@ -66,6 +66,9 @@ function Middleware(app, serverArray, clientArray, middleware){
                 } else
                 {
                     serverArray.push(middleware);
+                    
+                    if (typeof middleware.connect === 'function')
+                          clientArray.push(middleware.connect);
                 }
                  break;
                  
