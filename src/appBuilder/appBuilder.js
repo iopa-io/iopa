@@ -142,11 +142,20 @@ AppBuilder.prototype.dispatchuse = function dispatchuse(mw) {
 * @public
 */
 AppBuilder.prototype.build = function build() {
+    var pipeline, middleware;
     
-    var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.channel).concat(this.middleware.invoke).concat(this.properties[APPBUILDER.DefaultApp]);
-    
-    var pipeline = this.compose(middleware);
-    
+     if (this.middleware.channel.length > 0){
+        middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.invoke).concat(this.properties[APPBUILDER.DefaultApp]);
+        var requestPipeline = this.compose(middleware);
+
+        middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.channel).concat(this.properties[APPBUILDER.DefaultApp]);
+        pipeline = this.compose(middleware, requestPipeline);   
+      } else
+     {
+          middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.invoke).concat(this.properties[APPBUILDER.DefaultApp]);
+          pipeline = this.compose(middleware, requestPipeline);   
+      }
+     
     if (this.middleware.connect.length > 0)    
        pipeline.connect = this.compose(this.middleware.connect);
     else
@@ -168,7 +177,7 @@ AppBuilder.prototype.build = function build() {
 * @return {function(context): {Promise} IOPA application 
 * @public
 */
-AppBuilder.prototype.compose = function compose(middleware) {
+AppBuilder.prototype.compose = function compose(middleware, requestPipeline) {
     var app = this;  
     return function app_pipeline(context) {
         const capabilities = app.properties[SERVER.Capabilities];
@@ -176,21 +185,23 @@ AppBuilder.prototype.compose = function compose(middleware) {
          if (context.response)
            merge(context.response[SERVER.Capabilities], clone(capabilities));
         
-        var i, prev, curr;
+        var i, next, curr;
         i = middleware.length;
-        prev = function () {
+        next = function () {
             return Promise.resolve(context);
         };
-        prev.dispatch =  function (ctx) {
+        next.dispatch =  function (ctx) {
             return Promise.resolve(ctx);
         };
         while (i--) {
             curr = middleware[i];
-            var dispatch = (function(curr, prev, newContext){curr.call(this, newContext, prev)}).bind(app, curr, prev);
-            prev = curr.bind(app, context, prev);
-            prev.dispatch = dispatch;
+            var dispatch = (function(curr, next, newContext){curr.call(this, newContext, next)}).bind(app, curr, next);
+            next = curr.bind(app, context, next);
+            next.dispatch = dispatch;
+            if (requestPipeline)
+               next.invoke = requestPipeline;
         }
-        return prev();
+        return next();
     };
 }
 
