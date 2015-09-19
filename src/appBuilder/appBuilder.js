@@ -81,13 +81,13 @@ AppBuilder.prototype.use = function use(mw) {
              this.middleware.invoke.push(mw_instance.invoke.bind(mw_instance));
            
           if (typeof mw_instance.channel === 'function')
-             this.middleware.channel.push(mw_instance.invoke.bind(mw_instance));
+             this.middleware.channel.push(mw_instance.channel.bind(mw_instance));
              
           if (typeof mw_instance.connect === 'function')
-             this.middleware.connect.push(mw_instance.invoke.bind(mw_instance));
+             this.middleware.connect.push(mw_instance.connect.bind(mw_instance));
              
           if (typeof mw_instance.dispatch === 'function')
-             this.middleware.dispatch.push(mw_instance.invoke.bind(mw_instance));
+             this.middleware.dispatch.push(mw_instance.dispatch.bind(mw_instance));
        }
        else
            this.middleware.invoke.push(this.middlewareProxy(this, mw));
