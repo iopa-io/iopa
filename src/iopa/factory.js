@@ -168,7 +168,7 @@ Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childCo
 /**
 * Create a new IOPA Context, with default [iopa.*] values populated
 */
-Factory.prototype.createRequest = function createRequest(urlStr, options, withResponse) {
+Factory.prototype.createRequest = function createRequest(urlStr, options) {
 
     if (typeof options === 'string' || options instanceof String)
         options = { "iopa.Method": options };
