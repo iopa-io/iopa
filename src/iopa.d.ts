@@ -82,6 +82,28 @@ declare module "iopa" {
         Opaque: string,
         WebSocket: string
     }
+    
+      interface SECURITY {
+        ClientCertificate: string,
+        User: string,
+        Authenticate: string,
+        SignIn: string,
+        SignOut: string,
+        Challenge: string
+    }
+    
+    interface SENDFILE {
+        Version: string,
+        Support: string,
+        Concurrency: string,
+        SendAsync: string
+    }
+    
+    interface PUBSUB {
+        Clean: string,
+        Subscribe: string,
+        Publish: string,
+      }
 
     interface IOPA {
         Scheme: string,
@@ -146,7 +168,9 @@ declare module "iopa" {
         WriteErr: string,
         Retry: string,
         Version: string,
-        Factory: string
+        Factory: string,
+        RemoteThing: string,
+        LocalThing: string
      }
  
     interface APPBUILDER {
@@ -155,12 +179,7 @@ declare module "iopa" {
         DefaultMiddleware: string
     }
 
-    interface SENDFILE {
-        Version: string,
-        Support: string,
-        Concurrency: string,
-        SendAsync: string
-    }
+
 
     interface OPAQUE {
         Version: string,
@@ -179,15 +198,6 @@ declare module "iopa" {
         CallCancelled: string,
         ClientCloseStatus: string,
         ClientCloseDescription: string
-    }
-
-    interface SECURITY {
-        ClientCertificate: string,
-        User: string,
-        Authenticate: string,
-        SignIn: string,
-        SignOut: string,
-        Challenge: string
     }
     
     interface MQTT_METHODS {

@@ -95,7 +95,34 @@ exports.IOPA = {
         SendFile: "urn:io.iopa:sendfile",
         Opaque: "urn:io.iopa:opaque",
         WebSocket: "urn:io.iopa.websocket"
-    }
+    },
+    
+    PUBSUB :
+    {
+        Clean: "pubsub.Clean",
+        Subscribe: "pubsub.Subscribe",
+        Publish: "pubsub.Publish",
+    },
+    
+    SECURITY :
+    {
+    
+        ClientCertificate: "ssl.ClientCertificate",
+        // 3.2. Per Request
+        User: "server.User",
+        Authenticate: "security.Authenticate",
+        
+        // 3.3. Response
+        SignIn: "security.SignIn",
+        SignOut: "security.SignOut",
+        Challenge: "security.Challenge"
+    },
+    
+    SENDFILE :
+        {
+            Concurrency: "sendfile.Concurrency",
+            SendAsync: "sendfile.SendAsync"
+        }
 };
 
 exports.SERVER = {
@@ -122,7 +149,9 @@ exports.SERVER = {
     WriteErr: "server.WriteErr",
     Retry: "server.Retry",
     Version: "server.Version",
-    Factory: "server.Factory"
+    Factory: "server.Factory",
+    LocalThing: "server.LocalThing",
+    RemoteThing: "server.RemoteThing"
 };
 
 exports.APPBUILDER =
@@ -132,13 +161,6 @@ exports.APPBUILDER =
     DefaultMiddleware: "app.DefaultMiddleware"
 };
 
-exports.SENDFILE =
-{
-    Version: "sendfile.Version",
-    Support: "sendfile.Support",
-    Concurrency: "sendfile.Concurrency",
-    SendAsync: "sendfile.SendAsync"
-};
 
 exports.OPAQUE =
 {
@@ -174,20 +196,6 @@ exports.WEBSOCKET =
     CallCancelled: "websocket.CallCancelled",
     ClientCloseStatus: "websocket.ClientCloseStatus",
     ClientCloseDescription: "websocket.ClientCloseDescription"
-};
-
-exports.SECURITY =
-{
-
-    ClientCertificate: "ssl.ClientCertificate",
-    // 3.2. Per Request
-    User: "server.User",
-    Authenticate: "security.Authenticate",
-    
-    // 3.3. Response
-    SignIn: "security.SignIn",
-    SignOut: "security.SignOut",
-    Challenge: "security.Challenge"
 };
 
 exports.MQTT = {
