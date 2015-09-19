@@ -141,7 +141,10 @@ declare module "iopa" {
         SCHEMES: SCHEMES,
         PROTOCOLS: PROTOCOLS,
         EVENTS: EVENTS,
-        CAPABILITIES: CAPABILITIES
+        CAPABILITIES: CAPABILITIES,
+        SENDFILE: SENDFILE,
+        SECURITY: SECURITY,
+        PUBSUB: PUBSUB
     }
 
     interface SERVER {
