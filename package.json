@@ -1,7 +1,7 @@
 {
   "name": "iopa",
   "main": "index.js",
-  "description": "IOPA Fabric for Node.js, official implementation by Internet of Protocols Alliance",
+  "description": "API-first, Internet of Things (IoT) stack for Node.js, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
   "author": "IOPA",
   "license": "Apache-2.0",
   "typings": "./src/iopa.d.ts",
@@ -14,7 +14,7 @@
       "email": "build@iopa.io"
     }
   ],
-  "version": "1.2.101",
+  "version": "1.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/iopa-io/iopa.git"

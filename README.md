@@ -7,28 +7,69 @@
 [![NPM](https://nodei.co/npm/iopa.png?downloads=true)](https://nodei.co/npm/iopa/)
 
 ## About
-The Node.js package `iopa` is the reference implementation for IOPA, a lightweight REST framework for the Internet of Protocols.  
+This repository `iopa` is an API-first, Internet of Things (IoT) stack for Node.js. 
+It is the official implementation of the Internet of Protocols Alliance (IOPA) reference pattern
 
-It is an open-source, standards-based, drop-in replacement for Connect, Express, and Koa, with built-in seamless bridging to Node's built-in HTTP server, COAP servers such as [`node-coap`](https://github.com/mcollina/node-coap), and native IOPA servers such as [nodekit.io](https://github.com/limerun/nodekit)
+It is open-source, drop-in replacement for legacy stacks based on Connect, Express, and Koa, with built-in seamless bridging to Node's built-in HTTP server,
+but the real power comes from creating a common pattern for IoT devices that seamless run as COAP servers using [`iopa-coap`](https://github.com/iopa-io/iopa-coap), 
+MQTT brokers/clients using [`iopa-coap`](https://github.com/iopa-io/iopa-mqtt), and even native mobile and desktop applications using [nodekit.io](https://github.com/limerun/nodekit)
 
-The [IOPA](https://github.com/iopa-io/iopa-spec) specification defines a standard interface between Node.js REST servers and application/device logic.   These include HTTP servers for web applications and COAP servers for Internet of Things (IOT) devices.
+## Target Audience
+This repository is primarily geared at application developers and device developers who want to connect their products to the Internet of Things, but don't want
+to be tied down to any one protocol or standard (be it hardware or software based).  Further, they want to have a simple "all data flows one way" approach to
+developing applications or device logic, with a fabric that encourages good programming patterns and discourages anti-patterns.  They don't want to reinvent the
+wheel and therefore want all boilerplate and common logic for implementing a server to be simple use statements:
 
-In fact, IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent.
+### Pseudo-code
 
-Published as open-source standards without dependence on any implementation or platform , the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.)
+ ``` js
+// DEFINE TRANSPORT LAYERS
+app.use(tcp);
+app.use(udp);
+app.use(websockets);
+
+// ADD SECURITY LAYERS
+app.use(tls);
+app.use(cors);
+
+// DEFINE PROTOCOL LAYERS
+app.use(mqtt);
+app.use(coap);
+
+// ADD APPLICATION LOGIC
+app.mount('/device/lightswitch', function(context, next){
+  if (context[IOPA.Method] = "ON")
+      this.lightswitch.turnon;
+});
+```
+
+## Pattern, Standards, Fabrics and Frameworks.
+
+[IOPA](https://github.com/iopa-io/iopa-spec) is neither a protocol STANDARD nor a FRAMEWORK. Rather it is a PATTERN that defines a well-defined API (by convention not reference)
+between the broadest scope of Internet of Things (IoT) transport layers and application/device logic.  The reference implementation is a fabric that speeds development of applications
+that use the pattern, but is not necessary to implement or to interoperate with any other application, or middleware micro-service -- it just provides some very handy reference classes and 
+constants for intellisense development, and provides a robust, tested example of the most common logic required (a dispatcher called the AppBuilder class, and a factory for creating
+IOPA context with automatic scope tracking). 
+
+IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent.  The pattern works for 
+Node.js javascript (including V4.0+),  browser-side javascript, Swift V2., Objective-C and Golang.   The reference implementation is written in javascript for Node.js 4.x.
+
+Published as open-source without dependence on any implementation or platform, the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.). 
+Because it is a well-defined pattern that uses only base language features it is not even necessary to include this repository in any microservices that rely on it.  The entire
+pattern works using well-known string constants (published in the open-source [IOPA](https://github.com/iopa-io/iopa-spec) specification).  However, inclusion of this repository gives access to intellisense, constant optimization, etc.
 
 In contrast to the [IOPA](https://github.com/iopa-io/iopa-spec) *specification*, this repository contains an **actual** IOPA reference **implementation** for node.js Javascript.  
 
-A broad ecosystem of servers and middleware, such as routers and view engines, exist in the the [limerun Organization](https://github.com/limerun] on GitHub.
+A broad ecosystem of servers and middleware, such as routers and view engines, exist in the the [iopa-io](https://github.com/iopa-io] and [limerun](https://github.com/limerun] organizations on GitHub.
 
 
-## Summary
+## Core Principles
 
-An `IOPA` middleware/application is simply a `function(next)` that provides a single REST-server IOPA context for each request, where it is easy to access all the HTTP/COAP parameters  (`context.path`, `context.response.body` etc.).  "Tasks" (promises) are returned for full async programming without callbacks, and for compatibility with future ES7 async/await functionality.
+An `IOPA` middleware/application is simply a `function(context, next)` that we call an "AppFunc" that provides a single REST-like IOPA context for each request, where it is easy to access all the HTTP/COAP parameters  (`context.path`, `context.response.body` etc.).  "Tasks" (promises) are returned for full async programming without callback hell, and for full compatibility with the upcoming ES7 async/await functionality.
 
 Middleware can be chained with `app.use(middleware1).use(middleware2)` etc.
 
-With the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package, `IOPA` servers can also call regular Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
+With the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package, `IOPA` servers can also call legacy Node HTTP middleware in the same chain with `app.use( function(req,res){ ... }  )`. 
 
 `IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()` when used with the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package.    It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
 
@@ -44,12 +85,12 @@ With the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package, `IOP
 This repository contains a Node Package Manager (NPM) package with helper functions for:
  
 * IOPA constants for commonly used properties
-* AppBuilder for chaining middleware and applications, with automatic bridging to async-based Tasks (Promises), use of *this* for IopaContext instead of separate argument, and *next* argument for middleware chaining
+* AppBuilder dispatcher for chaining middleware and applications, with automatic bridging to async-based Tasks (Promises), use of *this* for IopaContext instead of separate argument, and *next* argument for middleware chaining
 * Context factory for creating your own IOPA contexts (typically used by a server)
 
 This package is intended for use in Node.js applications that either run on a web server that conform to the IOPA specifications (such as the embedded webserver inside [nodekit.io](https://github.com/nodekit-io/nodekit)) or run using the iopa-coap, iopa-mqtt, and iopa-http bridges when used with those respective packages.
 
-## Middleware/Application Pipeline Builder: AppBuilder 
+## Middleware/Application Pipeline Creator and Dispatcher: AppBuilder 
 ```js
 app.use(middleware)
 ```
@@ -88,25 +129,9 @@ npm install iopa
  
 ### Basic Example
 ``` js
-const iopa = require('./index'),
-  IopaApp = iopa,
-  iopaFactory = new iopa.factory(),
-  iopaUtil = iopa.util,
+const iopa = require('iopa')
 
-  constants = iopa.constants,
-  IOPA = constants.IOPA,
-  SERVER = constants.SERVER,
-  METHODS = constants.METHODS,
-  PORTS = constants.PORTS,
-  SCHEMES = constants.SCHEMES,
-  PROTOCOLS = constants.PROTOCOLS,
-  APP = constants.APP,
-  COMMONKEYS = constants.COMMONKEYS,
-  OPAQUE = constants.OPAQUE,
-  WEBSOCKET = constants.WEBSOCKET,
-  SECURITY = constants.SECURITY;
-
-var app = new IopaApp();
+var app = new iopa.App();
 app.use(function (context, next) {
   context.log.info("HELLO WORLD" + context.toString());
   return Promise.resolve(null);
@@ -114,9 +139,9 @@ app.use(function (context, next) {
 
 var demo = app.build();
 
-var context = iopaFactory.createContext();
+var context = (new iopa.Factory()).createContext();    // typically done within a TCP or UDP server
 
-context.thenDispose(demo(context));
+context.using(demo);     // the using automatically disposes of the context (returning it to a pool) when demo AppFunc is complete
 
 ```
    
