@@ -91,18 +91,9 @@ Object.defineProperty(Token.prototype, "isCancelled", {
                        get: function () { return  this.source.isCancelled } 
                        });
                        
-Object.defineProperty(Token.prototype, "onCancelled", {
-    get: function () { 
-        var self = this;
-         if (this.isCancelled) {
-            return Promise.resolve(this.source.reason);
-        } else {
-            return new Promise(function(resolve, reject){
-                self.source.register(resolve);
-            });
-        }
-    }  
-});
+Token.prototype.onCancelled = function (callback){ 
+    this.source.register(callback); 
+};
 
 Token.prototype.throwIfCancelled = function(){
       if (this.isCancelled) {
