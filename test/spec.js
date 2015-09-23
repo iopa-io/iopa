@@ -41,11 +41,11 @@ describe('#IOPA()', function () {
     context = factory.createContext();
 
     (context.hasOwnProperty(IOPA.Version) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.CallCancelled) == -1).should.be.false;
+    (context.hasOwnProperty(IOPA.CancelToken) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Events) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Seq) == -1).should.be.false;
     (context.hasOwnProperty(SERVER.Logger) == -1).should.be.false;
-    (context.hasOwnProperty(SERVER.CallCancelledSource) == -1).should.be.false;
+    (context.hasOwnProperty(SERVER.CancelTokenSource) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Headers) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Method) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Host) == -1).should.be.false;

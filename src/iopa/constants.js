@@ -29,7 +29,7 @@ exports.IOPA = {
     StatusCode: "iopa.StatusCode",
     ReasonPhrase: "iopa.ReasonPhrase",
 
-    CallCancelled: "iopa.CallCancelled",
+    CancelToken: "iopa.CancelToken",
 
     Version: "iopa.Version",
 
@@ -83,7 +83,6 @@ exports.IOPA = {
         Request: "request",
         Response: "response",
         Finish: "finish",
-        Cancel: "cancel",
         Disconnect: "disconnect",
         Dispose: "dispose"
     },
@@ -130,7 +129,7 @@ exports.IOPA = {
 exports.SERVER = {
     Capabilities: "server.Capabilities",
     Logger: "server.Logger",
-    CallCancelledSource: "server.CallCancelledSource",
+    CancelTokenSource: "server.CancelTokenSource",
     IsLocalOrigin: "server.IsLocalOrigin",
     OriginalUrl: "server.OriginalUrl",
     RemoteAddress: "server.RemoteAddress",
@@ -177,8 +176,7 @@ exports.OPAQUE =
     // 5. Consumption
     
     Stream: "opaque.Stream",
-    CallCancelled: "opaque.CallCancelled",
-};
+ };
 
 exports.WEBSOCKET =
 {
@@ -195,7 +193,6 @@ exports.WEBSOCKET =
     SendAsync: "websocket.SendAsync",
     ReceiveAsync: "websocket.ReceiveAsync",
     CloseAsync: "websocket.CloseAsync",
-    CallCancelled: "websocket.CallCancelled",
     ClientCloseStatus: "websocket.ClientCloseStatus",
     ClientCloseDescription: "websocket.ClientCloseDescription"
 };

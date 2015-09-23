@@ -55,9 +55,9 @@ function IopaContext() {
 IopaContext.prototype.init = function init() {
     this[IOPA.Version] = "1.2";
     var _cancellationTokenSource = new CancellationTokenSource();
-    this[SERVER.CallCancelledSource] = _cancellationTokenSource;
+    this[SERVER.CancelTokenSource] = _cancellationTokenSource;
     this[SERVER.Capabilities] = {};
-    this[IOPA.CallCancelled] = _cancellationTokenSource.token;
+    this[IOPA.CancelToken] = _cancellationTokenSource.token;
     this[IOPA.Events] = new Events.EventEmitter();
     this[IOPA.Seq] = "#" + _nextSequence();
     return this;

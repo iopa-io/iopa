@@ -121,7 +121,7 @@ declare module "iopa" {
         StatusCode: string,
         ReasonPhrase: string,
 
-        CallCancelled: string,
+        CancelToken: string,
 
         Error: string,
         SetHeader: string,
@@ -151,7 +151,7 @@ declare module "iopa" {
     interface SERVER {
         Capabilities: string,
         Logger: string,
-        CallCancelledSource : string,
+        CancelTokenSource : string,
         IsLocalOrigin: string,
         OriginalUrl: string,
         RemoteAddress: string,
@@ -189,7 +189,6 @@ declare module "iopa" {
         Version: string,
         Upgrade: string,
         Stream: string,
-        CallCancelled: string,
     }
 
     interface WEBSOCKET {
@@ -199,7 +198,6 @@ declare module "iopa" {
         SendAsync: string,
         ReceiveAsync: string,
         CloseAsync: string,
-        CallCancelled: string,
         ClientCloseStatus: string,
         ClientCloseDescription: string
     }
@@ -371,8 +369,8 @@ declare module "iopa" {
 
     interface IopaContext extends Object {
         "IOPA.Version": string,
-        "server.CallCancelledSource": any,
-        "iopa.CallCancelled": any,
+        "server.CancelTokenSource": any,
+        "iopa.CancelToken": any,
         "iopa.Events": any,
         "iopa.Seq": any,
         "server.Logger": any,

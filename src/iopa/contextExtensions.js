@@ -55,8 +55,8 @@
          
       //  return JSON.stringify(this, null, 4)
          return util.inspect(cloneFilter(this, 
-             [SERVER.CallCancelledSource, 
-                 IOPA.CallCancelled, 
+             [SERVER.CancelTokenSource, 
+                 IOPA.CancelToken, 
                  SERVER.Logger, 
                  "log", 
                  "response",
