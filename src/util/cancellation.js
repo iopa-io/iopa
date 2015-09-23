@@ -78,8 +78,8 @@ TokenSource.prototype.register = function TokenSource_register(cb){
  * @returns (token)
  *
  * @property isCancelled: bool  - flag indicating if token has been cancelled
- * @function throwIfCancelled(cb): bool  - throw error when cancelled
- * @property onCancelled: Promise  - get a promise
+ * @function throwIfCancelled():   - throw error when cancelled
+ * @function onCancelled(cb): Promise  - get a promise
  *
  * @public
  */
@@ -97,8 +97,13 @@ Token.prototype.onCancelled = function (callback){
 
 Token.prototype.throwIfCancelled = function(){
       if (this.isCancelled) {
-            throw this.source.reason;
+            throw new Error(this.source.reason);
         }
+        
+      this.onCancelled(function(reason)
+         {throw new Error(reason);}
+          
+      );
 };
 
 exports.empty = (new TokenSource()).token;
