@@ -46,7 +46,6 @@ function TokenSource() {
 
 TokenSource.prototype.cancel = function TokenSource_cancel(reason) {
     this.data.isCancelled = true;
-    reason = reason || IOPA.EVENTS.Cancel;
     this.data.reason = reason;
     for (var i = 0; i < this.data.listeners.length; i++) {
         if (typeof this.data.listeners[i] === 'function') {
