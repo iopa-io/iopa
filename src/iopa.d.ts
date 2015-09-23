@@ -166,6 +166,7 @@ declare module "iopa" {
         IsChild: string,
         Fetch: string,
         Dispatch: string,
+        Disconnect: string, 
         ParentContext: string,
         WriteAck: string,
         WriteErr: string,

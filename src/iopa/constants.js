@@ -47,8 +47,8 @@ exports.IOPA = {
     Token: "iopa.Token",
 
     METHODS: {
-        connect: "urn:io.iopa.connect",
-        data: "urn:io.iopa.data",
+        connect: "urn:io.iopa:connect",
+        data: "urn:io.iopa:data",
         GET: "GET",
         PUT: "PUT",
         DELETE: "DELETE",
@@ -143,8 +143,9 @@ exports.SERVER = {
     AppId: "server.AppId",
     IsChild: "server.IsChild",
     ParentContext: "server.ParentContext",
-    Fetch: "fetch",
-    Dispatch: "dispatch",
+    Fetch: "server.Fetch",
+    Dispatch: "server.Dispatch",
+    Disconnect: "server.Disconnect",
     WriteAck: "server.WriteAck",
     WriteErr: "server.WriteErr",
     Retry: "server.Retry",
