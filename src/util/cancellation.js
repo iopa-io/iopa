@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-
+const constants = require('../iopa/constants'),
+    IOPA = constants.IOPA
+    
 /**
  * A Cancellation Token Source
  *
@@ -29,32 +31,45 @@
  * @constructor
  * @public
  */
-function tokenSource() {
-    var data = {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function TokenSource() {
+    _classCallCheck(this, TokenSource);
+    
+    this.data = {
         reason: null,
         isCancelled: false,
         listeners: []
     };
-    function cancel(reason) {
-        data.isCancelled = true;
-        reason = reason || 'Operation Cancelled';
-        if (typeof reason == 'string') reason = new Error(reason);
-        reason.code = 'OperationCancelled';
-        data.reason = reason;
-        process.nextTick(function () {
-            for (var i = 0; i < data.listeners.length; i++) {
-                if (typeof data.listeners[i] === 'function') {
-                    data.listeners[i](reason);
-                }
-            }
-        });
-    }
-    return {
-        cancel: cancel,
-        token: token(data)
-    };
 }
 
+TokenSource.prototype.cancel = function TokenSource_cancel(reason) {
+    this.data.isCancelled = true;
+    reason = reason || IOPA.EVENTS.Cancel;
+    this.data.reason = reason;
+    for (var i = 0; i < this.data.listeners.length; i++) {
+        if (typeof this.data.listeners[i] === 'function') {
+            this.data.listeners[i](reason);
+        }
+    }
+}
+
+Object.defineProperty(TokenSource.prototype, "token", {
+                       get: function () { return new Token(this) } 
+                       });
+                       
+Object.defineProperty(TokenSource.prototype, "isCancelled", {
+                       get: function () { return this.data.isCancelled; } 
+                       });
+                       
+Object.defineProperty(TokenSource.prototype, "reason", {
+                       get: function () { return this.data.reason; } 
+                       });
+ 
+TokenSource.prototype.register = function TokenSource_register(cb){
+      this.data.listeners.push(cb);
+};
 
 /**
  * Helper Method to return a Cancellation Token
@@ -63,36 +78,38 @@ function tokenSource() {
  
  * @returns (token)
  *
- * @property isCancelled (bool)  - flag indicating if token has been cancelled
- * @property throwIfCancelled (bool)  - method to throw error when cancelled
- * @property onCancelled (function(cb))  - register callback for cancellation event;  callback on next tick if already occured
+ * @property isCancelled: bool  - flag indicating if token has been cancelled
+ * @property throwIfCancelled(cb): bool  - throw error when cancelled
+ * @property promise: Promise  - get a promise
  *
  * @public
  */
-function token(data) {
-    var exports = {};
-    exports.isCancelled = isCancelled;
-    function isCancelled() {
-        return data.isCancelled;
-    }
-    exports.throwIfCancelled = throwIfCancelled;
-    function throwIfCancelled() {
-        if (isCancelled()) {
-            throw data.reason;
-        }
-    }
-    exports.onCancelled = onCancelled;
-    function onCancelled(cb) {
-        if (isCancelled()) {
-            process.nextTick(function () {
-                cb(data.reason);
-            });
-        } else {
-            data.listeners.push(cb);
-        }
-    }
-    return exports;
+function Token(source) {
+    this.source = source;
 }
 
-exports.empty = tokenSource().token;
-exports.default = tokenSource;
+Object.defineProperty(Token.prototype, "isCancelled", {
+                       get: function () { return  this.source.isCancelled } 
+                       });
+                       
+Object.defineProperty(Token.prototype, "promise", {
+    get: function () { 
+        var self = this;
+         if (this.isCancelled) {
+            return Promise.resolve(this.source.reason);
+        } else {
+            return new Promise(function(resolve, reject){
+                self.source.register(resolve);
+            });
+        }
+    }  
+});
+
+Token.prototype.throwIfCancelled = function(){
+      if (this.isCancelled) {
+            throw this.source.reason;
+        }
+};
+
+exports.empty = (new TokenSource()).token;
+exports.default = TokenSource;

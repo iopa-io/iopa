@@ -132,3 +132,31 @@ describe('#IOPA()', function () {
   });
 
 });
+
+describe('#CancellationTokenSource()', function () {
+
+  var tokensource, token;
+
+  it('should create new cancellation token', function () {
+
+    tokensource = new iopaUtil.CancellationTokenSource();
+    tokensource.isCancelled.should.equal(false);
+  });
+
+  it('should create new  token', function () {
+
+    token = tokensource.token;
+    token.isCancelled.should.equal(false);
+  });
+  
+  it('should create a promise and cancel a token', function (done) {
+    token.promise.then(function(reason){
+      reason.should.equal(IOPA.EVENTS.Cancel);
+      process.nextTick(done);
+    })
+    tokensource.cancel(IOPA.EVENTS.Cancel);
+    token.isCancelled.should.equal(true);
+    tokensource.isCancelled.should.equal(true);
+  });
+  
+});

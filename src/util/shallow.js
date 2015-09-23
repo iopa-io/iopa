@@ -51,18 +51,8 @@ exports.mergeContext = function mergeContext(target, defaults) {
         }
         
         target[IOPA.Headers] = targetHeaders;
-        
-         for (var key in defaults) {
-            if ((key !== IOPA.Headers) && defaults.hasOwnProperty(key)) target[key] = defaults[key];
-        }
-        
-    } else {
-        
-        for (var key in defaults) {
-            if (defaults.hasOwnProperty(key)) target[key] = defaults[key];
-        }
-        
-    }
+   
+    } 
 };
 
 exports.copy = function copy(source, target) {

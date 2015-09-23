@@ -18,7 +18,7 @@ const FreeList = require('../util/freelist').FreeList,
     Events = require('events'),
     URL = require('url'),
  
-    Cancellation = require('../util/cancellation').default,
+    CancellationTokenSource = require('../util/cancellation').default,
     contextExtensionsAddTo = require('./contextExtensions').addTo,
 
     constants = require('./constants'),
@@ -54,7 +54,7 @@ function IopaContext() {
 */
 IopaContext.prototype.init = function init() {
     this[IOPA.Version] = "1.2";
-    var _cancellationTokenSource = Cancellation();
+    var _cancellationTokenSource = new CancellationTokenSource();
     this[SERVER.CallCancelledSource] = _cancellationTokenSource;
     this[SERVER.Capabilities] = {};
     this[IOPA.CallCancelled] = _cancellationTokenSource.token;

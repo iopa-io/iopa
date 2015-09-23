@@ -69,7 +69,8 @@ declare module "iopa" {
         Request: string,
         Response: string,
         Finish: string,
-        Disconnect: string
+        Disconnect: string,
+        Dispose: string
     }
     
    interface CAPABILITIES {

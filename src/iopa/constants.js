@@ -83,7 +83,9 @@ exports.IOPA = {
         Request: "request",
         Response: "response",
         Finish: "finish",
-        Disconnect: "disconnect"
+        Cancel: "cancel",
+        Disconnect: "disconnect",
+        Dispose: "dispose"
     },
     
     CAPABILITIES: {

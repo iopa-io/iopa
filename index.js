@@ -18,9 +18,10 @@ const AppBuilder = require('./src/appBuilder/appBuilder').default,
       Factory = require('./src/iopa/factory').default,
       constants = require('./src/iopa/constants'),
       shallow = require('./src/util/shallow'),
-      iopaPrototype = require('./src/util/prototype');
+      iopaPrototype = require('./src/util/prototype'),
+      CancellationTokenSource = require('./src/util/cancellation').default
 
 exports.App = AppBuilder;
 exports.Factory = Factory;
 exports.constants = constants;
-exports.util = {"shallow": shallow, "prototype": iopaPrototype};
+exports.util = {"shallow": shallow, "prototype": iopaPrototype, "CancellationTokenSource": CancellationTokenSource};
