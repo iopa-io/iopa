@@ -68,7 +68,6 @@ declare module "iopa" {
     interface EVENTS {
         Request: string,
         Response: string,
-        Finish: string,
         Disconnect: string,
         Dispose: string
     }

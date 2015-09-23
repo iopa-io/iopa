@@ -82,9 +82,8 @@ exports.IOPA = {
     EVENTS: {
         Request: "request",
         Response: "response",
-        Finish: "finish",
-        Disconnect: "disconnect",
-        Dispose: "dispose"
+        Disconnect: "disconnect",   // used for cancelToken not events primarily
+        Finish: "finish"  // used for cancelToken not events primarily
     },
     
     CAPABILITIES: {

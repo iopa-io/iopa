@@ -108,9 +108,12 @@ Factory.prototype._create = function factory_create() {
 * @param context the context to free 
 */
 Factory.prototype._dispose = function factory_dispose(context) {
-    if (context == null || context[IOPA.Seq] == null)
+   if (context == null || context[SERVER.CancelTokenSource] == null)
         return;
 
+ //  if (!(context[IOPA.CancelToken].isCancelled))
+ //      context[SERVER.CancelTokenSource].cancel(IOPA.EVENTS.Finish);
+   
     if (context.response) {
         var response = context.response;
         for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
