@@ -150,7 +150,7 @@ describe('#CancellationTokenSource()', function () {
   });
   
   it('should create a promise and cancel a token', function (done) {
-    token.promise.then(function(reason){
+    token.onCancelled.then(function(reason){
       reason.should.equal(IOPA.EVENTS.Disconnect);
       process.nextTick(done);
     })

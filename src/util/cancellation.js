@@ -78,8 +78,8 @@ TokenSource.prototype.register = function TokenSource_register(cb){
  * @returns (token)
  *
  * @property isCancelled: bool  - flag indicating if token has been cancelled
- * @property throwIfCancelled(cb): bool  - throw error when cancelled
- * @property promise: Promise  - get a promise
+ * @function throwIfCancelled(cb): bool  - throw error when cancelled
+ * @property onCancelled: Promise  - get a promise
  *
  * @public
  */
@@ -91,7 +91,7 @@ Object.defineProperty(Token.prototype, "isCancelled", {
                        get: function () { return  this.source.isCancelled } 
                        });
                        
-Object.defineProperty(Token.prototype, "promise", {
+Object.defineProperty(Token.prototype, "onCancelled", {
     get: function () { 
         var self = this;
          if (this.isCancelled) {
