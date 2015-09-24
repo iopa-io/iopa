@@ -76,6 +76,8 @@ declare module "iopa" {
         App: string,
         Publish: string,
         Subscribe: string,
+        DiscoveryServer: string,
+        DiscoveryClient: string,
         Send: string,
         Observe: string,
         SendFile: string,
