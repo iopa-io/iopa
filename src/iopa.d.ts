@@ -412,6 +412,7 @@ declare module "iopa" {
         OPAQUE: OPAQUE,
         WEBSOCKET: WEBSOCKET,
         SECURITY: SECURITY,
+        THING: THING,
         MQTT: MQTT,
         COAP: COAP
     }
