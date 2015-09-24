@@ -25,8 +25,8 @@ script:
   - MOCHA_FILE=shippable/testresults/mocha.xml node ./node_modules/.bin/mocha --reporter mocha-junit-reporter test
   
 after_success:
-  - git config user.email "robot@shippable.com"
-  - git config user.name "Shippable"
+  - git config user.email "build@iopa.io"
+  - git config user.name "IOPA Release Engineering"
   - git config --global push.default matching
   - git checkout $BRANCH
   - echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ~/.npmrc

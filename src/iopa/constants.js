@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 exports.IOPA = {
     Scheme: "iopa.Scheme",
     Method: "iopa.Method",
@@ -85,28 +85,36 @@ exports.IOPA = {
         Disconnect: "disconnect",   // used for cancelToken not events primarily
         Finish: "finish"  // used for cancelToken not events primarily
     },
-    
+
     CAPABILITIES: {
         App: "urn:io.iopa:app",
         Publish: "urn:io.iopa:pubsub:publish",
         Subscribe: "urn:io.iopa:pubsub:subscribe",
+        DiscoveryServer: "urn:io.iopa:discovery:server",
+        DiscoveryClient: "urn:io.iopa:discovery:client",
         Send: "urn:io.iopa:send",
         Observe: "urn:io.iopa:observe",
         SendFile: "urn:io.iopa:sendfile",
         Opaque: "urn:io.iopa:opaque",
         WebSocket: "urn:io.iopa.websocket"
     },
-    
-    PUBSUB :
+
+    PUBSUB:
     {
         Clean: "pubsub.Clean",
         Subscribe: "pubsub.Subscribe",
         Publish: "pubsub.Publish",
     },
-    
-    SECURITY :
+
+    DISCOVERY: {
+        Hello: "discovery.Hello",
+        Probe: "discovery.Probe",
+        Resolve: "discovery.Resolve",
+        Bye: "discovery.Bye"
+    },
+
+    SECURITY:
     {
-    
         ClientCertificate: "ssl.ClientCertificate",
         // 3.2. Per Request
         User: "server.User",
@@ -117,12 +125,12 @@ exports.IOPA = {
         SignOut: "security.SignOut",
         Challenge: "security.Challenge"
     },
-    
-    SENDFILE :
-        {
-            Concurrency: "sendfile.Concurrency",
-            SendAsync: "sendfile.SendAsync"
-        }
+
+    SENDFILE:
+    {
+        Concurrency: "sendfile.Concurrency",
+        SendAsync: "sendfile.SendAsync"
+    }
 };
 
 exports.SERVER = {
@@ -176,7 +184,7 @@ exports.OPAQUE =
     // 5. Consumption
     
     Stream: "opaque.Stream",
- };
+};
 
 exports.WEBSOCKET =
 {
@@ -195,6 +203,91 @@ exports.WEBSOCKET =
     CloseAsync: "websocket.CloseAsync",
     ClientCloseStatus: "websocket.ClientCloseStatus",
     ClientCloseDescription: "websocket.ClientCloseDescription"
+};
+
+exports.THING =
+{ 
+    // Platform Model
+    ModelManufacturer: "thing.ModelManufacturer",    // e.g., "Domabo"
+    ModelManufacturerUrl: "thing.ModelManufacturerUrl",   // e.g., "http://domabo.com"
+    ModelName: "thing.ModelName",  // e.g., "HomeKit Stick"
+    ModelNumber: "thing.ModelNumber",  // e.g., "HK100"
+    ModelUrl: "thing.ModelUrl",  // e.g., "http://domabo.com/support/HK100"
+   
+    // Physical Instance
+    PlatformId: "thing.PlatformId",
+    PlatformName: "thing.PlatformName",   // e.g., "HomeKit Stick Primary"
+    PlatformFirmware: "thing.PlatformFirmware",   // e.g., "1.3.5"
+    PlatformOS: "thing.PlatformOS",  // e.g., "14.10.1"
+    PlatformHardware: "thing.PlatformHardware",  // e.g. "1.0B"
+    PlatformDate: "thing.PlatformDate",  // e.g., 2016-12-23
+    
+    // IOPA Logical Device (can be >1 per physical platform)
+    Id: "thing.Id",   // e.g., "23424-22423-63653-2424-26262"
+    Type: "thing.Type", // e.g., "thing.Device"
+    Version: "thing.Version",  // e.g., "1.3.5"
+    Location: "thing.Location",   // e.g., {37.7833, 122.4167}
+    LocationName: "thing.LocationName", // e.g., "The Bellevue"
+    Currency: "thing.Currency", // e.g., "USD"
+    Region: "thing.Region",  // e.g., "Home"
+    SystemTime: "thing.SystemTime",
+    Policy: "thing.Policy",
+    Schemes: "thing.Schemes", //e.g, {"coap", "mqtt"}
+  
+    // Resource 
+    ResourceTypeName: "thing.TypeName",   // e.g., "Smart Home Bridge Device""
+    ResourceType: "thing.Type",   // e.g., "iopa.d.b"   Smart Home Bridge Device
+    InterfaceType: "thing.InterfaceType",   // e.g., "iopa.if.r"
+    
+    // Device or Resource Common Properties 
+    Uri: "thing.Uri",   // e.g., "oic.if.r"
+    Name: "thing.Name",
+    Properties: "thing.Properties",
+    Value: "thing.Value",   // e.g., "OK"
+    Parent: "thing.Parent", // e.g., link to device from resource
+    Links: "thing.Links",  // e.g., links to each device in homekit network
+  
+    TYPES: {
+        Device: "thing.Device",
+        Resource: "thing.Resource",
+        Interface: "thing.Interface",
+        Scene: "thing.Scene",
+        Workflow: "thing.Workflow",
+        Batch: "thing.Batch",
+    },
+
+    POLICY: {
+        Observable: "Discoverable",
+        Discoverable: "Observable",
+        Access: "Access"
+    },
+
+    MAINTENANCE: {
+        FactoryReset: "FactoryReset",
+        Reboot: "Reboot",
+        StartStats: "StartStats"
+    },
+
+    WELLKNOWN: {
+        PathBase: "/iopa",
+
+        Configure: "/configure",
+        Device: "/device",
+        Interfaces: "/interfaces",
+        Maintenance: "/maintenance",
+        Monitoring: "/monitoring",
+        Platform: "/platform",
+        Ping: "/ping",
+        Resources: "/resources",
+        ResourceTypes: "/resourcetypes",
+    },
+
+    COLLECTIONS: {
+        Devices: "thing.Devices",
+        ResourceTypes: "thing.ResourceTypes",
+        Resources: "thing.Resources",
+        Interfaces: "thing.Interfaces",
+    }
 };
 
 exports.MQTT = {
@@ -229,15 +322,15 @@ exports.MQTT = {
         PUBCOMP: "PUBCOMP",
         PINGRESP: "PINGRESP"
     },
-    
+
     RETURN_CODES:
     {
-    0: 'OK',
-    1: 'Unacceptable protocol version',
-    2: 'Identifier rejected',
-    3: 'Server unavailable',
-    4: 'Bad user name or password',
-    5: 'Not authorized',
+        0: 'OK',
+        1: 'Unacceptable protocol version',
+        2: 'Identifier rejected',
+        3: 'Server unavailable',
+        4: 'Bad user name or password',
+        5: 'Not authorized',
     }
 
 };

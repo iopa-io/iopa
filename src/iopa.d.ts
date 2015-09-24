@@ -31,8 +31,8 @@
 ************************************************/
 
 declare module "iopa" {
-    
-     interface METHODS {
+
+    interface METHODS {
         connect: string,
         data: string,
         GET: string,
@@ -40,7 +40,7 @@ declare module "iopa" {
         DELETE: string,
         POST: string,
     }
-    
+
     interface PORTS {
         HTTP: number,
         HTTPS: number,
@@ -64,16 +64,16 @@ declare module "iopa" {
         COAP: string,
         MQTT: string,
     }
-    
+
     interface EVENTS {
         Request: string,
         Response: string,
         Disconnect: string,
         Dispose: string
     }
-    
-   interface CAPABILITIES {
-        App: string, 
+
+    interface CAPABILITIES {
+        App: string,
         Publish: string,
         Subscribe: string,
         Send: string,
@@ -82,8 +82,8 @@ declare module "iopa" {
         Opaque: string,
         WebSocket: string
     }
-    
-      interface SECURITY {
+
+    interface SECURITY {
         ClientCertificate: string,
         User: string,
         Authenticate: string,
@@ -91,19 +91,25 @@ declare module "iopa" {
         SignOut: string,
         Challenge: string
     }
-    
+
     interface SENDFILE {
         Version: string,
         Support: string,
         Concurrency: string,
         SendAsync: string
     }
-    
+
     interface PUBSUB {
         Clean: string,
         Subscribe: string,
         Publish: string,
-      }
+    }
+    
+    interface DISCOVERY {
+        Register: string,
+        Discover: string,
+        Unregister: string,
+    }
 
     interface IOPA {
         Scheme: string,
@@ -135,7 +141,7 @@ declare module "iopa" {
         HeadersSent: string,
         MessageId: string,
         Token: string,
-        
+
         METHODS: METHODS,
         PORTS: PORTS,
         SCHEMES: SCHEMES,
@@ -144,13 +150,14 @@ declare module "iopa" {
         CAPABILITIES: CAPABILITIES,
         SENDFILE: SENDFILE,
         SECURITY: SECURITY,
-        PUBSUB: PUBSUB
+        PUBSUB: PUBSUB,
+        DISCOVERY: DISCOVERY
     }
 
     interface SERVER {
         Capabilities: string,
         Logger: string,
-        CancelTokenSource : string,
+        CancelTokenSource: string,
         IsLocalOrigin: string,
         OriginalUrl: string,
         RemoteAddress: string,
@@ -158,7 +165,7 @@ declare module "iopa" {
         LocalAddress: string,
         LocalPort: string,
         RawStream: string,
-        RawTransport: string, 
+        RawTransport: string,
         IsRequest: string,
         SessionId: string,
         TLS: string,
@@ -166,7 +173,7 @@ declare module "iopa" {
         IsChild: string,
         Fetch: string,
         Dispatch: string,
-        Disconnect: string, 
+        Disconnect: string,
         ParentContext: string,
         WriteAck: string,
         WriteErr: string,
@@ -175,15 +182,13 @@ declare module "iopa" {
         Factory: string,
         RemoteThing: string,
         LocalThing: string
-     }
- 
+    }
+
     interface APPBUILDER {
         AddSignatureConversion: string,
         DefaultApp: string,
         DefaultMiddleware: string
     }
-
-
 
     interface OPAQUE {
         Version: string,
@@ -202,6 +207,97 @@ declare module "iopa" {
         ClientCloseDescription: string
     }
     
+    interface THING_TYPES  {
+    Device: string,
+    Resource: string,
+    Interface: string,
+    Scene: string,
+    Workflow: string,
+    Batch: string,
+   }
+    
+    interface THING_POLICY {
+        Observable: string,
+        Discoverable: string,
+        Access: string,
+    }
+
+    interface THING_MAINTENANCE {
+        FactoryReset: string,
+        Reboot: string,
+        StartStats: string,
+    }
+
+    interface THING_WELLKNOWN {
+        PathBase: string,
+
+        Configure: string,
+        Device: string,
+        Interfaces: string,
+        Maintenance: string,
+        Monitoring: string,
+        Platform: string,
+        Ping: string,
+        Resources: string,
+        ResourceTypes: string,
+    }
+
+    interface THING_COLLECTIONS {
+        Devices: string,
+        ResourceTypes: string,
+        Resources: string,
+        Interfaces: string,
+    }
+
+    interface THING { 
+        // Platform Model 
+        ModelManufacturer: string,
+        ModelManufacturerUrl: string,
+        ModelName: string,
+        ModelNumber: string,
+        ModelUrl: string, 
+   
+        // Physical Instance
+        PlatformId: string,
+        PlatformName: string,
+        PlatformFirmware: string,
+        PlatformOS: string,
+        PlatformHardware: string,
+        PlatformDate: string, 
+     
+        // IOPA Logical Device (can be >1 per physical platform)
+        Id: string,
+        Type: string,
+        Version: string, 
+        Location: string,
+        LocationName: string,
+        Currency: string,
+        Region: string,
+        SystemTime: string,
+        Policy: string,
+        Schemes: string,
+      
+        // Resource 
+        ResourceTypeName: string,
+        ResourceType: string,
+        Interface: string,
+        
+        // Device or Resource Common Properties 
+        Uri: string,
+        Name: string,
+        Properties: string,
+        Value: string,
+        Links: string,
+        Parent: string,
+        
+        // SUB-INTERFACES
+        TYPES: THING_TYPES,
+        POLICY: THING_POLICY,
+        MAINTENANCE: THING_MAINTENANCE,
+        WELLKNOWN: THING_WELLKNOWN,
+        COLLECTIONS: THING_COLLECTIONS
+    }
+
     interface MQTT_METHODS {
         CONNECT: string,
         SUBSCRIBE: string,
@@ -218,9 +314,8 @@ declare module "iopa" {
         PUBCOMP: string,
         PINGRESP: string
     }
-    
-    interface MQTT_RETURN_CODES
-    {
+
+    interface MQTT_RETURN_CODES {
         0: string,
         1: string,
         2: string,
@@ -228,7 +323,7 @@ declare module "iopa" {
         4: string,
         5: string
     }
-    
+
     interface MQTT {
         ProtocolId: string,
         ProtocolVersion: string,
@@ -244,12 +339,11 @@ declare module "iopa" {
         Retain: string,
         SessionPresent: string,
         Granted: string,
-        
+
         METHODS: MQTT_METHODS,
         RETURN_CODES: MQTT_RETURN_CODES
     }
-    
-    
+
     interface COAP_CODES {
         '0.01': string,
         '0.02': string,
@@ -260,40 +354,40 @@ declare module "iopa" {
     interface COAP_METHODS {
         'GET': string,
         'POST': string,
-         'PUT': string,
-         'DELETE': string,
+        'PUT': string,
+        'DELETE': string,
     }
 
     interface COAP_STATUS_CODES {
-          "0.00": string, 
-          "0.01": string,
-          "0.02": string,
-          "0.03": string,
-          "0.04": string,
-          "2.01": string,
-          "2.02": string,
-          "2.03": string,
-          "2.04": string,
-          "2.05": string,
-          "4.00": string,
-          "4.01": string,
-          "4.02": string,
-          "4.03": string,
-          "4.04": string,
-          "4.05": string,
-          "4.06": string,
-          "4.12": string,
-          "4.13": string,
-          "4.15": string,
-          "5.00": string,
-          "5.01": string,
-          "5.02": string,
-          "5.03": string,
-          "5.04": string,
-          "5.05": string
+        "0.00": string,
+        "0.01": string,
+        "0.02": string,
+        "0.03": string,
+        "0.04": string,
+        "2.01": string,
+        "2.02": string,
+        "2.03": string,
+        "2.04": string,
+        "2.05": string,
+        "4.00": string,
+        "4.01": string,
+        "4.02": string,
+        "4.03": string,
+        "4.04": string,
+        "4.05": string,
+        "4.06": string,
+        "4.12": string,
+        "4.13": string,
+        "4.15": string,
+        "5.00": string,
+        "5.01": string,
+        "5.02": string,
+        "5.03": string,
+        "5.04": string,
+        "5.05": string
     }
 
-    
+
     interface COAP {
 
         Ack: string,
@@ -301,11 +395,11 @@ declare module "iopa" {
         Confirmable: string,
         Code: string,
         Options: string,
-    
+
         MAXPACKETSIZE: number,
         MULTICASTIPV4: string,
         MULTICASTIPV6: string,
-        
+
         CODES: COAP_CODES,
         METHOS: COAP_METHODS,
         STATUS_CODES: COAP_STATUS_CODES
@@ -321,13 +415,13 @@ declare module "iopa" {
         MQTT: MQTT,
         COAP: COAP
     }
-    
-    export class App{  
+
+    export class App {  
         /**
         * Add IOPA Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
-        */   
+        */
         use(mw: (context, next) => any): App;
   
   
@@ -335,35 +429,35 @@ declare module "iopa" {
         * Add IOPA Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
-        */   
-       use(mw: (next) => any): App;
+        */
+        use(mw: (next) => any): App;
  
         /**
         * Add Connect Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
-        */   
-       use(mw: (req, res) => any): App;
+        */
+        use(mw: (req, res) => any): App;
 
         /**
         * Add Connect Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
-        */   
+        */
         use(mw: (req, res, next) => any): App;
 
         /**
         * Add IOPA Middleware Function to AppBuilder pipeline
         *
         * @param mw the middleware to add 
-        */   
+        */
         use(mw: (app) => any): App;
         
         /***
         * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
         */
         build(): () => ((context) => any);
-        
+
         constructor(properties?: any);
     }
 
@@ -376,13 +470,13 @@ declare module "iopa" {
         "server.Logger": any,
         "dispose": () => void,
         "using": (any) => Promise<any>,
-     }
+    }
 
     export class Factory {
                      
-       /**
-        * Create a new IOPA Context, with default [iopa.*] values populated
-        */
+        /**
+         * Create a new IOPA Context, with default [iopa.*] values populated
+         */
         createContext(): IopaContext;
         
         /**
@@ -404,9 +498,9 @@ declare module "iopa" {
         * Release the memory used by a given IOPA Context
         *
         * @param context the context to free 
-        */   
+        */
         _dispose(context: IopaContext): void;
-               
+
         constructor(options?: any);
     }
 
@@ -418,7 +512,7 @@ declare module "iopa" {
         clone(source): any;
         clone(source, blacklist): any;
     }
-    
+
     interface iopaPrototype {
         cloneKeyBehaviors(targetObjectPrototype, sourceObjectprototype, iopaContextKey: string, response: boolean): void;
     }
