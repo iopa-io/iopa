@@ -205,55 +205,46 @@ exports.WEBSOCKET =
     ClientCloseDescription: "websocket.ClientCloseDescription"
 };
 
-exports.THING =
+//DEVICES AND THINGS
+exports.DEVICE =
 { 
-    // Platform Model
-    ModelManufacturer: "thing.ModelManufacturer",    // e.g., "Domabo"
-    ModelManufacturerUrl: "thing.ModelManufacturerUrl",   // e.g., "http://domabo.com"
-    ModelName: "thing.ModelName",  // e.g., "HomeKit Stick"
-    ModelNumber: "thing.ModelNumber",  // e.g., "HK100"
-    ModelUrl: "thing.ModelUrl",  // e.g., "http://domabo.com/support/HK100"
+    // Model
+    ModelManufacturer: "device.ModelManufacturer",    // e.g., "Domabo"
+    ModelManufacturerUrl: "device.ModelManufacturerUrl",   // e.g., "http://domabo.com"
+    ModelName: "device.ModelName",  // e.g., "HomeKit Stick"
+    ModelNumber: "device.ModelNumber",  // e.g., "HK100"
+    ModelUrl: "device.ModelUrl",  // e.g., "http://domabo.com/support/HK100"
    
-    // Physical Instance
-    PlatformId: "thing.PlatformId",
-    PlatformName: "thing.PlatformName",   // e.g., "HomeKit Stick Primary"
-    PlatformFirmware: "thing.PlatformFirmware",   // e.g., "1.3.5"
-    PlatformOS: "thing.PlatformOS",  // e.g., "14.10.1"
-    PlatformHardware: "thing.PlatformHardware",  // e.g. "1.0B"
-    PlatformDate: "thing.PlatformDate",  // e.g., 2016-12-23
+    // Physical Platform Instance
+    PlatformId: "device.PlatformId",
+    PlatformName: "device.PlatformName",   // e.g., "HomeKit Stick Primary"
+    PlatformFirmware: "device.PlatformFirmware",   // e.g., "1.3.5"
+    PlatformOS: "device.PlatformOS",  // e.g., "14.10.1"
+    PlatformHardware: "device.PlatformHardware",  // e.g. "1.0B"
+    PlatformDate: "device.PlatformDate",  // e.g., 2016-12-23
     
     // IOPA Logical Device (can be >1 per physical platform)
-    Id: "thing.Id",   // e.g., "23424-22423-63653-2424-26262"
-    Type: "thing.Type", // e.g., "thing.Device"
-    Version: "thing.Version",  // e.g., "1.3.5"
-    Location: "thing.Location",   // e.g., {37.7833, 122.4167}
-    LocationName: "thing.LocationName", // e.g., "The Bellevue"
-    Currency: "thing.Currency", // e.g., "USD"
-    Region: "thing.Region",  // e.g., "Home"
-    SystemTime: "thing.SystemTime",
-    Policy: "thing.Policy",
-    Schemes: "thing.Schemes", //e.g, {"coap", "mqtt"}
-  
-    // Resource 
-    ResourceTypeName: "thing.TypeName",   // e.g., "Smart Home Bridge Device""
-    ResourceType: "thing.Type",   // e.g., "iopa.d.b"   Smart Home Bridge Device
-    InterfaceType: "thing.InterfaceType",   // e.g., "iopa.if.r"
+    Id: "device.Id",   // e.g., "23424-22423-63653-2424-26262"
+    Type: "device.Type", // e.g., "urn:com.domabo:Lightswitch"
+    Version: "device.Version",  // e.g., "1.3.5"
+    Location: "device.Location",   // e.g., {37.7833, 122.4167}
+    LocationName: "device.LocationName", // e.g., "The Bellevue"
+    Currency: "device.Currency", // e.g., "USD"
+    Region: "device.Region",  // e.g., "Home"
+    SystemTime: "device.SystemTime",
+    Policy: "device.Policy",
+    Schemes: "device.Schemes", //e.g, {"coap", "mqtt"}
     
-    // Device or Resource Common Properties 
-    Uri: "thing.Uri",   // e.g., "oic.if.r"
-    Name: "thing.Name",
-    Properties: "thing.Properties",
-    Value: "thing.Value",   // e.g., "OK"
-    Parent: "thing.Parent", // e.g., link to device from resource
-    Links: "thing.Links",  // e.g., links to each device in homekit network
-  
-    TYPES: {
+    TYPE: {
+        Platform: "thing.Platform",
         Device: "thing.Device",
         Resource: "thing.Resource",
+        Property: "thing.Property",
         Interface: "thing.Interface",
         Scene: "thing.Scene",
         Workflow: "thing.Workflow",
-        Batch: "thing.Batch",
+        WorkflowItem: "thing.WorkflowItem",
+        Group: "thing.Group",
     },
 
     POLICY: {
@@ -280,14 +271,20 @@ exports.THING =
         Ping: "/ping",
         Resources: "/resources",
         ResourceTypes: "/resourcetypes",
-    },
-
-    COLLECTIONS: {
-        Devices: "thing.Devices",
-        ResourceTypes: "thing.ResourceTypes",
-        Resources: "thing.Resources",
-        Interfaces: "thing.Interfaces",
     }
+
+};
+
+exports.RESOURCE={
+    TypeName: "resource.TypeName",   // e.g., "Smart Home Bridge Device""
+    Type: "resource.Type",   // e.g., "iopa.d.b"   Smart Home Bridge Device
+    Interface: "resource.Interface",   // e.g., "iopa.if.r"
+    PathName: "resource.PathName",   // e.g., "oic.if.r"
+    Name: "resource.Name",
+    Properties: "resource.Properties",
+    Value: "resource.Value",   // e.g., "OK"
+    Parent: "resource.Parent", // e.g., link to device from resource
+    Links: "resource.Links",  // e.g., links to each device in homekit network
 };
 
 exports.MQTT = {

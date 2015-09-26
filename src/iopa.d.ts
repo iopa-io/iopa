@@ -106,7 +106,7 @@ declare module "iopa" {
         Subscribe: string,
         Publish: string,
     }
-    
+
     interface DISCOVERY {
         Register: string,
         Discover: string,
@@ -208,29 +208,32 @@ declare module "iopa" {
         ClientCloseStatus: string,
         ClientCloseDescription: string
     }
-    
-    interface THING_TYPES  {
-    Device: string,
-    Resource: string,
-    Interface: string,
-    Scene: string,
-    Workflow: string,
-    Batch: string,
-   }
-    
-    interface THING_POLICY {
+
+    interface DEVICE_TYPE {
+        Platform: string,
+        Device: string,
+        Resource: string,
+        Property: string,
+        Interface: string,
+        Scene: string,
+        Workflow: string,
+        WorkflowItem: string,
+        Group: string
+    }
+
+    interface DEVICE_POLICY {
         Observable: string,
         Discoverable: string,
         Access: string,
     }
 
-    interface THING_MAINTENANCE {
+    interface DEVICE_MAINTENANCE {
         FactoryReset: string,
         Reboot: string,
         StartStats: string,
     }
 
-    interface THING_WELLKNOWN {
+    interface DEVICE_WELLKNOWN {
         PathBase: string,
 
         Configure: string,
@@ -244,14 +247,7 @@ declare module "iopa" {
         ResourceTypes: string,
     }
 
-    interface THING_COLLECTIONS {
-        Devices: string,
-        ResourceTypes: string,
-        Resources: string,
-        Interfaces: string,
-    }
-
-    interface THING { 
+    interface DEVICE { 
         // Platform Model 
         ModelManufacturer: string,
         ModelManufacturerUrl: string,
@@ -270,7 +266,7 @@ declare module "iopa" {
         // IOPA Logical Device (can be >1 per physical platform)
         Id: string,
         Type: string,
-        Version: string, 
+        Version: string,
         Location: string,
         LocationName: string,
         Currency: string,
@@ -278,26 +274,24 @@ declare module "iopa" {
         SystemTime: string,
         Policy: string,
         Schemes: string,
-      
-        // Resource 
-        ResourceTypeName: string,
-        ResourceType: string,
-        Interface: string,
         
-        // Device or Resource Common Properties 
-        Uri: string,
+        // SUB-INTERFACES
+        TYPE: DEVICE_TYPE,
+        POLICY: DEVICE_POLICY,
+        MAINTENANCE: DEVICE_MAINTENANCE,
+        WELLKNOWN: DEVICE_WELLKNOWN,
+    }
+
+    interface RESOURCE {
+        TypeName: string,
+        Type: string,
+        Interface: string,
+        PathName: string,
         Name: string,
         Properties: string,
         Value: string,
         Links: string,
         Parent: string,
-        
-        // SUB-INTERFACES
-        TYPES: THING_TYPES,
-        POLICY: THING_POLICY,
-        MAINTENANCE: THING_MAINTENANCE,
-        WELLKNOWN: THING_WELLKNOWN,
-        COLLECTIONS: THING_COLLECTIONS
     }
 
     interface MQTT_METHODS {
