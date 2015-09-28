@@ -229,7 +229,7 @@ declare module "iopa" {
         Observable: string,
         Discoverable: string,
         Access: string,
-    }
+   }
 
     interface DEVICE_MAINTENANCE {
         FactoryReset: string,
@@ -276,7 +276,7 @@ declare module "iopa" {
         Currency: string,
         Region: string,
         SystemTime: string,
-        Policy: string,
+        Resources: string,
         Schemes: string,
         
         // SUB-INTERFACES
@@ -290,6 +290,7 @@ declare module "iopa" {
         TypeName: string,
         Type: string,
         Interface: string,
+        Policy: string,
         PathName: string,
         Name: string,
         Properties: string,

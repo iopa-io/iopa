@@ -55,12 +55,17 @@
          
       //  return JSON.stringify(this, null, 4)
          return util.inspect(cloneFilter(this, 
-             [SERVER.CancelTokenSource, 
-                 IOPA.CancelToken, 
-                 SERVER.Logger, 
-                 "log", 
+             [SERVER.CancelTokenSource,
+                 IOPA.CancelToken,
+                 SERVER.Logger,
+                 "log",
                  "response",
-                  IOPA.Events,
+                 IOPA.Events,
+                 SERVER.CancelTokenSource,
+                 IOPA.CancelToken,
+                 IOPA.Events,
+                 "dispose",
+                 SERVER.Factory,
                   ]));
          
          ; //.replace(/\n/g, "\r");

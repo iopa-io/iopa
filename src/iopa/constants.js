@@ -236,8 +236,8 @@ exports.DEVICE =
     Currency: "device.Currency", // e.g., "USD"
     Region: "device.Region",  // e.g., "Home"
     SystemTime: "device.SystemTime",
-    Policy: "device.Policy",
-    Schemes: "device.Schemes", //e.g, {"coap", "mqtt"}
+    Schemes: "device.Schemes", //e.g, ["coap:", "mqtt:"]
+    Resources: "device.Resources",
     
     TYPE: {
         Platform: "thing.Platform",
@@ -284,6 +284,7 @@ exports.RESOURCE={
     Type: "resource.Type",   // e.g., "iopa.d.b"   Smart Home Bridge Device
     Interface: "resource.Interface",   // e.g., "iopa.if.r"
     PathName: "resource.PathName",   // e.g., "oic.if.r"
+    Policy: "resource.Policy",
     Name: "resource.Name",
     Properties: "resource.Properties",
     Value: "resource.Value",   // e.g., "OK"
