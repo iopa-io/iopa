@@ -82,7 +82,9 @@ declare module "iopa" {
         Observe: string,
         SendFile: string,
         Opaque: string,
-        WebSocket: string
+        WebSocket: string,
+        Udp: string,
+        Tcp: string
     }
 
     interface SECURITY {
@@ -158,6 +160,8 @@ declare module "iopa" {
 
     interface SERVER {
         Capabilities: string,
+        IsBuilt: string,
+        Pipeline: string,
         Logger: string,
         CancelTokenSource: string,
         IsLocalOrigin: string,

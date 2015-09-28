@@ -96,7 +96,9 @@ exports.IOPA = {
         Observe: "urn:io.iopa:observe",
         SendFile: "urn:io.iopa:sendfile",
         Opaque: "urn:io.iopa:opaque",
-        WebSocket: "urn:io.iopa.websocket"
+        WebSocket: "urn:io.iopa.websocket",
+        Udp: "urn:io.iopa.udp",
+        Tcp: "urn:io.iopa.tcp"
     },
 
     PUBSUB:
@@ -135,6 +137,8 @@ exports.IOPA = {
 
 exports.SERVER = {
     Capabilities: "server.Capabilities",
+    IsBuilt: "server.IsBuilt", 
+    Pipeline: "server.Pipeline", 
     Logger: "server.Logger",
     CancelTokenSource: "server.CancelTokenSource",
     IsLocalOrigin: "server.IsLocalOrigin",

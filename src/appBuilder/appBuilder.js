@@ -167,7 +167,8 @@ AppBuilder.prototype.build = function build() {
        pipeline.dispatch =  function (context) {return Promise.resolve(context);};
     
     pipeline.properties = this.properties;
-   
+    this.properties[SERVER.IsBuilt] = true;
+    this.properties[SERVER.Pipeline] = pipeline;
     return pipeline;
 }
 
