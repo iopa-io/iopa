@@ -167,10 +167,10 @@ exports.SERVER = {
     LocalThing: "server.LocalThing",
     RemoteThing: "server.RemoteThing",
     IsMulticast: "server.IsMulticast",
-    LocalPortType: "transport.LocalPortType",
-    LocalPortReuse: "transport.LocalPortReuse",
-    MulticastPort: "transport.MulticastPort",
-    MulticastAddress: "transport.MulticastAddress"
+    LocalPortType: "server.LocalPortType",
+    LocalPortReuse: "server.LocalPortReuse",
+    MulticastPort: "server.MulticastPort",
+    MulticastAddress: "server.MulticastAddress"
   };
 
 exports.APPBUILDER =
