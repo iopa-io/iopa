@@ -187,7 +187,12 @@ declare module "iopa" {
         Version: string,
         Factory: string,
         RemoteThing: string,
-        LocalThing: string
+        LocalThing: string,
+        IsMulticast: string,
+        LocalPortType: string,
+        LocalPortReuse: string,
+        MulticastPort: string,
+        MulticastAddress: string
     }
 
     interface APPBUILDER {
