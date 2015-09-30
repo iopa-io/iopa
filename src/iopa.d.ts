@@ -159,6 +159,7 @@ declare module "iopa" {
     }
 
     interface SERVER {
+        Id: string,
         Capabilities: string,
         IsBuilt: string,
         Pipeline: string,

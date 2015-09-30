@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/badge/iopa-certified-99cc33.svg?style=flat-square)](http://iopa.io/)
 [![limerun](https://img.shields.io/badge/limerun-certified-3399cc.svg?style=flat-square)](https://nodei.co/npm/limerun/)
 
-[![NPM](https://nodei.co/npm/iopa.png?downloads=true)](https://nodei.co/npm/iopa/)
+[![NPM](https://nodei.co/npm/iopa.png?downloads=true&downloadRank=true)](https://nodei.co/npm/iopa/)
 
 ## About
 This repository `iopa` is an API-first, Internet of Things (IoT) stack for Node.js. 

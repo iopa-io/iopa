@@ -137,6 +137,7 @@ exports.IOPA = {
 };
 
 exports.SERVER = {
+    Id: "server.Id",
     Capabilities: "server.Capabilities",
     IsBuilt: "server.IsBuilt", 
     Pipeline: "server.Pipeline", 
