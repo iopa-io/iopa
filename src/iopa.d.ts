@@ -192,6 +192,7 @@ declare module "iopa" {
         IsMulticast: string,
         LocalPortType: string,
         LocalPortReuse: string,
+        UnicastServer: string,
         MulticastPort: string,
         MulticastAddress: string
     }

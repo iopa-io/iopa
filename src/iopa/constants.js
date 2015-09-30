@@ -170,6 +170,7 @@ exports.SERVER = {
     IsMulticast: "server.IsMulticast",
     LocalPortType: "server.LocalPortType",
     LocalPortReuse: "server.LocalPortReuse",
+    UnicastServer: "server.UnicastServer",
     MulticastPort: "server.MulticastPort",
     MulticastAddress: "server.MulticastAddress"
   };
