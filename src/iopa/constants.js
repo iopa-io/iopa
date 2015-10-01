@@ -235,7 +235,7 @@ exports.DEVICE =
     PlatformHardware: "device.PlatformHardware",  // e.g. "1.0B"
     PlatformDate: "device.PlatformDate",  // e.g., 2016-12-23
     
-    // IOPA Logical Device (can be >1 per physical platform)
+    // IOPA Logical Device (can be >1 per physical platform
     Id: "device.Id",   // e.g., "23424-22423-63653-2424-26262"
     Type: "device.Type", // e.g., "urn:com.domabo:Lightswitch"
     Version: "device.Version",  // e.g., "1.3.5"
@@ -244,7 +244,7 @@ exports.DEVICE =
     Currency: "device.Currency", // e.g., "USD"
     Region: "device.Region",  // e.g., "Home"
     SystemTime: "device.SystemTime",
-    Schemes: "device.Schemes", //e.g, ["coap:", "mqtt:"]
+    Uri: "device.Uri", //e.g, "coap://locahost:23200/homestick"
     Resources: "device.Resources",
     
     TYPE: {
@@ -291,7 +291,7 @@ exports.RESOURCE={
     TypeName: "resource.TypeName",   // e.g., "Smart Home Bridge Device""
     Type: "resource.Type",   // e.g., "iopa.d.b"   Smart Home Bridge Device
     Interface: "resource.Interface",   // e.g., "iopa.if.r"
-    PathName: "resource.PathName",   // e.g., "oic.if.r"
+    Path: "resource.Path",   // e.g., "/myhouse/smartbridge" relative to device uri
     Policy: "resource.Policy",
     Name: "resource.Name",
     Properties: "resource.Properties",

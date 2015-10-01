@@ -284,7 +284,7 @@ declare module "iopa" {
         Region: string,
         SystemTime: string,
         Resources: string,
-        Schemes: string,
+        Uri: string,
         
         // SUB-INTERFACES
         TYPE: DEVICE_TYPE,
@@ -298,7 +298,7 @@ declare module "iopa" {
         Type: string,
         Interface: string,
         Policy: string,
-        PathName: string,
+        Path: string,
         Name: string,
         Properties: string,
         Value: string,
