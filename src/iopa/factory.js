@@ -149,7 +149,7 @@ Factory.prototype.createContext = function factory_createContext() {
     response[IOPA.ReasonPhrase] = "";
     response[IOPA.Protocol] = "";
     response[IOPA.Body] = null;
-    response[IOPA.Headers]["Content-Length"] = "-1";
+    response[IOPA.Headers]["Content-Length"] = null;
 
     return context;
 };

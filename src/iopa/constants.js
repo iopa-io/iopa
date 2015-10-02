@@ -24,6 +24,7 @@ exports.IOPA = {
     Headers: "iopa.Headers",
     Body: "iopa.Body",
     Host: "iopa.Host",
+    Trailers: "iopa.Trailers",
 
     response: "response",
     StatusCode: "iopa.StatusCode",

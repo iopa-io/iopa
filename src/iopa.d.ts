@@ -125,6 +125,7 @@ declare module "iopa" {
         Headers: string,
         Body: string,
         Host: string,
+        Trailers: string,
 
         response: string,
         StatusCode: string,
