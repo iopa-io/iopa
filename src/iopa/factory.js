@@ -203,38 +203,68 @@ Factory.prototype.createRequest = function createRequest(urlStr, options) {
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
             context[SERVER.TLS] = false;
             context[IOPA.Headers]["Host"] = context[IOPA.Host];
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.HTTP;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTP;
             break;
         case SCHEMES.HTTPS:
             context[IOPA.Protocol] = PROTOCOLS.HTTP;
             context[SERVER.TLS] = true;
             context[IOPA.Headers]["Host"] = context[IOPA.Host];
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.HTTPS;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTPS;
             break;
         case SCHEMES.COAP:
             context[IOPA.Protocol] = PROTOCOLS.COAP;
             context[SERVER.TLS] = false;
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.COAP;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTP;
+            break;
+        case SCHEMES.HTTPS:
+            context[IOPA.Protocol] = PROTOCOLS.HTTP;
+            context[SERVER.TLS] = true;
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.COAP;
             break;
         case SCHEMES.COAPS:
             context[IOPA.Protocol] = PROTOCOLS.COAP;
             context[SERVER.TLS] = true;
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.COAPS;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTP;
+            break;
+        case SCHEMES.HTTPS:
+            context[IOPA.Protocol] = PROTOCOLS.HTTP;
+            context[SERVER.TLS] = true;
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.COAPS;
             break;
         case SCHEMES.MQTT:
             context[IOPA.Protocol] = PROTOCOLS.MQTT;
             context[SERVER.TLS] = false;
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.MQTT;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTP;
+            break;
+        case SCHEMES.HTTPS:
+            context[IOPA.Protocol] = PROTOCOLS.HTTP;
+            context[SERVER.TLS] = true;
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.MQTT;
             break;
         case SCHEMES.MQTTS:
             context[IOPA.Protocol] = PROTOCOLS.MQTT;
             context[SERVER.TLS] = true;
-            context[SERVER.RemotePort] = urlParsed.port || PORTS.MQTTS;
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTP;
+            break;
+        case SCHEMES.HTTPS:
+            context[IOPA.Protocol] = PROTOCOLS.HTTP;
+            context[SERVER.TLS] = true;
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.MQTTS;
             break;
         default:
             context[IOPA.Protocol] = urlParsed.protocol;
             context[SERVER.TLS] = false;
-            context[SERVER.RemotePort] = urlParsed.port || 0;
+            context[SERVER.RemotePort] =parseInt(urlParsed.port) || PORTS.HTTP;
+            break;
+        case SCHEMES.HTTPS:
+            context[IOPA.Protocol] = PROTOCOLS.HTTP;
+            context[SERVER.TLS] = true;
+            context[IOPA.Headers]["Host"] = context[IOPA.Host];
+            context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.HTTPS;
     };
 
     mergeContext(context, options);
