@@ -155,9 +155,9 @@ function _using(context, p) {
   * @private
   */
  function _setIgnoreCase(obj, key, val) {
-     key = key.toLowerCase();
+     var key_lower = key.toLowerCase();
      for (var p in obj) {
-         if (obj.hasOwnProperty(p) && key == p.toLowerCase()) {
+         if (obj.hasOwnProperty(p) && key_lower == p.toLowerCase()) {
              obj[p] = val;
              return;
          }
