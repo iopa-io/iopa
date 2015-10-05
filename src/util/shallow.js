@@ -17,15 +17,22 @@
  const constants = require('../iopa/constants'),
     IOPA = constants.IOPA;
 
-exports.merge = function merge(target, defaults) {
+exports.merge = function merge(target, defaults, replace) {
    if (!target) 
         throw new Error("target must not be empty");
    
     if (!defaults) 
         defaults = {};
-            
-    for (var key in defaults) {
-        if (defaults.hasOwnProperty(key)  && !(target.hasOwnProperty(key))) target[key] = defaults[key];
+
+    if (replace) {
+        for (var key in defaults) {
+            if (defaults.hasOwnProperty(key)) target[key] = defaults[key];
+        }
+    }
+    else {    
+        for (var key in defaults) {
+            if (defaults.hasOwnProperty(key) && !(target.hasOwnProperty(key))) target[key] = defaults[key];
+        }
     }
 };
 
