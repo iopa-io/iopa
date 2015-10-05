@@ -232,7 +232,7 @@ Factory.prototype.createRequest = function createRequest(urlStr, options) {
             context[SERVER.RemotePort] = parseInt(urlParsed.port) || PORTS.MQTTS;
             break;
         default:
-            context[IOPA.Protocol] = urlParsed.protocol;
+            context[IOPA.Protocol] = null;
             context[SERVER.TLS] = false;
             context[SERVER.RemotePort] =parseInt(urlParsed.port) || 0;
             break;
