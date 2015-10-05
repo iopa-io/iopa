@@ -47,7 +47,7 @@
 
      // Put Header methods on context to proxy context["iopa.Header"] methods (note assume context and context.response share prototype)
      contextPrototype.writeHead = function () { this[IOPA.WriteHead].apply(this, Array.prototype.slice.call(arguments)); };
-     contextPrototype.getHeader = function () { this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.getHeader = function () { return this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.removeHeader = function () { this[IOPA.RemoveHeader].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.setHeader = function () { this[IOPA.SetHeader].apply(this, Array.prototype.slice.call(arguments)); };
 
