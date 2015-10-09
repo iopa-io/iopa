@@ -35,6 +35,8 @@ exports.IOPA = {
     Version: "iopa.Version",
 
     Error: "iopa.Error",
+    Set: "iopa.Set",
+    Function: "iopa.Function",
     SetHeader: "iopa.SetHeader",
     GetHeader: "iopa.GetHeader",
     RemoveHeader: "iopa.RemoveHeader",

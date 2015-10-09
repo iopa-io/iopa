@@ -50,6 +50,8 @@
      contextPrototype.getHeader = function () { return this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.removeHeader = function () { this[IOPA.RemoveHeader].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.setHeader = function () { this[IOPA.SetHeader].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.set = function () { this[IOPA.Set].apply(this, Array.prototype.slice.call(arguments)); };
+     contextPrototype.fn = function () { this[IOPA.Function].apply(this, Array.prototype.slice.call(arguments)); };
 
      contextPrototype.toString = function () {
          
@@ -82,6 +84,14 @@
              }
          }
      };
+     
+    contextPrototype[IOPA.Set] = function iopa_SetHeader(key, val) {
+         this[key] = val;
+     }
+     
+    contextPrototype[IOPA.Function] = function iopa_SetHeader(fn) {
+         return fn(this);
+     }
 
      contextPrototype[IOPA.SetHeader] = function iopa_SetHeader(key, val) {
          _setIgnoreCase(this[IOPA.Headers], key, val);

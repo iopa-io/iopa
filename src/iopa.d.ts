@@ -134,6 +134,8 @@ declare module "iopa" {
         CancelToken: string,
 
         Error: string,
+        Set: string,
+        Function: string,
         SetHeader: string,
         GetHeader: string,
         RemoveHeader: string,
