@@ -87,7 +87,7 @@ AppBuilder.prototype.use = function use(mw) {
              this.middleware.connect.push(mw_instance.connect.bind(mw_instance));
              
           if (typeof mw_instance.create === 'function')
-             this.middleware.connect.push(mw_instance.create.bind(mw_instance));
+             this.middleware.create.push(mw_instance.create.bind(mw_instance));
         
           if (typeof mw_instance.dispatch === 'function')
              this.middleware.dispatch.push(mw_instance.dispatch.bind(mw_instance));
