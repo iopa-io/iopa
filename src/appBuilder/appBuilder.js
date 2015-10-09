@@ -56,7 +56,7 @@ function AppBuilder() {
     defaults[SERVER.AppId] = guidFactory();
 
     merge(this.properties, defaults);
-    this.middleware = {channel:[], invoke: [], connect: [], dispatch: []};
+    this.middleware = {channel:[], invoke: [], connect: [], create: [], dispatch: []};
 }
 
  Object.defineProperty(AppBuilder.prototype, "log", {
@@ -86,6 +86,9 @@ AppBuilder.prototype.use = function use(mw) {
           if (typeof mw_instance.connect === 'function')
              this.middleware.connect.push(mw_instance.connect.bind(mw_instance));
              
+          if (typeof mw_instance.create === 'function')
+             this.middleware.connect.push(mw_instance.create.bind(mw_instance));
+        
           if (typeof mw_instance.dispatch === 'function')
              this.middleware.dispatch.push(mw_instance.dispatch.bind(mw_instance));
        }
@@ -124,6 +127,17 @@ AppBuilder.prototype.connectuse = function connectuse(mw) {
     this.middleware.connect.push(this.middlewareProxy(this, mw, "connect"));
     return this;
 }
+
+/**
+* Add Middleware Function to AppBuilder pipeline
+*
+* @param mw the middleware to add 
+*/
+AppBuilder.prototype.createuse = function connectuse(mw) {
+    this.middleware.create.push(this.middlewareProxy(this, mw, "create"));
+    return this;
+}
+   
    
 /**
 * Add Middleware Function to AppBuilder pipeline
@@ -160,6 +174,11 @@ AppBuilder.prototype.build = function build() {
        pipeline.connect = this.compose(this.middleware.connect);
     else
        pipeline.connect =  function (context) {return Promise.resolve(context);};
+    
+    if (this.middleware.create.length > 0)    
+       pipeline.create = this.compose(this.middleware.create);
+    else
+       pipeline.create =  function (context) {return context;};
        
      if (this.middleware.dispatch.length > 0)    
        pipeline.dispatch = this.compose(this.middleware.dispatch.reverse());
