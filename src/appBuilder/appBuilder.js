@@ -176,7 +176,7 @@ AppBuilder.prototype.build = function build() {
        pipeline.connect =  function (context) {return Promise.resolve(context);};
     
     if (this.middleware.create.length > 0)    
-       pipeline.create = this.compose(this.middleware.create);
+       pipeline.create = this.compose(this.middleware.create, null, true);
     else
        pipeline.create =  function (context) {return context;};
        
@@ -197,7 +197,7 @@ AppBuilder.prototype.build = function build() {
 * @return {function(context): {Promise} IOPA application 
 * @public
 */
-AppBuilder.prototype.compose = function compose(middleware, requestPipeline) {
+AppBuilder.prototype.compose = function compose(middleware, requestPipeline, flattenPromise) {
     var app = this;  
     return function app_pipeline(context) {
         const capabilities = app.properties[SERVER.Capabilities];
@@ -207,6 +207,9 @@ AppBuilder.prototype.compose = function compose(middleware, requestPipeline) {
         
         var i, next, curr;
         i = middleware.length;
+        if (flattenPromise)
+          next = function() {return context;}
+        else
         next = function () {
             return Promise.resolve(context);
         };
