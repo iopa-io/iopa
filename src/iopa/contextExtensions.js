@@ -85,16 +85,18 @@
          }
      };
      
-    contextPrototype[IOPA.Set] = function iopa_SetHeader(key, val) {
+    contextPrototype[IOPA.Set] = function iopa_set(key, val) {
          this[key] = val;
+         return this;
      }
      
-    contextPrototype[IOPA.Function] = function iopa_SetHeader(fn) {
+    contextPrototype[IOPA.Function] = function iopa_fn(fn) {
          return fn(this);
      }
 
      contextPrototype[IOPA.SetHeader] = function iopa_SetHeader(key, val) {
          _setIgnoreCase(this[IOPA.Headers], key, val);
+         return this;
      }
 
      contextPrototype[IOPA.GetHeader] = function iopa_GetHeader(key) {
@@ -102,7 +104,8 @@
      }
 
      contextPrototype[IOPA.RemoveHeader] = function iopa_RemoveHeader(key, value) {
-         return _deleteIgnoreCase(this[IOPA.Headers], key);
+          _deleteIgnoreCase(this[IOPA.Headers], key);
+          return this;
      }    
      
      Object.defineProperty(contextPrototype, "log", {
