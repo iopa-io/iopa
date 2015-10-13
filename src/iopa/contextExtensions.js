@@ -56,10 +56,19 @@
          return this;
          };
          
-     contextPrototype.disposeOnFinished = function () { 
-         var context = this;
-         this[IOPA.Body].once("finish", function(){process.nextTick(context.dispose); });
-         return this;
+     contextPrototype.complete  = function () { 
+       var context = this;
+       
+       return new Promise(function(resolve, reject){
+      
+         context[IOPA.Body].once("finish", function(){process.nextTick(function(){
+             context.dispose();
+             context = null;
+             resolve();
+         })});
+       
+         context[IOPA.Body].end.apply(context[IOPA.Body], Array.prototype.slice.call(arguments)); 
+       });
      }; 
         
      // Put Header methods on context to proxy context["iopa.Header"] methods (note assume context and context.response share prototype)
