@@ -40,11 +40,23 @@
  */
  function PrototypeExtend(contextPrototype) {
      // Put Stream/EventEmitter methods on context to proxy context["iopa.Body"] methods
+    
      cloneKeyBehaviors(contextPrototype, EventEmitter.prototype, IOPA.Body, false);
      cloneKeyBehaviors(contextPrototype, Stream.prototype, IOPA.Body, false);
      cloneKeyBehaviors(contextPrototype, Readable.prototype, IOPA.Body, false);
      cloneKeyBehaviors(contextPrototype, Writable.prototype, IOPA.Body, true);
-
+     
+     contextPrototype.write = function () { 
+         this[IOPA.Body].write.apply(this[IOPA.Body], Array.prototype.slice.call(arguments)); 
+         return this;
+         };
+    
+     contextPrototype.end = function () { 
+         this[IOPA.Body].once("finish", this.dispose);
+         this[IOPA.Body].end.apply(this[IOPA.Body], Array.prototype.slice.call(arguments)); 
+         return this;
+         };
+  
      // Put Header methods on context to proxy context["iopa.Header"] methods (note assume context and context.response share prototype)
      contextPrototype.writeHead = function () { this[IOPA.WriteHead].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.getHeader = function () { return this[IOPA.GetHeader].apply(this, Array.prototype.slice.call(arguments)); };
