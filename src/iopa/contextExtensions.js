@@ -61,11 +61,11 @@
        
        return new Promise(function(resolve, reject){
       
-         context[IOPA.Body].once("finish", function(){process.nextTick(function(){
-             context.dispose();
+         context[IOPA.Body].once("sent", function(){
+             process.nextTick(context.dispose);
              context = null;
              resolve();
-         })});
+         });
        
          context[IOPA.Body].end.apply(context[IOPA.Body], Array.prototype.slice.call(arguments)); 
        });
