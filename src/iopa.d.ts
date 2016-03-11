@@ -30,7 +30,7 @@
 *                                               *
 ************************************************/
 
-declare module "iopa" {
+declare module iopa {
 
     interface METHODS {
         connect: string,
@@ -84,7 +84,8 @@ declare module "iopa" {
         Opaque: string,
         WebSocket: string,
         Udp: string,
-        Tcp: string
+        Tcp: string,
+        Templates: string
     }
 
     interface SECURITY {
@@ -194,7 +195,8 @@ declare module "iopa" {
         LocalPortReuse: string,
         UnicastServer: string,
         MulticastPort: string,
-        MulticastAddress: string
+        MulticastAddress: string,
+        RenderTemplate: string
     }
 
     interface APPBUILDER {

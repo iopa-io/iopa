@@ -236,10 +236,9 @@ exports.default = AppBuilder;
 // DEFAULT HANDLERS:  RESPOND, DEFAULT APP, ERROR HELPER
 
 function RespondMiddleware(context, next) {
-
     var value = next();
     
-    if (value == undefined)
+    if (typeof value == 'undefined')
     {
       context.log.error("Server Error: One of the middleware functions on this server returned no value");
     }
@@ -278,7 +277,7 @@ function DefaultErrorHttp(context, err) {
     if (err === 404) {
         context.response.writeHead(404, { 'Content-Type': 'text/html' });
         context.response.write(Images.logo);
-        context.response.end('<h1>404 Not Found</h1><p>Could not find resource:</p><xmb>' + this.request.path + '</xmb>');
+        context.response.end('<h1>404 Not Found</h1><p>Could not find resource:</p><xmb>' + context[IOPA.Path] + '</xmb>');
     }
     else {
         context.response.writeHead(500, { 'Content-Type': 'text/html' });

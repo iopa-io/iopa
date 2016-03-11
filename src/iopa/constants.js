@@ -101,7 +101,8 @@ exports.IOPA = {
         Opaque: "urn:io.iopa:opaque",
         WebSocket: "urn:io.iopa.websocket",
         Udp: "urn:io.iopa.udp",
-        Tcp: "urn:io.iopa.tcp"
+        Tcp: "urn:io.iopa.tcp",
+        Templates: "urn:io.iopa.templates"
     },
 
     PUBSUB:
@@ -172,7 +173,8 @@ exports.SERVER = {
     LocalPortReuse: "server.LocalPortReuse",
     UnicastServer: "server.UnicastServer",
     MulticastPort: "server.MulticastPort",
-    MulticastAddress: "server.MulticastAddress"
+    MulticastAddress: "server.MulticastAddress",
+    RenderTemplate: "server.RenderTemplate"
   };
 
 exports.APPBUILDER =
