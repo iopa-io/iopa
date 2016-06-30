@@ -121,6 +121,16 @@ AppBuilder.prototype.listen = function listen(options) {
 }
 
 /**
+* Call App Pipeline to process given context
+*
+* @return {Promise} Promise that fulfills when pipeline is complete
+* @public
+*/
+AppBuilder.prototype.dispatch = function dispatch(context) {
+    return this.properties[SERVER.Pipeline].call(this, context);
+}
+
+/**
 * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
 *
 * @return {function(context): {Promise} IOPA application 
