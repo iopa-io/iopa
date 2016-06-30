@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2015 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +15,16 @@
  * limitations under the License.
  */
 
-/*
- * Module dependencies.
- */
- 
- const EventEmitter = require('events').EventEmitter,
-    Stream = require('stream'),
-    Readable = Stream.Readable,
-    Writable = Stream.Writable,
-    util = require('util'),
-
+const cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors,
     constants = require('./constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
-             
-    cloneFilter = require('../util/shallow').cloneFilter,
-    cloneKeyBehaviors = require('../util/prototype').cloneKeyBehaviors;
  
+    EventEmitter = require('events').EventEmitter,
+    Stream = require('stream'),
+    Readable = Stream.Readable,
+    Writable = Stream.Writable,
+  
 /**
  * Extend Context Prototype
  *
@@ -38,7 +32,7 @@
  * @returns (void)
  * @private
  */
- function PrototypeExtend(contextPrototype) {
+ function PrototypeExtendREST(contextPrototype) {
      // Put Stream/EventEmitter methods on context to proxy context["iopa.Body"] methods
     
      cloneKeyBehaviors(contextPrototype, EventEmitter.prototype, IOPA.Body, false);
@@ -79,26 +73,6 @@
      contextPrototype.set = function () { return this[IOPA.Set].apply(this, Array.prototype.slice.call(arguments)); };
      contextPrototype.fn = function () { return this[IOPA.Function].apply(this, Array.prototype.slice.call(arguments)); };
 
-     contextPrototype.toString = function () {
-         
-      //  return JSON.stringify(this, null, 4)
-         return util.inspect(cloneFilter(this, 
-             [SERVER.CancelTokenSource,
-                 IOPA.CancelToken,
-                 SERVER.Logger,
-                 "log",
-                 "response",
-                 IOPA.Events,
-                 SERVER.CancelTokenSource,
-                 IOPA.CancelToken,
-                 IOPA.Events,
-                 "dispose",
-                 SERVER.Factory,
-                  ]));
-         
-         ; //.replace(/\n/g, "\r");
-     }
-
      contextPrototype[IOPA.WriteHead] = function iopa_WriteHead(statusCode, headers) {
          this[IOPA.StatusCode] = statusCode;
 
@@ -132,57 +106,14 @@
      contextPrototype[IOPA.RemoveHeader] = function iopa_RemoveHeader(key, value) {
           _deleteIgnoreCase(this[IOPA.Headers], key);
           return this;
-     }    
-     
-     Object.defineProperty(contextPrototype, "log", {
-                       get: function () { return  this[SERVER.Logger] ;
-                       }  });
-                       
-     contextPrototype.using = function(appFuncPromiseOrValue){
-         if (typeof(appFuncPromiseOrValue) === 'function')
-            return _using(this, appFuncPromiseOrValue(this));
-         else
-           return _using(this, appFuncPromiseOrValue);
-     }          
+     }           
  }
  
- /*
-* ES6 finally/dispose pattern for IOPA Context
-* @param context Iopa
-* @param p Promise or value
-* returns Promise that always ultimately resolves to callback's result or rejects
-*/
-function _using(context, p) {
-
-    /**  bluebird version only -- not used:
-    *  	 return Promise.using(Promise.resolve(context)
-    *	 .disposer(function(context, promise){
-    *		  context.dispose();
-              context = null; 
-    *	 }), cb);
-    */
-
-     return new Promise(function (resolve, reject) {
-         if (typeof p === 'undefined')
-             p = null;
-         resolve(p);
-     }).then(function (value) {
-         return Promise.resolve(function () {
-             process.nextTick(function () { if (context.dispose) context.dispose() });
-             return value;
-         } ());
-     },
-         function (err) {
-             context.log.error(err);
-             process.nextTick(function () { if (context.dispose) context.dispose() });
-             throw err;
-         });
- };
  
  /**
   * DEFAULT EXPORT
   */
- exports.addTo = PrototypeExtend;
+ exports.addTo = PrototypeExtendREST;
  
  /**
   * Adds or updates a javascript object, case insensitive for key property

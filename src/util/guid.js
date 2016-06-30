@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

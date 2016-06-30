@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +23,9 @@ const iopa = require('../index'),
   constants = iopa.constants,
   IOPA = constants.IOPA,
   SERVER = constants.SERVER,
-  METHODS = constants.METHODS,
-  PORTS = constants.PORTS,
-  SCHEMES = constants.SCHEMES,
-  PROTOCOLS = constants.PROTOCOLS,
-  APP = constants.APP,
-  COMMONKEYS = constants.COMMONKEYS,
-  OPAQUE = constants.OPAQUE,
-  WEBSOCKET = constants.WEBSOCKET,
-  SECURITY = constants.SECURITY;
-
+  ACTIONS = constants.ACTIONS,
+  APP = constants.APP
+ 
 describe('#IOPA()', function () {
 
   var context, app, factory = new iopa.Factory({});
@@ -46,15 +40,9 @@ describe('#IOPA()', function () {
     (context.hasOwnProperty(IOPA.Seq) == -1).should.be.false;
     (context.hasOwnProperty(SERVER.Logger) == -1).should.be.false;
     (context.hasOwnProperty(SERVER.CancelTokenSource) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.Headers) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Method) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.Host) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.Path) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.PathBase) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.Protocol) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.QueryString) == -1).should.be.false;
-    (context.hasOwnProperty(IOPA.Scheme) == -1).should.be.false;
     (context.hasOwnProperty(IOPA.Body) == -1).should.be.false;
+    (context.hasOwnProperty(IOPA.Path) == -1).should.be.false;
     (context.hasOwnProperty("IGNOREME") == -1).should.be.true;
 
   });
@@ -151,10 +139,10 @@ describe('#CancellationTokenSource()', function () {
   
   it('should register a callback and cancel a token', function (done) {
     token.onCancelled(function(reason){
-      reason.should.equal(IOPA.EVENTS.Disconnect);
+      reason.should.equal("EVENT REASON 126");
       process.nextTick(done);
     });
-    tokensource.cancel(IOPA.EVENTS.Disconnect);
+    tokensource.cancel("EVENT REASON 126");
     token.isCancelled.should.equal(true);
     tokensource.isCancelled.should.equal(true);
   });

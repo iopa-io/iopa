@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +32,6 @@ const iopa = require('./index'),
 var test = new IopaApp();
 var seq = 0;
 test.use(function (context, next) {
-   context[IOPA.Method] = "PUT";
    if (seq++ == 0)
    {
     context[SERVER.Capabilities]["urn:io.iopa:demo"] = "will only survive one record";
@@ -47,8 +47,12 @@ test.use(function (next) {
 });
 
 var demo = test.build();
+demo.listen();
 
 var context = iopaFactory.createContext();
+context[IOPA.Method] = "GET";
+context[IOPA.Path] = "/test";
+context[IOPA.Body] = {hello: "world"};
 
 context.using(demo);
 
@@ -57,4 +61,4 @@ context = iopaFactory.createContext();
 demo(context);
 
 context.dispose();
-console.log("CLOSE " + context.toString());
+console.log("DISPOSED " + context.toString());

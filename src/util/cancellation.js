@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +15,6 @@
  * limitations under the License.
  */
 
-const constants = require('../iopa/constants'),
-    IOPA = constants.IOPA
-    
 /**
  * A Cancellation Token Source
  *
@@ -31,6 +29,9 @@ const constants = require('../iopa/constants'),
  * @constructor
  * @public
  */
+
+const constants = require('../iopa/constants'),
+    IOPA = constants.IOPA
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 

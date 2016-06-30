@@ -7,12 +7,8 @@
 [![NPM](https://nodei.co/npm/iopa.png?downloads=true&downloadRank=true)](https://nodei.co/npm/iopa/)
 
 ## About
-This repository `iopa` is an API-first, Internet of Things (IoT) stack for Node.js. 
+This repository `iopa` is an API-first, Internet of Things (IoT) fabric
 It is the official implementation of the Internet of Protocols Alliance (IOPA) reference pattern
-
-It is open-source, drop-in replacement for legacy stacks based on Connect, Express, and Koa, with built-in seamless bridging to Node's built-in HTTP server,
-but the real power comes from creating a common pattern for IoT devices that seamless run as COAP servers using [`iopa-coap`](https://github.com/iopa-io/iopa-coap), 
-MQTT brokers/clients using [`iopa-coap`](https://github.com/iopa-io/iopa-mqtt), and even native mobile and desktop applications using [nodekit.io](https://github.com/limerun/nodekit)
 
 ## Target Audience
 This repository is primarily geared at application developers and device developers who want to connect their products to the Internet of Things, but don't want
@@ -52,7 +48,7 @@ constants for intellisense development, and provides a robust, tested example of
 IOPA context with automatic scope tracking). 
 
 IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent.  The pattern works for 
-Node.js javascript (including V4.0+),  browser-side javascript, Swift V2., Objective-C and Golang.   The reference implementation is written in javascript for Node.js 4.x.
+Node.js javascript (including V4.0+),  browser-side javascript, Swift V2., Objective-C and Golang.   The reference implementation is written in javascript for Node.js 5.x
 
 Published as open-source without dependence on any implementation or platform, the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.). 
 Because it is a well-defined pattern that uses only base language features it is not even necessary to include this repository in any microservices that rely on it.  The entire

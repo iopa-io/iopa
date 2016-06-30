@@ -4,7 +4,7 @@
  * Included without functional changes
  * just license notice added
  * 
- * Simple function but has now been deprecated in Node.js so including here
+ * Simple function but has now been deprecated in Node.js but including here
  * 
  * This license applies to this module only
  */

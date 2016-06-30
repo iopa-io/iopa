@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Internet of Protocols Alliance (IOPA)
+ * Internet Open Protocol Abstraction (IOPA)
+ * Copyright (c) 2016 Internet of Protocols Alliance 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +19,6 @@
  * Module dependencies.
  */
 
-    
 /**
  * Assures that the middleware is represented as IOPA middleware promise format (promise) fn(context, next)  where next = (promise) function()
  *
@@ -60,7 +60,6 @@ function Middleware(app, middleware, action){
                        throw("no " + action +" function exists on middleware " + middleware.toString());
                        
                   }
-                  break;
                 
                 //fn(req,res) or fn(context, next)
             case 2:      
@@ -72,21 +71,17 @@ function Middleware(app, middleware, action){
                 {
                     return middleware;
                 }
-                 break;
                  
                 //fn(req,res,next)
             case 3:
                  throw("must require 'iopa-connect' to use Connect/Express style middleware");
-                 break;
                   
                 //fn(err,req,res,next)
             case 4:
                  throw("must require 'iopa-connect' to use Connect/Express style middleware");
-                 break;
              
             default:
                 throw("unknown middleware");
-                 break;
         
         }
     }
