@@ -21,7 +21,8 @@ const CancellationTokenSource = require('../util/cancellation').default,
     SERVER = constants.SERVER,
     VERSION = constants.VERSION,
     util = require('../util/util'),
-    cloneFilter = require('../util/shallow').cloneFilter,
+    EventEmitter = require('../util/events').EventEmitter,
+    cloneFilter = require('../util/shallow').cloneFilter;
 
 /* *********************************************************
  * IOPA CONTEXT
@@ -106,6 +107,16 @@ function _using(context, p) {
             process.nextTick(function () { if (context.dispose) context.dispose() });
             throw err;
         });
+};
+
+const maxSequence = Math.pow(2, 16);
+var _lastSequence = Math.floor(Math.random() * (maxSequence - 1));
+
+function _nextSequence() {
+    if (++_lastSequence === maxSequence)
+        _lastSequence = 1;
+
+    return _lastSequence.toString();
 };
 
 exports.default = IopaContext;

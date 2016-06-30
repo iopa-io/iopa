@@ -22,7 +22,8 @@ const CancellationTokenSource = require('../util/cancellation').default,
     VERSION = constants.VERSION
     cloneDoubleLayer = require('../util/shallow').cloneDoubleLayer,
     merge = require('../util/shallow').merge,
-    IopaContext = require('../context').default;
+    IopaContext = require('./context').default,
+    FreeList = require('../util/freelist').FreeList;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -110,15 +111,7 @@ Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childCo
 
 };
 
-const maxSequence = Math.pow(2, 16);
-var _lastSequence = Math.floor(Math.random() * (maxSequence - 1));
 
-function _nextSequence() {
-    if (++_lastSequence === maxSequence)
-        _lastSequence = 1;
-
-    return _lastSequence.toString();
-};
 
 // EXPORTS  
 exports.default = Factory;
