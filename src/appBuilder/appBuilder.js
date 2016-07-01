@@ -141,7 +141,7 @@ AppBuilder.prototype.listen = function listen(options) {
 * @return {function(context): {Promise} IOPA application 
 * @public
 */
-AppBuilder.prototype.listen = function close(options) {
+AppBuilder.prototype.close = function close(options) {
     return this.properties[SERVER.Pipeline].close.call(this, options);
 }
 
@@ -155,6 +155,7 @@ AppBuilder.prototype.dispatch = function dispatch(context) {
     return this.properties[SERVER.Pipeline].call(this, context);
 }
 
+
 /**
 * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
 *
@@ -162,36 +163,6 @@ AppBuilder.prototype.dispatch = function dispatch(context) {
 * @public
 */
 AppBuilder.prototype.compose_ = function compose_(middleware) {
-    var app = this;
-    return function app_pipeline(context) {
-        const capabilities = app.properties[SERVER.Capabilities];
-        merge(context[SERVER.Capabilities], clone(capabilities));
-        if (context.response)
-            merge(context.response[SERVER.Capabilities], clone(capabilities));
-
-        var i, next, curr;
-        i = middleware.length;
-        next = function () {
-            return Promise.resolve(context);
-        };
-        while (i--) {
-            curr = middleware[i];
-            var invokeremainder = (function (curr, next, newContext) { curr.call(this, newContext, next) }).bind(app, curr, next);
-            next = curr.bind(app, context, next);
-            next.invoke = invokeremainder;
-        }
-        return next();
-    };
-}
-
-
-/**
-* Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
-*
-* @return {function(context): {Promise} IOPA application 
-* @public
-*/
-AppBuilder.prototype.compose = function compose(middleware) {
     var app = this;  
     return function app_pipeline(context) {
         const capabilities = app.properties[SERVER.Capabilities];
