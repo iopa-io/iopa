@@ -67,7 +67,12 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 *
 * @param mw the middleware to add 
 */
-AppBuilder.prototype.use = function use(mw) {
+AppBuilder.prototype.use = function use(method, mw) {
+    if (typeof method == 'function' && !mw)
+    {
+      mw = method;
+      method = 'invoke';
+    }
 
     var params = private_getParams(mw);
     if (params === 'app') {
@@ -88,7 +93,7 @@ AppBuilder.prototype.use = function use(mw) {
 
     }
     else
-        this.middleware.invoke.push(this.middlewareProxy(this, mw));
+        this.middleware[method].push(this.middlewareProxy(this, mw));
 
     return this;
 }
