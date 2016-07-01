@@ -51,7 +51,7 @@ function AppBuilder() {
     defaults[APPBUILDER.DefaultMiddleware] = [DefaultMiddleware];
 
     merge(this.properties, defaults);
-    this.middleware = { invoke: [], listen: [] };
+    this.middleware = { invoke: [], listen: [], close: [], dispatch: [] };
 }
 
 Object.defineProperty(AppBuilder.prototype, "log", {
@@ -80,13 +80,18 @@ AppBuilder.prototype.use = function use(mw) {
         if (typeof mw_instance.listen === 'function')
             this.middleware.listen.push(mw_instance.listen.bind(mw_instance));
 
+        if (typeof mw_instance.close === 'function')
+            this.middleware.close.push(mw_instance.close.bind(mw_instance));
+
+        if (typeof mw_instance.dispatch === 'function')
+            this.middleware.dispatch.push(mw_instance.dispatch.bind(mw_instance));
+
     }
     else
         this.middleware.invoke.push(this.middlewareProxy(this, mw));
 
     return this;
 }
-
 
 /**
 * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
@@ -104,6 +109,16 @@ AppBuilder.prototype.build = function build() {
     else
         pipeline.listen = function (context) { return Promise.resolve(context); };
 
+    if (this.middleware.close.length > 0)
+        pipeline.close = this.compose_(this.middleware.close);
+     else
+        pipeline.close = function (context) { return Promise.resolve(context); };
+
+    if (this.middleware.dispatch.length > 0)    
+       pipeline.dispatch = this.compose(this.middleware.dispatch.reverse());
+     else
+       pipeline.dispatch =  function (context) {return Promise.resolve(context);};
+
     pipeline.properties = this.properties;
     this.properties[SERVER.IsBuilt] = true;
     this.properties[SERVER.Pipeline] = pipeline;
@@ -118,6 +133,16 @@ AppBuilder.prototype.build = function build() {
 */
 AppBuilder.prototype.listen = function listen(options) {
     return this.properties[SERVER.Pipeline].listen.call(this, options);
+}
+
+/**
+* Call Close Pipeline to typically stop Servers
+*
+* @return {function(context): {Promise} IOPA application 
+* @public
+*/
+AppBuilder.prototype.listen = function close(options) {
+    return this.properties[SERVER.Pipeline].close.call(this, options);
 }
 
 /**
@@ -154,6 +179,36 @@ AppBuilder.prototype.compose_ = function compose_(middleware) {
             var invokeremainder = (function (curr, next, newContext) { curr.call(this, newContext, next) }).bind(app, curr, next);
             next = curr.bind(app, context, next);
             next.invoke = invokeremainder;
+        }
+        return next();
+    };
+}
+
+
+/**
+* Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
+*
+* @return {function(context): {Promise} IOPA application 
+* @public
+*/
+AppBuilder.prototype.compose = function compose(middleware) {
+    var app = this;  
+    return function app_pipeline(context) {
+        const capabilities = app.properties[SERVER.Capabilities];
+         merge(context[SERVER.Capabilities], clone(capabilities));
+         if (context.response)
+           merge(context.response[SERVER.Capabilities], clone(capabilities));
+        
+        var i, next, curr;
+        i = middleware.length;
+        next = function () { return Promise.resolve(context); };
+        next.dispatch =  function (ctx) {
+            return Promise.resolve(ctx);
+        };
+        while (i--) {
+            curr = middleware[i];
+            next = curr.bind(app, context, next);
+            next.invoke = function(newcontext){ curr.call(app, newcontext, next); }
         }
         return next();
     };
