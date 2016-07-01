@@ -51,7 +51,7 @@ function AppBuilder() {
     defaults[APPBUILDER.DefaultMiddleware] = [DefaultMiddleware];
 
     merge(this.properties, defaults);
-    this.middleware = { invoke: [], listen: [], close: [], dispatch: [] };
+    this.middleware = { invoke: [], listen: [], close: [], create: [], dispatch: [] };
 }
 
 Object.defineProperty(AppBuilder.prototype, "log", {
@@ -68,7 +68,7 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 * @param mw the middleware to add 
 */
 AppBuilder.prototype.use = function use(method, mw) {
-    if (typeof method == 'function' && !mw)
+    if (typeof method === 'function' && !mw)
     {
       mw = method;
       method = 'invoke';
