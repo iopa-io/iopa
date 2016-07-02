@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-
 const Middleware = require('./middleware').default,
     guidFactory = require('../util/guid').default,
+    Factory = require('../iopa/factory').default,
 
     merge = require('../util/shallow').merge,
     clone = require('../util/shallow').cloneDoubleLayer,
@@ -51,7 +51,7 @@ function AppBuilder() {
     defaults[APPBUILDER.DefaultMiddleware] = [DefaultMiddleware];
 
     merge(this.properties, defaults);
-    this.middleware = { invoke: [], listen: [], close: [], create: [], dispatch: [] };
+    this.middleware = { invoke: [], dispatch: [] };
 }
 
 Object.defineProperty(AppBuilder.prototype, "log", {
@@ -61,6 +61,13 @@ Object.defineProperty(AppBuilder.prototype, "log", {
 });
 
 AppBuilder.prototype.middlewareProxy = Middleware;
+
+AppBuilder.prototype.Factory = new Factory();
+
+AppBuilder.prototype.createContext = function(url){
+    var context = this.Factory.createContext(url);
+    return context;
+};
 
 /**
 * Add Middleware Function to AppBuilder pipeline
@@ -74,6 +81,9 @@ AppBuilder.prototype.use = function use(method, mw) {
       method = 'invoke';
     }
 
+    if (!this.middleware[method])
+      throw ("Unknown AppBuilder Category " + method)
+
     var params = private_getParams(mw);
     if (params === 'app') {
         var mw_instance = Object.create(mw.prototype);
@@ -81,12 +91,6 @@ AppBuilder.prototype.use = function use(method, mw) {
 
         if (typeof mw_instance.invoke === 'function')
             this.middleware.invoke.push(mw_instance.invoke.bind(mw_instance));
-
-        if (typeof mw_instance.listen === 'function')
-            this.middleware.listen.push(mw_instance.listen.bind(mw_instance));
-
-        if (typeof mw_instance.close === 'function')
-            this.middleware.close.push(mw_instance.close.bind(mw_instance));
 
         if (typeof mw_instance.dispatch === 'function')
             this.middleware.dispatch.push(mw_instance.dispatch.bind(mw_instance));
@@ -109,18 +113,8 @@ AppBuilder.prototype.build = function build() {
     var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.invoke).concat(this.properties[APPBUILDER.DefaultApp]);
     var pipeline = this.compose_(middleware);
 
-    if (this.middleware.listen.length > 0)
-        pipeline.listen = this.compose_(this.middleware.listen);
-    else
-        pipeline.listen = function (context) { return Promise.resolve(context); };
-
-    if (this.middleware.close.length > 0)
-        pipeline.close = this.compose_(this.middleware.close);
-     else
-        pipeline.close = function (context) { return Promise.resolve(context); };
-
     if (this.middleware.dispatch.length > 0)    
-       pipeline.dispatch = this.compose(this.middleware.dispatch.reverse());
+       pipeline.dispatch = this.compose_(this.middleware.dispatch.reverse());
      else
        pipeline.dispatch =  function (context) {return Promise.resolve(context);};
 
@@ -131,35 +125,24 @@ AppBuilder.prototype.build = function build() {
 }
 
 /**
-* Call Listen Pipeline to typically start Servers
-*
-* @return {function(context): {Promise} IOPA application 
-* @public
-*/
-AppBuilder.prototype.listen = function listen(options) {
-    return this.properties[SERVER.Pipeline].listen.call(this, options);
-}
-
-/**
-* Call Close Pipeline to typically stop Servers
-*
-* @return {function(context): {Promise} IOPA application 
-* @public
-*/
-AppBuilder.prototype.close = function close(options) {
-    return this.properties[SERVER.Pipeline].close.call(this, options);
-}
-
-/**
-* Call App Pipeline to process given context
+* Call Dispatch Pipeline  to process given context
 *
 * @return {Promise} Promise that fulfills when pipeline is complete
 * @public
 */
 AppBuilder.prototype.dispatch = function dispatch(context) {
-    return this.properties[SERVER.Pipeline].call(this, context);
+    return this.properties[SERVER.Pipeline].dispatch.call(this, context);
 }
 
+/**
+* Call App Invoke Pipeline to process given context
+*
+* @return {Promise} Promise that fulfills when pipeline is complete
+* @public
+*/
+AppBuilder.prototype.invoke = function invoke(context) {
+    return this.properties[SERVER.Pipeline].call(this, context);
+}
 
 /**
 * Compile/Build all Middleware in the Pipeline into single IOPA AppFunc
@@ -170,8 +153,11 @@ AppBuilder.prototype.dispatch = function dispatch(context) {
 AppBuilder.prototype.compose_ = function compose_(middleware) {
     var app = this;  
     return function app_pipeline(context) {
-        const capabilities = app.properties[SERVER.Capabilities];
+        if (context[SERVER.Capabilities])
+        {
+         const capabilities = app.properties[SERVER.Capabilities];
          merge(context[SERVER.Capabilities], clone(capabilities));
+        }
          if (context.response)
            merge(context.response[SERVER.Capabilities], clone(capabilities));
         

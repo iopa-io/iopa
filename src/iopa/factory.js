@@ -25,6 +25,7 @@ const CancellationTokenSource = require('../util/cancellation').default,
     IopaContext = require('./context').default,
     FreeList = require('../util/freelist').FreeList;
 
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -88,12 +89,15 @@ Factory.prototype._dispose = function factory_dispose(context) {
 /**
 * Create a new IOPA Context Core, with default [iopa.*] values populated
 */
-Factory.prototype.createContext = function factory_createContext() {
+Factory.prototype.createContext = function factory_createContext(url) {
     var context = this._create();
    
-    context[IOPA.Method] = "IOPA";
+    context[IOPA.Method] = IOPA.METHODS.data;
     context[IOPA.Path] = "";
-    context[IOPA.Body] = {};
+    context[IOPA.Body] = null;
+
+    if (url)
+       context.parseUrl(url);
   
     return context;
 };

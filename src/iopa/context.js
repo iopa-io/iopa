@@ -22,7 +22,8 @@ const CancellationTokenSource = require('../util/cancellation').default,
     VERSION = constants.VERSION,
     util = require('../util/util'),
     EventEmitter = require('../util/events').EventEmitter,
-    cloneFilter = require('../util/shallow').cloneFilter;
+    cloneFilter = require('../util/shallow').cloneFilter,
+    URLParse = require('../util/url').default;
 
 /* *********************************************************
  * IOPA CONTEXT
@@ -69,6 +70,10 @@ IopaContext.prototype.toString = function () {
             "dispose",
             SERVER.Factory,
         ]));
+}
+
+IopaContext.prototype.parseUrl = function (url) {
+   URLParse(this, url);
 }
 
 Object.defineProperty(IopaContext.prototype, "log", {

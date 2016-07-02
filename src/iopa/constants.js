@@ -21,9 +21,12 @@ exports.IOPA = {
     Method: "iopa.Method",
     Path: "iopa.Path",
     Body: "iopa.Body",
+    Scheme: "iopa.Scheme",
     QueryString: "iopa.QueryString",
     Protocol: "iopa.Protocol",
-   
+    Auth: "iopa.Auth",
+    Host: "iopa.Host",
+    Port: "iopa.Port",
     Version: "iopa.Version",
     Error: "iopa.Error",
     Seq: "iopa.Seq",
@@ -54,6 +57,8 @@ exports.SERVER = {
     AppId: "server.AppId",
     IsChild: "server.IsChild",
     ParentContext: "server.ParentContext",
+    RawStream: "server.RawStream",
+    RawTransport: "server.RawTransport"
 };
 
 exports.APPBUILDER =
