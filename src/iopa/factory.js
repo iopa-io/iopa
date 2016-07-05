@@ -77,15 +77,16 @@ Factory.prototype.createContext = function factory_createContext(url, options) {
     context.dispose = this._dispose.bind(this, context);
     context[SERVER.Logger] = this._logger;
 
-    context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET;
-    context[IOPA.Path] = "";
-    context[IOPA.Body] = null;
+    if (!options["reqres"]) {
+        context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET;
+        context[IOPA.Path] = "";
+        context[IOPA.Body] = null;
 
-    context[SERVER.IsLocalOrigin] = true;
-    context[SERVER.IsRequest] = true;
-
-    if (url)
-        context.parseUrl(url);
+        context[SERVER.IsLocalOrigin] = true;
+        context[SERVER.IsRequest] = true;
+        if (url)
+            context.parseUrl(url);
+    }
 
     context.create = this.createChildContext.bind(this, context);
 
@@ -177,6 +178,23 @@ Factory.prototype.validOptions = function factory_validOptions(options) {
         return { [IOPA.Method]: options };
     else
         return options || {};
+};
+
+/**
+ * Creates a new IOPA Context for Connect
+ *
+ * @method createContext
+ *
+ * @param url string representation of scheme://host/hello?querypath
+ * @param options object 
+ * @returns context
+ * @public
+ */
+Factory.prototype._createRaw = function factory_createRaw() {
+    var context = this._factory.alloc().init();
+    context.dispose = this._dispose.bind(this, context);
+    context[SERVER.Logger] = this._logger;
+    return context;
 };
 
 exports.default = Factory;
