@@ -157,9 +157,9 @@ export class Factory {
     createContext(): IopaContext;
 
     /**
-    * Create a new barebones IOPA Request without a response record
-    */
-    _create(): IopaContext;
+     * Create a new IOPA Child Context for given parent context
+     */
+    createChildContext(parentContext: IopaContext, url?: string, options?: any): IopaContext;
 
     /**
     * Release the memory used by a given IOPA Context

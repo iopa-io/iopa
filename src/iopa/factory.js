@@ -19,19 +19,19 @@ const CancellationTokenSource = require('../util/cancellation').default,
     constants = require('./constants'),
     IOPA = constants.IOPA,
     SERVER = constants.SERVER,
-    VERSION = constants.VERSION
+    VERSION = constants.VERSION,
     cloneDoubleLayer = require('../util/shallow').cloneDoubleLayer,
     merge = require('../util/shallow').merge,
     IopaContext = require('./context').default,
-    FreeList = require('../util/freelist').FreeList;
-
+    FreeList = require('../util/freelist').FreeList,
+    mergeContext = require('../util/shallow').mergeContext;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * Represents IopaContext Factory of up to 100 items
  *
- * @instance IopaContextFactory
+ * @instance Factory
 
  * @method alloc()  get new IopaContext from pool or by creation if none available; remember to call context.init();
  * @method free(context)   return IopaContext to the pool for reuse
@@ -41,40 +41,118 @@ function Factory(options) {
 
     options = options || {};
     var size = options["factory.Size"] || 100;
-    
+
     this._logger = options[SERVER.Logger] || console;
 
     this._factory = new FreeList('IopaContext', size, function () { return IopaContext.apply(Object.create(IopaContext.prototype)); });
 }
 
+//STATIC PROPERTIES
+
 Factory.Context = IopaContext;
+
+//PUBLIC PROPERTIES 
 
 Object.defineProperty(Factory.prototype, SERVER.Logger, {
     get: function () { return this._logger; },
     set: function (value) { this._logger = value; }
 });
 
+//PUBLIC METHODS 
 
 /**
-* Create a new barebones IOPA Request with or without a response record
-*/
-Factory.prototype._create = function factory_create() {
+ * Creates a new IOPA Context 
+ *
+ * @method createContext
+ *
+ * @param url string representation of scheme://host/hello?querypath
+ * @param options object 
+ * @returns context
+ * @public
+ */
+Factory.prototype.createContext = function factory_createContext(url, options) {
+    options = this.validOptions(options);
+
     var context = this._factory.alloc().init();
     context.dispose = this._dispose.bind(this, context);
     context[SERVER.Logger] = this._logger;
-    context[SERVER.Factory] = this;
-     return context;
+
+    context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET;
+    context[IOPA.Path] = "";
+    context[IOPA.Body] = null;
+
+    context[SERVER.IsLocalOrigin] = true;
+    context[SERVER.IsRequest] = true;
+
+    if (url)
+        context.parseUrl(url);
+
+    context.create = this.createChildContext.bind(this, context);
+
+    mergeContext(context, options);
+
+    return context;
 };
 
 /**
-* Release the memory used by a given IOPA Context
-*
-* @param context the context to free 
-*/
+ * Creates a new IOPA Context that is a child request/response of a parent Context
+ *
+ * @method createChildContext
+ *
+ * @param parentContext IOPA Context for parent
+ * @param url string representation of /hello to add to parent url
+ * @param options object 
+ * @returns context
+ * @public
+ */
+Factory.prototype.createChildContext = function factory_createChildContext(parentContext, url, options) {
+    options = this.validOptions(options);
+
+    var context = this.createContext();
+    this.mergeCapabilities(context, parentContext);
+
+    context[IOPA.Path] = parentContext[IOPA.Path] + (url || "");
+    context[IOPA.Scheme] = parentContext[IOPA.Scheme];
+    context[IOPA.Host] = parentContext[IOPA.Host];
+    context[IOPA.Port] = parentContext[IOPA.Port];
+
+    mergeContext(context, options);
+
+    return context;
+};
+
+//PROTECTED AND PRIVATE METHODS
+
+/**
+ * Merges SERVER.Capabilities of parent Context onto child Context
+ *
+ * @method mergeCapabilities
+ *
+ * @param parentContext IOPA Context for parent
+ * @param childContext IOPA Context for child that is modified by this method
+ * @protected
+ */
+Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childContext, parentContext) {
+
+    childContext[SERVER.ParentContext] = parentContext;
+    merge(childContext[SERVER.Capabilities], cloneDoubleLayer(parentContext[SERVER.Capabilities]));
+
+    if (childContext.response && parentContext.response)
+        merge(childContext.response[SERVER.Capabilities], cloneDoubleLayer(parentContext.response[SERVER.Capabilities]));
+};
+
+/**
+ * Release the memory used by a given IOPA Context
+ *
+ * @method _dispose
+ *
+ * @param context object  the context to free 
+ * @private
+ */
 Factory.prototype._dispose = function factory_dispose(context) {
-   if (context == null || context[SERVER.CancelTokenSource] == null)
+    if (context == null || context[SERVER.CancelTokenSource] == null)
         return;
-  
+
     if (context.response) {
         var response = context.response;
         for (var prop in response) { if (response.hasOwnProperty(prop)) { response[prop] = null; } }
@@ -87,35 +165,18 @@ Factory.prototype._dispose = function factory_dispose(context) {
 };
 
 /**
-* Create a new IOPA Context Core, with default [iopa.*] values populated
-*/
-Factory.prototype.createContext = function factory_createContext(url) {
-    var context = this._create();
-   
-    context[IOPA.Method] = IOPA.METHODS.data;
-    context[IOPA.Path] = "";
-    context[IOPA.Body] = null;
-
-    if (url)
-       context.parseUrl(url);
-  
-    return context;
+ * Clean Options;  allows overide for future validation
+ *
+ * @method validOptions
+ *
+ * @param options string or object dictionary
+ * @protected
+ */
+Factory.prototype.validOptions = function factory_validOptions(options) {
+    if (typeof options === 'string' || options instanceof String)
+        return { [IOPA.Method]: options };
+    else
+        return options || {};
 };
 
-/**
-* Create a new IOPA Context, with default [iopa.*] values populated
-*/
-Factory.prototype.mergeCapabilities = function factory_mergeCapabilities(childContext, parentContext) {
-   
-    childContext[SERVER.ParentContext] = parentContext;
-    merge(childContext[SERVER.Capabilities], cloneDoubleLayer(parentContext[SERVER.Capabilities]));
-   
-    if (childContext.response)
-       merge(childContext.response[SERVER.Capabilities], cloneDoubleLayer(parentContext.response[SERVER.Capabilities]));
-
-};
-
-
-
-// EXPORTS  
 exports.default = Factory;

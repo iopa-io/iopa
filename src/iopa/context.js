@@ -44,15 +44,15 @@ function IopaContext() {
 * Initialize blank IopaContext object
 * Generic properties common to all server types included
 *
-* @method Init
+* @method init
 */
 IopaContext.prototype.init = function init() {
     this[IOPA.Version] = VERSION;
     this[IOPA.Seq] = "#" + _nextSequence();
+    this[IOPA.Events] = new EventEmitter();
     this[SERVER.CancelTokenSource] = new CancellationTokenSource();
     this[SERVER.Capabilities] = {};
     this[SERVER.CancelToken] = this[SERVER.CancelTokenSource].token;
-    this[SERVER.Events] = new EventEmitter();
     return this;
 };
 

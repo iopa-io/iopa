@@ -144,3 +144,29 @@ exports.cloneFilter = function clone(source, blacklist) {
 
     return clone;
 };
+
+exports.mergeContext = function mergeContext(target, defaults) {
+   
+   if (!target) 
+        throw new Error("target must not be empty");
+     
+     if (!defaults) 
+        return; // nothing to do   
+        
+    for (var key in defaults) {
+        if (defaults.hasOwnProperty(key) && (key !== IOPA.Headers)) target[key] = defaults[key];
+    }
+    
+    if (defaults.hasOwnProperty(IOPA.Headers))
+    {
+        var targetHeaders = target[IOPA.Headers] || {};
+        var sourceHeaders = defaults[IOPA.Headers];
+                
+        for (var key in defaults[IOPA.Headers]) {
+            if (sourceHeaders.hasOwnProperty(key)) targetHeaders[key] = sourceHeaders[key];
+        }
+        
+        target[IOPA.Headers] = targetHeaders;
+   
+    } 
+};

@@ -30,6 +30,8 @@ exports.IOPA = {
     Version: "iopa.Version",
     Error: "iopa.Error",
     Seq: "iopa.Seq",
+    Events: "iopa.Events",
+    Headers: "iopa.Headers",
 
      METHODS: {
         data: "urn:io.iopa:data",
@@ -53,12 +55,13 @@ exports.SERVER = {
     Factory: "server.Factory",
     CancelToken: "server.CancelToken",
     CancelTokenSource: "server.CancelTokenSource",
-    Events: "server.Events",
     AppId: "server.AppId",
     IsChild: "server.IsChild",
     ParentContext: "server.ParentContext",
     RawStream: "server.RawStream",
-    RawTransport: "server.RawTransport"
+    RawTransport: "server.RawTransport",
+    IsLocalOrigin: "server.IsLocalOrigin",
+    IsRequest: "server.IsRequest"
 };
 
 exports.APPBUILDER =

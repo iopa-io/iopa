@@ -64,8 +64,8 @@ AppBuilder.prototype.middlewareProxy = Middleware;
 
 AppBuilder.prototype.Factory = new Factory();
 
-AppBuilder.prototype.createContext = function(url){
-    var context = this.Factory.createContext(url);
+AppBuilder.prototype.createContext = function (url, options) {
+    var context = this.Factory.createContext(url, options);
     return context;
 };
 
@@ -75,14 +75,13 @@ AppBuilder.prototype.createContext = function(url){
 * @param mw the middleware to add 
 */
 AppBuilder.prototype.use = function use(method, mw) {
-    if (typeof method === 'function' && !mw)
-    {
-      mw = method;
-      method = 'invoke';
+    if (typeof method === 'function' && !mw) {
+        mw = method;
+        method = 'invoke';
     }
 
     if (!this.middleware[method])
-      throw ("Unknown AppBuilder Category " + method)
+        throw ("Unknown AppBuilder Category " + method)
 
     var params = private_getParams(mw);
     if (params === 'app') {
@@ -113,10 +112,10 @@ AppBuilder.prototype.build = function build() {
     var middleware = this.properties[APPBUILDER.DefaultMiddleware].concat(this.middleware.invoke).concat(this.properties[APPBUILDER.DefaultApp]);
     var pipeline = this.compose_(middleware);
 
-    if (this.middleware.dispatch.length > 0)    
-       pipeline.dispatch = this.compose_(this.middleware.dispatch.reverse());
-     else
-       pipeline.dispatch =  function (context) {return Promise.resolve(context);};
+    if (this.middleware.dispatch.length > 0)
+        pipeline.dispatch = this.compose_(this.middleware.dispatch.reverse());
+    else
+        pipeline.dispatch = function (context) { return Promise.resolve(context); };
 
     pipeline.properties = this.properties;
     this.properties[SERVER.IsBuilt] = true;
@@ -151,28 +150,33 @@ AppBuilder.prototype.invoke = function invoke(context) {
 * @public
 */
 AppBuilder.prototype.compose_ = function compose_(middleware) {
-    var app = this;  
+    var app = this;
+
+    var i, next, curr;
+    i = middleware.length;
+    next = function (context) { return Promise.resolve(context); };
+    nextinvoke = function (context) { return Promise.resolve(context); };
+
+    while (i--) {
+        curr = middleware[i];
+        next = (function (fn, prev, context) {
+            var _next = prev.bind(app, context);
+            _next.invoke = prev;
+            return fn.call(app, context, _next)
+        }.bind(app, curr, next));
+    }
+
     return function app_pipeline(context) {
-        if (context[SERVER.Capabilities])
-        {
-         const capabilities = app.properties[SERVER.Capabilities];
-         merge(context[SERVER.Capabilities], clone(capabilities));
+
+        if (context[SERVER.Capabilities]) {
+            const capabilities = app.properties[SERVER.Capabilities];
+            merge(context[SERVER.Capabilities], clone(capabilities));
         }
-         if (context.response)
-           merge(context.response[SERVER.Capabilities], clone(capabilities));
-        
-        var i, next, curr;
-        i = middleware.length;
-        next = function () { return Promise.resolve(context); };
-        next.dispatch =  function (ctx) {
-            return Promise.resolve(ctx);
-        };
-        while (i--) {
-            curr = middleware[i];
-            next = curr.bind(app, context, next);
-            next.invoke = function(newcontext){ curr.call(app, newcontext, next); }
-        }
-        return next();
+
+        if (context.response)
+            merge(context.response[SERVER.Capabilities], clone(capabilities));
+
+        return next.call(app, context);
     };
 }
 
