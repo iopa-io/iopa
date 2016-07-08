@@ -40,6 +40,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function AppBuilder() {
     _classCallCheck(this, AppBuilder);
     this.properties = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+   
+    if (typeof this.properties == 'string' || this.properties instanceof String)
+      this.properties = { "server.AppId": this.properties };
+
 
     var defaults = {};
     defaults[SERVER.AppId] = guidFactory();
