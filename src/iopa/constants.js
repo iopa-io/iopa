@@ -32,6 +32,8 @@ exports.IOPA = {
     Seq: "iopa.Seq",
     Events: "iopa.Events",
     Headers: "iopa.Headers",
+    RawBody: "iopa.RawBody",
+    StatusCode: "iopa.StatusCode",
 
      METHODS: {
         data: "urn:io.iopa:data",
