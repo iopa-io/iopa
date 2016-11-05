@@ -172,13 +172,15 @@ AppBuilder.prototype.compose_ = function compose_(middleware) {
 
     return function app_pipeline(context) {
         const capabilities = app.properties[SERVER.Capabilities];
-      
-        if (context[SERVER.Capabilities]) {
-            merge(context[SERVER.Capabilities], clone(capabilities));
-        }
+
+        context[SERVER.Capabilities] = context[SERVER.Capabilities] || {};
+        merge(context[SERVER.Capabilities], clone(capabilities));
 
         if (context.response)
+        {
+             context.response[SERVER.Capabilities] = context.response[SERVER.Capabilities] || {};
             merge(context.response[SERVER.Capabilities], clone(capabilities));
+        }
 
         return next.call(app, context);
     };
