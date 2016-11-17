@@ -88,7 +88,7 @@ AppBuilder.prototype.use = function use(method, mw) {
         throw ("Unknown AppBuilder Category " + method)
 
     var params = private_getParams(mw);
-    if (params === 'app') {
+    if (params === 'app' || mw.length === 1) {
         var mw_instance = Object.create(mw.prototype);
         mw.call(mw_instance, this);
 
