@@ -174,8 +174,11 @@ Factory.prototype._dispose = function factory_dispose(context) {
  * @protected
  */
 Factory.prototype.validOptions = function factory_validOptions(options) {
-    if (typeof options === 'string' || options instanceof String)
-        return { [IOPA.Method]: options };
+    if (typeof options === "string" || options instanceof String)
+    {
+        var result = {};
+        result[IOPA.Method] = options;
+    }
     else
         return options || {};
 };
