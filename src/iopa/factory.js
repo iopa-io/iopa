@@ -178,6 +178,7 @@ Factory.prototype.validOptions = function factory_validOptions(options) {
     {
         var result = {};
         result[IOPA.Method] = options;
+        return result;
     }
     else
         return options || {};
