@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016 Internet of Protocols Alliance 
+ * Copyright (c) 2016-2019 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-const AppBuilder = require('./src/appBuilder/appBuilder').default,
-      Factory = require('./src/iopa/factory').default,
-      constants = require('./src/iopa/constants'),
-      shallow = require('./src/util/shallow'),
-      iopaPrototype = require('./src/util/prototype'),
-      CancellationTokenSource = require('./src/util/cancellation').default
 
-exports.App = AppBuilder;
-exports.Factory = Factory;
-exports.constants = constants;
-exports.util = {"shallow": shallow, "prototype": iopaPrototype, "CancellationTokenSource": CancellationTokenSource};
+/** Create a new guid */
+export default function guid() {
+  return (
+    s4() +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    s4() +
+    s4()
+  )
+}
+
+/** Helper function to create a new 4 character ID (random) */
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1)
+}

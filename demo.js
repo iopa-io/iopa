@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016 Internet of Protocols Alliance 
+ * Copyright (c) 2016 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,43 +22,42 @@
 
 const iopa = require('./index'),
   IopaApp = iopa.App,
-  iopaFactory = new iopa.Factory({"factory.Size": 100}),
+  iopaFactory = new iopa.Factory({ 'factory.Size': 100 }),
   iopaUtil = iopa.util,
-
   constants = iopa.constants,
   IOPA = constants.IOPA,
   SERVER = constants.SERVER
- 
-var test = new IopaApp();
-var seq = 0;
-test.use(function (context, next) {
-   if (seq++ == 0)
-   {
-    context[SERVER.Capabilities]["urn:io.iopa:demo"] = "will only survive one record";
-    context[SERVER.Capabilities]["urn:io.iopa:app"]["notused"] = "delete me";
-   }
-  context.log.info(context.toString());
-  return next();
-});
 
-test.use(function (next) {
-  this.log.info("HELLO WORLD");
-  return Promise.resolve("DONE"); // stop processing in chain
-});
+var test = new IopaApp()
+var seq = 0
+test.use(function(context, next) {
+  if (seq++ == 0) {
+    context[SERVER.Capabilities]['urn:io.iopa:demo'] =
+      'will only survive one record'
+    context[SERVER.Capabilities]['urn:io.iopa:app']['notused'] = 'delete me'
+  }
+  context.log.info(context.toString())
+  return next()
+})
 
-var demo = test.build();
-demo.listen();
+test.use(function(next) {
+  this.log.info('HELLO WORLD')
+  return Promise.resolve('DONE') // stop processing in chain
+})
 
-var context = iopaFactory.createContext();
-context[IOPA.Method] = "GET";
-context[IOPA.Path] = "/test";
-context[IOPA.Body] = {hello: "world"};
+var demo = test.build()
+demo.listen()
 
-context.using(demo);
+var context = iopaFactory.createContext()
+context[IOPA.Method] = 'GET'
+context[IOPA.Path] = '/test'
+context[IOPA.Body] = { hello: 'world' }
 
-context = iopaFactory.createContext();
+context.using(demo)
 
-demo(context);
+context = iopaFactory.createContext()
 
-context.dispose();
-console.log("DISPOSED " + context.toString());
+demo(context)
+
+context.dispose()
+console.log('DISPOSED ' + context.toString())

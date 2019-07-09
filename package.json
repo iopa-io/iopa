@@ -1,20 +1,17 @@
 {
   "name": "iopa",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "description": "API-first, Internet of Things (IoT) stack for Node.js, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
   "author": "IOPA",
   "license": "Apache-2.0",
-  "typings": "./src/iopa.d.ts",
-  "typescript": {
-    "definition": "./src/iopa.d.ts"
-  },
   "maintainers": [
     {
       "name": "iopa",
       "email": "build@iopa.io"
     }
   ],
-  "version": "1.4.19",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/iopa-io/iopa.git"
@@ -22,7 +19,6 @@
   "dependencies": {},
   "keywords": [
     "iopa",
-    "limerun",
     "owin",
     "middleware",
     "router",
@@ -40,14 +36,12 @@
     "node": ">= 0.12.0"
   },
   "scripts": {
-    "test": "mocha --reporter spec test",
-    "quick": "git add . -A && git commit --allow-empty -m 'dev test' && npm version patch && npm publish",
-    "typings": "tsd reinstall --overwrite --clean --config tools/tsd.json && tsd link"
+    "build": "rm -rf ./dist && tsc",
+    "lint": "berun-dev lint"
   },
   "devDependencies": {
-    "mocha": "^2.3.2",
-    "mocha-junit-reporter": "^1.6.1",
-    "should": "^7.1.0"
+    "@berun/dev-scripts": "^2.0.25",
+    "@types/jest": "^24.0.13"
   },
   "readmeFilename": "README.md",
   "homepage": "http://iopa.io"

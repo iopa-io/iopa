@@ -1,28 +1,27 @@
 /**
  * Node 0.12.x - 4.0.x Freelist module
- * 
+ *
  * Included without functional changes
  * just license notice added
- * 
+ *
  * Simple function but has now been deprecated in Node.js but including here
- * 
+ *
  * This license applies to this module only
  */
 
-
 /**
  * Copyright Node.js contributors. All rights reserved.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,27 +31,31 @@
  * IN THE SOFTWARE.
  */
 
-'use strict';
-
 // This is a free list to avoid creating so many of the same object.
-exports.FreeList = function(name, max, constructor) {
-  this.name = name;
-  this.constructor = constructor;
-  this.max = max;
-  this.list = [];
-};
+export class FreeList<T> {
+  name: string
+  max: number
+  _constructor: (...args) => T
+  list: T[]
 
-
-exports.FreeList.prototype.alloc = function() {
-  return this.list.length ? this.list.shift() :
-                            this.constructor.apply(this, arguments);
-};
-
-
-exports.FreeList.prototype.free = function(obj) {
-  if (this.list.length < this.max) {
-    this.list.push(obj);
-    return true;
+  constructor(name: string, max: number, factory: (...args) => T) {
+    this.name = name
+    this._constructor = factory
+    this.max = max
+    this.list = []
   }
-  return false;
-};
+
+  alloc() {
+    return this.list.length
+      ? this.list.shift()
+      : this._constructor.apply(this, arguments)
+  }
+
+  free(obj: T) {
+    if (this.list.length < this.max) {
+      this.list.push(obj)
+      return true
+    }
+    return false
+  }
+}
