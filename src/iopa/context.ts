@@ -65,6 +65,10 @@ export default class IopaContext {
     return this[SERVER.Logger]
   }
 
+  set log(logger: any) {
+     this[SERVER.Logger] = logger
+  }
+
   using(appFuncPromiseOrValue) {
     if (typeof appFuncPromiseOrValue === 'function')
       return _using(this, appFuncPromiseOrValue(this))

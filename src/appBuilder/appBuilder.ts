@@ -57,6 +57,10 @@ export default class AppBuilder {
     return this.properties[SERVER.Logger]
   }
 
+  public set log(logger) {
+     this.properties[SERVER.Logger] = logger
+  }
+
   public middlewareProxy = Middleware
 
   public Factory = new Factory()

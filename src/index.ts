@@ -20,11 +20,10 @@ import { cloneKeyBehaviors } from './util/prototype'
 import { default as CancellationTokenSource } from './util/cancellation'
 import * as constants from './iopa/constants'
 
-export { default as App } from './appBuilder/appBuilder'
-export { default as Factory } from './iopa/factory'
-export { constants }
+import { default as App } from './appBuilder/appBuilder'
+import { default as Factory } from './iopa/factory'
 
-export { shallow }
+export { App, Factory, constants, shallow}
 
 export const iopaPrototype = {
   cloneKeyBehaviors
@@ -63,10 +62,19 @@ export interface AppProperties {
   'app.DefaultMiddleware': Middleware
 }
 
-interface App {
+interface IApp {
   properties: AppProperties
   log: Console
   use: (Middleware) => this
   build: () => Invoker
   onReady?: () => void
+}
+
+export default {
+  App,
+  Factory,
+  constants,
+  shallow,
+  iopaPrototype,
+  util
 }

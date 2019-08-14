@@ -5,7 +5,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "types": ["@types/node"],
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext"],
     "sourceMap": false,
     "declaration": true,
     "allowJs": false,
@@ -24,7 +24,8 @@
     "isolatedModules": false,
     "resolveJsonModule": true,
     "downlevelIteration": true,
-    "stripInternal": true
+    "stripInternal": true,
+    "removeComments": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]
