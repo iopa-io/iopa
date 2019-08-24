@@ -73,12 +73,21 @@ export default class AppBuilder {
   /** Add Middleware Function to AppBuilder pipeline */
   public use(mw: any)
   public use(method: string, mw?: any) {
-    if (typeof method === 'function' && !mw) {
+    var id
+
+    if (typeof method === 'function' &&  typeof mw === 'string') {
+      /** resilience wrapper style */
+      id = mw
+      mw = method
+      method = 'invoke'
+    } else if (typeof method === 'function' && !mw) {
       mw = method
       method = 'invoke'
     }
 
-    if (!this.middleware[method]) throw 'Unknown AppBuilder Category ' + method
+    if (!this.middleware[method]) {
+      throw 'Unknown AppBuilder Category ' + method
+    }
 
     var params = private_getParams(mw)
     if (params === 'app' || mw.length === 1) {

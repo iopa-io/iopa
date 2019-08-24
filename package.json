@@ -17,7 +17,6 @@
     "type": "git",
     "url": "https://github.com/iopa-io/iopa.git"
   },
-  "dependencies": {},
   "keywords": [
     "iopa",
     "owin",
@@ -40,10 +39,12 @@
     "build": "rm -rf ./dist && tsc",
     "lint": "berun-dev lint"
   },
+  "readmeFilename": "README.md",
+  "homepage": "http://iopa.io",
+  "dependencies": {},
   "devDependencies": {
     "@berun/dev-scripts": "^2.0.25",
-    "@types/jest": "^24.0.13"
+    "@types/jest": "^24.0.18"
   },
-  "readmeFilename": "README.md",
-  "homepage": "http://iopa.io"
+  "peerDependencies": {}
 }
