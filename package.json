@@ -2,7 +2,7 @@
   "name": "iopa",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
-  "types": "dist/index.d.ts",
+  "types": "src/index.ts",
   "description": "API-first, Internet of Things (IoT) stack for Node.js, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
   "author": "IOPA",
   "license": "Apache-2.0",
