@@ -71,6 +71,7 @@ export default class AppBuilder {
   }
 
   /** Add Middleware Function to AppBuilder pipeline */
+  public use(mw: any, id: string)
   public use(mw: any)
   public use(method: string, mw?: any) {
     var id

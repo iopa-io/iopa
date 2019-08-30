@@ -65,7 +65,7 @@ export interface AppProperties {
 interface IApp {
   properties: AppProperties
   log: Console
-  use: (Middleware) => this
+  use: (middleware: Middleware, id?: string ) => this
   build: () => Invoker
   onReady?: () => void
 }
