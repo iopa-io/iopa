@@ -1,6 +1,7 @@
+/* eslint-disable no-prototype-builtins */
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +18,20 @@
 
 import * as iopa from '../src/index'
 
-const iopaUtil = iopa.util,
-  constants = iopa.constants,
-  IOPA = constants.IOPA,
-  SERVER = constants.SERVER
+const { constants } = iopa
+const { IOPA } = constants
+const { SERVER } = constants
 
 describe('#IOPA()', () => {
-  var context,
-    app,
-    factory = new iopa.Factory({})
+  const factory = new iopa.Factory('TestFactory')
 
   test('should create empty context', () => {
-    context = factory.createContext()
+    const context = factory.createContext()
 
     expect(context.hasOwnProperty(IOPA.Version)).toBe(true)
     expect(context.hasOwnProperty(SERVER.CancelToken)).toBe(true)
     expect(context.hasOwnProperty(IOPA.Events)).toBe(true)
-    expect(context.hasOwnProperty(IOPA.Seq)).toBe(true)
-    expect(context.hasOwnProperty(SERVER.Logger)).toBe(true)
+    expect(context.hasOwnProperty(SERVER.Id)).toBe(true)
     expect(context.hasOwnProperty(SERVER.CancelTokenSource)).toBe(true)
     expect(context.hasOwnProperty(IOPA.Method)).toBe(true)
     expect(context.hasOwnProperty(IOPA.Body)).toBe(true)
@@ -43,10 +40,10 @@ describe('#IOPA()', () => {
   })
 
   test('should create app that updates context using both signatures', () => {
-    var test = new iopa.App()
+    const test = new iopa.App()
 
     // use standard IOPA signature with context
-    test.use(function(context, next) {
+    test.use((context, next) => {
       context[IOPA.Method] = 'GET'
 
       // continue to next middleware in pipeline
@@ -57,14 +54,12 @@ describe('#IOPA()', () => {
       class MW {
         private app
 
-        constructor(app) {
-          debugger
-
+        constructor(app: iopa.App) {
           this.app = app
         }
 
         invoke(context, next) {
-          debugger
+          expect(this.app)
           expect(context[IOPA.Method]).toBe('GET')
           context[IOPA.Method] = 'GET2'
 
@@ -73,7 +68,7 @@ describe('#IOPA()', () => {
       }
     )
 
-    const pseudoClass = function(app) {
+    const pseudoClass = function PseudoClass(this: any, app) {
       this.app = app
     }
     pseudoClass.prototype.invoke = (context, next) => {
@@ -85,13 +80,13 @@ describe('#IOPA()', () => {
     }
     test.use(pseudoClass)
 
-    app = test.build()
+    this.app = test.build()
   })
 
   test('should call app with context updated', done => {
-    var context = factory.createContext()
+    const context = factory.createContext()
 
-    app(context).then(function(value) {
+    this.app(context).then(value => {
       expect(context[IOPA.Method]).toBe('PUT')
       context.dispose()
       expect(context[IOPA.Method] == null).toBe(true)

@@ -16,14 +16,21 @@
  */
 
 import * as shallow from './util/shallow'
-import { cloneKeyBehaviors } from './util/prototype'
-import { default as CancellationTokenSource } from './util/cancellation'
+import cloneKeyBehaviors from './util/prototype'
+import {
+  TokenSource as CancellationTokenSource,
+  Token as CancellationToken
+} from './util/cancellation'
 import * as constants from './iopa/constants'
+import { Disposable, EventEmitter } from './util/events'
+import App from './appBuilder/appBuilder'
+import Factory from './iopa/factory'
+import { ContextBase, ResponseBase } from './iopa/context'
+import IopaMap from './iopa/map'
 
-import { default as App } from './appBuilder/appBuilder'
-import { default as Factory } from './iopa/factory'
+export { App, IopaMap, ContextBase, ResponseBase, Factory, constants }
 
-export { App, Factory, constants, shallow}
+export { IopaContext as Context, FC } from 'iopa-types'
 
 export const iopaPrototype = {
   cloneKeyBehaviors
@@ -32,49 +39,8 @@ export const iopaPrototype = {
 export const util = {
   shallow,
   prototype: iopaPrototype,
+  Disposable,
+  EventEmitter,
+  CancellationToken,
   CancellationTokenSource
-}
-
-export interface Context {
-  [key: string]: any
-}
-
-export declare class Component {
-  /** constructor called once upon registration */
-  constructor(app?: App)
-
-  /** invoke function called for every reading  */
-  invoke: (context: Context, next?: () => Promise<any>) => Promise<any>
-}
-
-export type FC = (context: Context, next: () => Promise<void>) => Promise<void>
-
-export type Invoker = (context: Context) => Promise<void>
-
-export type Middleware = FC | Component
-
-export interface AppProperties {
-  'server.AppId': string
-  'server.Capabilities': any
-  'server.Logger': Console
-  'server.Pipeline': FC
-  'app.DefaultApp': Middleware
-  'app.DefaultMiddleware': Middleware
-}
-
-interface IApp {
-  properties: AppProperties
-  log: Console
-  use: (middleware: Middleware, id?: string ) => this
-  build: () => Invoker
-  onReady?: () => void
-}
-
-export default {
-  App,
-  Factory,
-  constants,
-  shallow,
-  iopaPrototype,
-  util
 }

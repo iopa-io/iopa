@@ -32,10 +32,13 @@
  */
 
 // This is a free list to avoid creating so many of the same object.
-export class FreeList<T> {
+export default class FreeList<T> {
   name: string
+
   max: number
+
   _constructor: (...args) => T
+
   list: T[]
 
   constructor(name: string, max: number, factory: (...args) => T) {
@@ -45,10 +48,8 @@ export class FreeList<T> {
     this.list = []
   }
 
-  alloc() {
-    return this.list.length
-      ? this.list.shift()
-      : this._constructor.apply(this, arguments)
+  alloc(...args) {
+    return this.list.length ? this.list.shift() : this._constructor(...args)
   }
 
   free(obj: T) {

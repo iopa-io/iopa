@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,82 +15,97 @@
  * limitations under the License.
  */
 
-export default class EventEmitter {
-  private events: { [key: string]: Function[] }
+import { Disposer, Listener, IDisposable, IEventEmitter } from 'iopa-types'
 
-  constructor() {
-    this.events = {}
+/* Polyfill EventEmitter. */
+
+export class Disposable implements IDisposable {
+  private disposer: Disposer
+
+  constructor(disposer: Disposer) {
+    this.disposer = disposer
   }
 
-  on(event: string, listener: Function) {
-    if (typeof this.events[event] !== 'object') {
-      this.events[event] = []
-    }
-
-    this.events[event].push(listener)
-  }
-
-  removeListener(event: string, listener: Function) {
-    var idx
-
-    if (typeof this.events[event] === 'object') {
-      idx = indexOf(this.events[event], listener)
-
-      if (idx > -1) {
-        this.events[event].splice(idx, 1)
-      }
-    }
-  }
-
-  emit(event: string) {
-    var i,
-      listeners,
-      length,
-      args = [].slice.call(arguments, 1)
-
-    if (typeof this.events[event] === 'object') {
-      listeners = this.events[event].slice()
-      length = listeners.length
-
-      for (i = 0; i < length; i++) {
-        listeners[i].apply(this, args)
-      }
-    }
-  }
-
-  once(event: string, listener: Function) {
-    const g = (...args) => {
-      this.removeListener(event, g)
-      listener.apply(this, args)
-    }
-
-    this.on(event, g)
+  dispose() {
+    this.disposer.apply(this.disposer)
   }
 }
 
-/* Polyfill indexOf. */
-let indexOf
+export class DisposablesComposite {
+  private disposables: Set<Disposable>
 
-if (typeof Array.prototype.indexOf === 'function') {
-  indexOf = function(haystack, needle) {
-    return haystack.indexOf(needle)
+  constructor() {
+    this.disposables = new Set()
   }
-} else {
-  indexOf = function(haystack, needle) {
-    var i = 0,
-      length = haystack.length,
-      idx = -1,
-      found = false
 
-    while (i < length && !found) {
-      if (haystack[i] === needle) {
-        idx = i
-        found = true
-      }
+  add(disposable) {
+    this.disposables.add(disposable)
+    return disposable
+  }
 
-      i++
+  dispose() {
+    this.disposables.forEach(disposable => {
+      disposable.dispose.apply(disposable)
+    })
+  }
+}
+
+export class EventEmitter implements IEventEmitter {
+  public listeners: Map<string, Set<Listener>>
+
+  public onceListeners: Map<string, Set<Listener>>
+
+  constructor() {
+    this.listeners = new Map()
+    this.onceListeners = new Map()
+  }
+
+  emit(event: string, ...args) {
+    const callbacks = this.listeners.get(event)
+    if (callbacks) {
+      callbacks.forEach(cb => cb(...args))
     }
+    const onceCallbacks = this.onceListeners.get(event)
+    if (onceCallbacks) {
+      onceCallbacks.forEach(cb => cb(...args))
+      this.onceListeners.delete(event)
+    }
+  }
 
-    return idx
+  on(event: string, cb: Listener) {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set())
+    }
+    const existing = this.listeners.get(event)!
+    existing.add(cb)
+    return new Disposable(() => {
+      existing.delete(cb)
+    })
+  }
+
+  once(event: string, cb: Listener) {
+    if (!this.onceListeners.has(event)) {
+      this.onceListeners.set(event, new Set())
+    }
+    const existing = this.onceListeners.get(event)!
+    existing.add(cb)
+    return new Disposable(() => {
+      existing.delete(cb)
+    })
+  }
+
+  emitWithReturn<K>(event: string, ...args): K[] {
+    const callbacks = Array.from(this.listeners.get(event) || [])
+    return callbacks.map(cb => cb(...args))
+  }
+
+  clear(event?: string) {
+    if (event) {
+      this.listeners.delete(event)
+      this.onceListeners.delete(event)
+    } else {
+      this.listeners.clear()
+      this.onceListeners.clear()
+    }
   }
 }

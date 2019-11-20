@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,34 @@
  * limitations under the License.
  */
 
-export const VERSION = '1.4'
+export const VERSION = '3.0'
 
 export const IOPA = Object.freeze({
+  // V3 Request / Response
+  Headers: 'iopa.Headers',
   Method: 'iopa.Method',
+  OriginalUrl: 'iopa.OriginalUrl',
+  URL: 'iopa.Url',
   Path: 'iopa.Path',
-  Body: 'iopa.Body',
-  Scheme: 'iopa.Scheme',
-  QueryString: 'iopa.QueryString',
   Protocol: 'iopa.Protocol',
+  QueryString: 'iopa.QueryString',
+  Scheme: 'iopa.Scheme',
+  Body: 'iopa.Body',
+  RemoteAddress: 'iopa.RemoteAddress',
+  StatusCode: 'iopa.StatusCode',
+  StatusText: 'iopa.StatusText',
+
+  Events: 'iopa.Events',
+  Version: 'iopa.Version',
+  Error: 'iopa.Error',
+  Seq: 'server.Id',
+
+  // V1.4 request response constanst (deprecated)
+
   Auth: 'iopa.Auth',
   Host: 'iopa.Host',
   Port: 'iopa.Port',
-  Version: 'iopa.Version',
-  Error: 'iopa.Error',
-  Seq: 'iopa.Seq',
-  Events: 'iopa.Events',
-  Headers: 'iopa.Headers',
   RawBody: 'iopa.RawBody',
-  StatusCode: 'iopa.StatusCode',
 
   METHODS: {
     data: 'urn:io.iopa:data',
@@ -53,7 +62,6 @@ export const SERVER = Object.freeze({
   Capabilities: 'server.Capabilities',
   IsBuilt: 'server.IsBuilt',
   Pipeline: 'server.Pipeline',
-  Logger: 'server.Logger',
   Factory: 'server.Factory',
   CancelToken: 'server.CancelToken',
   CancelTokenSource: 'server.CancelTokenSource',

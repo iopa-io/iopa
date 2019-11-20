@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,40 +29,44 @@
  * @returns (void)
  * @private
  */
-export function cloneKeyBehaviors(
+export default function cloneKeyBehaviors(
   targetObjectPrototype,
   sourceObjectprototype,
   iopaContextKey,
   response
 ) {
-  Object.getOwnPropertyNames(sourceObjectprototype).forEach(function(
-    _property
-  ) {
+  Object.getOwnPropertyNames(sourceObjectprototype).forEach(_property => {
     if (typeof sourceObjectprototype[_property] === 'function') {
-      targetObjectPrototype[_property] = function() {
-        var item
-        if (response) item = this[iopaContextKey]
-        else item = this.response[iopaContextKey]
+      targetObjectPrototype[_property] = (...rest) => {
+        let item
+        if (response) {
+          item = targetObjectPrototype[iopaContextKey]
+        } else {
+          item = targetObjectPrototype.response[iopaContextKey]
+        }
 
-        return item[_property].apply(
-          item,
-          Array.prototype.slice.call(arguments)
-        )
+        return item[_property](...rest)
       }
     } else {
       Object.defineProperty(targetObjectPrototype, _property, {
-        get: function() {
-          var item
-          if (response) item = this[iopaContextKey]
-          else item = this.response[iopaContextKey]
+        get() {
+          let item
+          if (response) {
+            item = this[iopaContextKey]
+          } else {
+            item = this.response[iopaContextKey]
+          }
 
           return item[_property]
         },
 
-        set: function(val) {
-          var item
-          if (response) item = this[iopaContextKey]
-          else item = this.response[iopaContextKey]
+        set(val) {
+          let item
+          if (response) {
+            item = this[iopaContextKey]
+          } else {
+            item = this.response[iopaContextKey]
+          }
 
           item[_property] = val
         }

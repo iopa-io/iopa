@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,15 @@
  * limitations under the License.
  */
 
+import { CancellationToken, CancellationTokenSource } from 'iopa-types'
+
 /**  A Cancellation Token Source */
-export default class TokenSource {
-  private data: { reason: string; isCancelled: boolean; listeners: Function[] }
+export class TokenSource implements CancellationTokenSource {
+  private data: {
+    reason: string
+    isCancelled: boolean
+    listeners: Function[]
+  }
 
   constructor() {
     this.data = {
@@ -31,7 +37,8 @@ export default class TokenSource {
   public cancel(reason: string) {
     this.data.isCancelled = true
     this.data.reason = reason
-    for (var i = 0; i < this.data.listeners.length; i++) {
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < this.data.listeners.length; i++) {
       if (typeof this.data.listeners[i] === 'function') {
         this.data.listeners[i](reason)
       }
@@ -56,12 +63,13 @@ export default class TokenSource {
 }
 
 /** Helper Method to return a Cancellation Token */
-class Token {
+export class Token implements CancellationToken {
   private source: TokenSource
 
   constructor(source: TokenSource) {
     this.source = source
   }
+
   get isCancelled() {
     return this.source.isCancelled
   }
@@ -75,10 +83,12 @@ class Token {
       throw new Error(this.source.reason)
     }
 
-    this.onCancelled(function(reason) {
+    this.onCancelled(reason => {
       throw new Error(reason)
     })
   }
 }
 
 export const empty = Object.freeze(new TokenSource().token)
+
+export default TokenSource

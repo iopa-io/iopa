@@ -1,6 +1,7 @@
+/* eslint-disable  */
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +16,42 @@
  * limitations under the License.
  */
 
-import { IOPA } from '../iopa/constants'
+import { IopaRequestBase } from 'iopa-types'
 
-export function merge(target, defaults, replace?: boolean) {
-  if (!target) throw new Error('target must not be empty')
+export function merge(target: any, defaults: any, replace?: boolean) {
+  if (!target) {
+    throw new Error('target must not be empty')
+  }
 
-  if (!defaults) defaults = {}
+  if (!defaults) {
+    defaults = {}
+  }
 
   if (replace) {
     for (var key in defaults) {
-      if (defaults.hasOwnProperty(key)) target[key] = defaults[key]
+      if (defaults.hasOwnProperty(key)) {
+        target[key] = defaults[key]
+      }
     }
   } else {
     for (var key in defaults) {
-      if (defaults.hasOwnProperty(key) && !target.hasOwnProperty(key))
+      if (defaults.hasOwnProperty(key) && !target.hasOwnProperty(key)) {
         target[key] = defaults[key]
+      }
     }
   }
 }
 
-export function assign(target) {
-  if (!target) throw new Error('target must not be empty')
+export function assign(target: any) {
+  if (!target) {
+    throw new Error('target must not be empty')
+  }
 
   target = Object(target)
-  for (var index = 1; index < arguments.length; index++) {
-    var source = arguments[index]
+  for (let index = 1; index < arguments.length; index++) {
+    const source = arguments[index]
     if (source != null) {
-      for (var key in source) {
+      for (const key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key]
         }
@@ -52,41 +62,53 @@ export function assign(target) {
 }
 
 export function copy(source, target) {
-  if (!source) source = {}
+  if (!source) {
+    source = {}
+  }
 
-  if (!target) target = {}
+  if (!target) {
+    target = Object.create(Object.getPrototypeOf(source))
+  }
 
-  for (var key in source) {
-    if (source.hasOwnProperty(key)) target[key] = source[key]
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      target[key] = source[key]
+    }
   }
 
   return target
 }
 
 export function clone(source) {
-  var clone = {}
+  const clone = Object.create(Object.getPrototypeOf(source))
 
-  for (var key in source) {
-    if (source.hasOwnProperty(key)) clone[key] = source[key]
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      clone[key] = source[key]
+    }
   }
 
   return clone
 }
 
 export function cloneDoubleLayer(source) {
-  var clone = {}
+  const clone = Object.create(Object.getPrototypeOf(source))
 
-  for (var key1 in source) {
+  for (const key1 in source) {
     if (source.hasOwnProperty(key1)) {
-      var item = source[key1]
-      if (typeof item == 'object') {
-        var targetItem = {}
+      const item = source[key1]
+      if (typeof item === 'object') {
+        const targetItem = Object.create(Object.getPrototypeOf(item))
 
-        for (var key2 in item) {
-          if (item.hasOwnProperty(key2)) targetItem[key2] = item[key2]
+        for (const key2 in item) {
+          if (item.hasOwnProperty(key2)) {
+            targetItem[key2] = item[key2]
+          }
         }
         clone[key1] = targetItem
-      } else clone[key1] = item
+      } else {
+        clone[key1] = item
+      }
     }
   }
 
@@ -94,31 +116,35 @@ export function cloneDoubleLayer(source) {
 }
 
 export function cloneTripleLayer(source) {
-  var clone = {}
+  const clone = Object.create(Object.getPrototypeOf(source))
 
-  for (var key1 in source) {
+  for (const key1 in source) {
     if (source.hasOwnProperty(key1)) {
-      var item = source[key1]
-      if (typeof item == 'object') {
-        var targetItem = {}
+      const item = source[key1]
+      if (typeof item === 'object') {
+        const targetItem = Object.create(Object.getPrototypeOf(item))
 
-        for (var key2 in item) {
+        for (const key2 in item) {
           if (item.hasOwnProperty(key2)) {
-            var item2 = item[key2]
-            if (typeof item2 == 'object') {
-              var targetItem2 = {}
+            const item2 = item[key2]
+            if (typeof item2 === 'object') {
+              const targetItem2 = Object.create(Object.getPrototypeOf(item2))
 
-              for (var key3 in item2) {
+              for (const key3 in item2) {
                 if (item2.hasOwnProperty(key3)) {
                   targetItem2[key3] = item[key3]
                 }
               }
               targetItem[key2] = targetItem2
-            } else targetItem[key2] = item2
+            } else {
+              targetItem[key2] = item2
+            }
           }
         }
         clone[key1] = targetItem
-      } else clone[key1] = item
+      } else {
+        clone[key1] = item
+      }
     }
   }
 
@@ -126,35 +152,38 @@ export function cloneTripleLayer(source) {
 }
 
 export function cloneFilter(source, blacklist: string[]) {
-  var clone = {}
+  const clone = Object.create(Object.getPrototypeOf(source))
 
-  for (var key in source) {
-    if (source.hasOwnProperty(key) && blacklist.indexOf(key) == -1)
+  for (const key in source) {
+    if (source.hasOwnProperty(key) && blacklist.indexOf(key) == -1) {
       clone[key] = source[key]
+    }
   }
 
   return clone
 }
 
-export function mergeContext(target, defaults) {
-  if (!target) throw new Error('target must not be empty')
+export function mergeContext(target: any, defaults: Partial<IopaRequestBase>) {
+  if (!target) {
+    throw new Error('target must not be empty')
+  }
 
-  if (!defaults) return // nothing to do
+  if (!defaults) {
+    return
+  } // nothing to do
 
-  for (var key in defaults) {
-    if (defaults.hasOwnProperty(key) && key !== IOPA.Headers)
+  Object.keys(defaults).forEach((key: keyof IopaRequestBase) => {
+    if (key !== 'iopa.Headers') {
       target[key] = defaults[key]
-  }
+    } else {
+      const targetHeaders = target[key] || {}
+      const sourceHeaders = defaults[key]
 
-  if (defaults.hasOwnProperty(IOPA.Headers)) {
-    var targetHeaders = target[IOPA.Headers] || {}
-    var sourceHeaders = defaults[IOPA.Headers]
+      Object.keys(sourceHeaders).forEach(headerkey => {
+        targetHeaders[headerkey] = sourceHeaders[headerkey]
+      })
 
-    for (var key in defaults[IOPA.Headers]) {
-      if (sourceHeaders.hasOwnProperty(key))
-        targetHeaders[key] = sourceHeaders[key]
+      target[key] = targetHeaders
     }
-
-    target[IOPA.Headers] = targetHeaders
-  }
+  })
 }

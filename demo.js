@@ -15,43 +15,34 @@
  * limitations under the License.
  */
 
-/*
- * DEPENDENCIES
- *     note: npm include 'bluebird' if no Promise object exists
- */
+import { App, Factory } from './dist/index'
 
-const iopa = require('./index'),
-  IopaApp = iopa.App,
-  iopaFactory = new iopa.Factory({ 'factory.Size': 100 }),
-  iopaUtil = iopa.util,
-  constants = iopa.constants,
-  IOPA = constants.IOPA,
-  SERVER = constants.SERVER
+const IopaApp = App
+const iopaFactory = new Factory('demo', 100)
 
-var test = new IopaApp()
-var seq = 0
-test.use(function(context, next) {
-  if (seq++ == 0) {
-    context[SERVER.Capabilities]['urn:io.iopa:demo'] =
-      'will only survive one record'
-    context[SERVER.Capabilities]['urn:io.iopa:app']['notused'] = 'delete me'
+const test = new IopaApp()
+let seq = 0
+test.use((context, next) => {
+  if (seq++ === 0) {
+    context.setCapability('urn:io.iopa:demo', 'will only survive one record')
+    context.capability('urn:io.iopa:app').notused = 'delete me'
   }
-  context.log.info(context.toString())
+  console.log.info(context.toString())
   return next()
 })
 
-test.use(function(next) {
+test.use(next => {
   this.log.info('HELLO WORLD')
   return Promise.resolve('DONE') // stop processing in chain
 })
 
-var demo = test.build()
+const demo = test.build()
 demo.listen()
 
-var context = iopaFactory.createContext()
-context[IOPA.Method] = 'GET'
-context[IOPA.Path] = '/test'
-context[IOPA.Body] = { hello: 'world' }
+let context = iopaFactory.createContext()
+context.get('iopa.Method') = 'GET'
+context.get('iopa.Path') = '/test'
+context.get('iopa.Body') = { hello: 'world' }
 
 context.using(demo)
 
@@ -60,4 +51,4 @@ context = iopaFactory.createContext()
 demo(context)
 
 context.dispose()
-console.log('DISPOSED ' + context.toString())
+console.log(`DISPOSED ${context.toString()}`)

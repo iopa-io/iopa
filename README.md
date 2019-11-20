@@ -1,8 +1,6 @@
-# [![IOPA](http://iopa.io/iopa.png)](http://iopa.io)<br> IOPA
+# [![IOPA](https://iopa.io/iopa.png)](https://iopa.io)<br> IOPA
 
-[![Build Status](https://api.shippable.com/projects/55ef3c651895ca447413c9cb/badge?branchName=master)](https://app.shippable.com/projects/55ef3c651895ca447413c9cb)
-[![NPM](https://img.shields.io/badge/iopa-certified-99cc33.svg?style=flat-square)](http://iopa.io/)
-[![limerun](https://img.shields.io/badge/limerun-certified-3399cc.svg?style=flat-square)](https://nodei.co/npm/limerun/)
+[![NPM](https://img.shields.io/badge/iopa-certified-99cc33.svg?style=flat-square)](https://iopa.io/)
 
 [![NPM](https://nodei.co/npm/iopa.png?downloads=true&downloadRank=true)](https://nodei.co/npm/iopa/)
 
@@ -36,7 +34,7 @@ app.use(coap)
 
 // ADD APPLICATION LOGIC
 app.mount('/device/lightswitch', function(context, next) {
-  if ((context[IOPA.Method] = 'ON')) this.lightswitch.turnon
+  if ((context.get("iopa.Method) = 'ON')) this.lightswitch.turnon
 })
 ```
 
@@ -48,20 +46,20 @@ that use the pattern, but is not necessary to implement or to interoperate with 
 constants for intellisense development, and provides a robust, tested example of the most common logic required (a dispatcher called the AppBuilder class, and a factory for creating
 IOPA context with automatic scope tracking).
 
-IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent. The pattern works for
-Node.js javascript (including V4.0+), browser-side javascript, Swift V2., Objective-C and Golang. The reference implementation is written in javascript for Node.js 5.x
+IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent. The pattern works for Typescript,
+Node.js javascript (including V12.0+), browser-side javascript, serverless cloud function javascript, Swift V5., Objective-C and Golang. The reference implementation is written in Typescript.
 
 Published as open-source without dependence on any implementation or platform, the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.).
 Because it is a well-defined pattern that uses only base language features it is not even necessary to include this repository in any microservices that rely on it. The entire
 pattern works using well-known string constants (published in the open-source [IOPA](https://github.com/iopa-io/iopa-spec) specification). However, inclusion of this repository gives access to intellisense, constant optimization, etc.
 
-In contrast to the [IOPA](https://github.com/iopa-io/iopa-spec) _specification_, this repository contains an **actual** IOPA reference **implementation** for node.js Javascript.
+In contrast to the [IOPA](https://github.com/iopa-io/iopa-spec) _specification_, this repository contains an **actual** IOPA reference **implementation** for Typescript.
 
 A broad ecosystem of servers and middleware, such as routers and view engines, exist in the the [iopa-io](https://github.com/iopa-io] and [limerun](https://github.com/limerun] organizations on GitHub.
 
 ## Core Principles
 
-An `IOPA` middleware/application is simply a `function(context, next)` that we call an "AppFunc" that provides a single REST-like IOPA context for each request, where it is easy to access all the HTTP/COAP parameters (`context.path`, `context.response.body` etc.). "Tasks" (promises) are returned for full async programming without callback hell, and for full compatibility with the upcoming ES7 async/await functionality.
+An `IOPA` middleware/application is simply a `function(context, next)` that we call an "AppFunc" that provides a single REST-like IOPA context for each request, where it is easy to access all the HTTP/COAP parameters (`context.path`, `context.response.body` etc.). "Tasks" (promises) are returned for full async programming without callback hell, and for full compatibility with the ES6+ async/await functionality.
 
 Middleware can be chained with `app.use(middleware1).use(middleware2)` etc.
 
@@ -69,42 +67,52 @@ With the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package, `IOP
 
 `IOPA` middleware and legacy middleware can be used with a COAP server such as [node-coap](https://github.com/mcollina/node-coap) with `app.buildCoap()` and can be used directly with Node's built-in http server with `app.buildHttp()` when used with the [`iopa-connect`](https://github.com/iopa-io/iopa-connect) package. It can even be used in embedded webkit applications such as [nodekit.io](https://github.com/limerun/nodekit).
 
+## Static Typings Design Time Experience
+
+The version 3.0 upgrade of the iopa reference implementation added in ~2020 is in TypeScript and allows static type checking within IDEs such as Visual Studio Code of both `"server.Capabilities"` and the `context` record.
+
+Use `app.capability("urn:io.iopa:my.great.capability")` and `app.setCapability("urn:io.iopa:my.great.capability", this)` to get and set capabilities on strongly typed `App` objects.
+
+use `context.get("iopa.Headers")`, `context.response.set("iopa.StatusCode", "awseast-205020-55")`, `context.capability("urn:io.iopa:my.great.capability")` to get field, set a field, and get a capability respectively.
+
+Contribute to `iopa-types` with globally used reference capabilities and field definitions (kept in a separate repository so that the core `iopa` package stays relatively stable)
+
+Use of square brackets (e.g., `context["iopa.StatusCode"]`) and reference constants (e.g., `IOPA.StatusCode`) is now discouraged due to the inability to check valid values at design time. The `get`, `set`, `capability`, and `setCapability` are automatically limited to correct values through a `keyof` limiter in the Typescript definitions.
+
 ## For People, Animals, Devices and Things
 
 `iopa` powers `nodekit.io`, an open-source cross-platform IOPA certified user interface framework for Mac, Windows, iOS, Android, Node.js, etc. Anything that can be written as a web application or REST application can be run on a single device with no coding changes, in javascript. As such IOPA is for communicating with people, animals, devices and things.
 
-`iopa` also powers `limerun`, a cross-platform IOPA connected IoT framework for any device that runs Node.js (including Raspberry Pi, BeagleBone, etc. ). As such iopa is for communicating things.
-
 ## NPM Package Contents
 
-This repository contains a Node Package Manager (NPM) package with helper functions for:
+This repository contains a Node Package Manager (NPM) package with helper components for:
 
-- IOPA constants for commonly used properties
 - AppBuilder dispatcher for chaining middleware and applications, with automatic bridging to async-based Tasks (Promises), use of _this_ for IopaContext instead of separate argument, and _next_ argument for middleware chaining
 - Context factory for creating your own IOPA contexts (typically used by a server)
+- IOPA constants for commonly used properties (now deprecated as static type languages such as Typescript are preferred)
 
-This package is intended for use in Node.js applications that either run on a web server that conform to the IOPA specifications (such as the embedded webserver inside [nodekit.io](https://github.com/nodekit-io/nodekit)) or run using the iopa-coap, iopa-mqtt, and iopa-http bridges when used with those respective packages.
+This package is intended for use in browser workers, cloud functions, embedded mobile runtimes, and deno or Node.js applications that either run on a web server that conform to the IOPA specifications (such as the embedded webserver inside [nodekit.io](https://github.com/nodekit-io/nodekit)) or run using the iopa-coap, iopa-mqtt, and iopa-http bridges when used with those respective packages.
 
 ## Middleware/Application Pipeline Creator and Dispatcher: AppBuilder
 
 ```js
-app.use(middleware)
+app.use(MiddlewareClass)
 ```
 
-Adds a middleware node to the IOPA function pipeline. The middleware are
+Adds a Middleware node to the IOPA function pipeline. The middleware are
 invoked in the order they are added: the first middleware passed to `app.use` will
 be the outermost function, and the last middleware passed to Use will be the
 innermost.
 
-### middleware
+### MiddlewareClass
 
-The middleware parameter determines which behavior is being chained into the pipeline.
+The middlewareclass parameter determines which behavior is being chained into the pipeline.
+
+- If the middleware given to use is a constructor that takes **one** argument, then it will be invoked with as a new instance with the `app` provided as the only parmaeter to the constructor. The class MAY also contain an `invoke` instance function that is invoked for each subsequent context record.
 
 - If the middleware given to use is a function that takes **one** argument, then it will be invoked with the `next` component in the chain as its parameter, and with the `this` context set to the IOPA context. It MUST return a promise that conforms to the Promise/A specification.
 
 - If the middleware given to use is a function that takes **two** arguments, then it will be invoked with the `next` component in the chain as its parameter, with a Node-based callback (`function(err, result){}`)as its second parameter, and with the `this` context set to the IOPA context. This type of middleware should return void.
-
-- Legacy middleware can also be invoked with `app.use( function(req,res){ ... } )`, `app.use( function(req, res, next){ ... } )` or `app.use( function(err, req, res, next){ ... } )`. The AppBuilder is smart enough to detect the two argument function with parameters named req and res in this case (use of different naming conventions need to be wrapped in a `function(req,res){}`), and assumes three and four argument functions are legacy.
 
 ### returns app
 
@@ -123,23 +131,23 @@ returns an IOPA AppFunc `(promise) function(context)` that can be inserted into 
 ### Installation
 
 ```js
-npm install iopa
+yarn add iopa
 ```
 
 ### Basic Example
 
 ```js
-const iopa = require('iopa')
+import { App, Factory } as Iopa = from 'iopa'
 
-var app = new iopa.App()
-app.use(function(context, next) {
-  context.log.info('HELLO WORLD' + context.toString())
-  return Promise.resolve(null)
+var app = new App()
+app.use(async (context, next) => {
+  console.log.info('HELLO WORLD' + context.toString())
+  return next()
 })
 
 var demo = app.build()
 
-var context = new iopa.Factory().createContext() // typically done within a TCP or UDP server
+var context = new Factory().createContext() // typically done within a TCP or UDP server
 
 context.using(demo) // the using automatically disposes of the context (returning it to a pool) when demo AppFunc is complete
 ```
@@ -190,6 +198,6 @@ http.createServer(app.buildHttp()).listen()
 
 ## API Reference Specification
 
-[![IOPA](http://iopa.io/iopa.png)](http://iopa.io)
+[![IOPA](https://iopa.io/iopa.png)](https://iopa.io)
 
 [`IOPA-docs/IOPA-spec`](https://github.com/iopa-io/iopa-spec/blob/master/Specification.md)

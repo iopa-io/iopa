@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2019 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet of Protocols Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,139 +15,193 @@
  * limitations under the License.
  */
 
-import { default as CancellationTokenSource } from '../util/cancellation'
-import { IOPA, SERVER, VERSION } from './constants'
-import { cloneDoubleLayer } from '../util/shallow'
-import { merge } from '../util/shallow'
-import { default as IopaContext } from './context'
-import { FreeList } from '../util/freelist'
-import { mergeContext } from '../util/shallow'
+import {
+  ContextCore,
+  IopaResponseBase,
+  IopaRequestBase,
+  IopaMap,
+  IopaContext,
+  IopaResponse
+} from 'iopa-types'
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function')
-  }
-}
+import { merge, cloneDoubleLayer, mergeContext } from '../util/shallow'
+import { ContextBase } from './context'
+import FreeList from '../util/freelist'
 
 /** Represents IopaContext Factory of up to 100 items */
-export default class Factory {
-  private _logger
-  private _factory
+export default class Factory<
+  T extends IopaMap<IopaRequestBase> & { init: Function; dispose?: Function }
+> {
+  private _factory: FreeList<T>
 
-  constructor(options?: any) {
-    options = options || {}
-    var size = options['factory.Size'] || 100
-
-    this._logger = options[SERVER.Logger] || console
-
-    this._factory = new FreeList('IopaContext', size, function() {
-      return new IopaContext()
-    })
-  }
-
-  static Context = IopaContext
-
-  public get [SERVER.Logger]() {
-    return this._logger
-  }
-  public set [SERVER.Logger](value) {
-    this._logger = value
+  constructor(
+    name = 'IopaContext',
+    size = 100,
+    factory: () => T = () => new ContextBase() as any
+  ) {
+    this._factory = new FreeList(name, size, factory)
   }
 
   /** Creates a new IOPA Context */
-  public createContext(url?: string, options?: any) {
-    options = this.validOptions(options)
+  public createContext(
+    url?: string,
+    options?: Partial<IopaRequestBase> & {
+      withResponse?: boolean
+    }
+  ): T {
+    options = _validOptions(options)
 
-    var context = this._factory.alloc().init()
+    const context: T & {
+      init: Function
+      dispose?: Function
+    } & ContextCore = this._factory.alloc().init()
     context.dispose = this._dispose.bind(this, context)
-    context[SERVER.Logger] = this._logger
+    context.set('server.Id', `#${_nextSequence()}`)
 
-    if (!options['reqres']) {
-      context[IOPA.Method] = options[IOPA.Method] || IOPA.METHODS.GET
-      context[IOPA.Path] = ''
-      context[IOPA.Body] = null
+    if (options.withResponse) {
+      const response: IopaMap<IopaResponseBase> &
+        IopaResponseBase = this._factory.alloc().init()
 
-      context[SERVER.IsLocalOrigin] = true
-      context[SERVER.IsRequest] = true
-      if (url) context.parseUrl(url)
+      const request = (context as any) as IopaContext
+
+      request.set('iopa.Body', Promise.resolve(''))
+      request.set('iopa.Headers', new Map())
+      request.set('iopa.Labels', new Map())
+      request.set('iopa.Method', 'GET')
+      request.set('iopa.OriginalUrl', url || 'https://localhost/factory')
+      request.set('iopa.Url', new URL(request.get('iopa.OriginalUrl')))
+      request.set('iopa.Path', '/')
+      request.set('iopa.Protocol', 'HTTPS/2.0')
+      request.set('iopa.QueryString', '')
+      request.set('iopa.RemoteAddress', '::1')
+      request.set('iopa.Scheme', 'https:')
+      request.set('server.Source', 'create')
+      request.set('server.Timestamp', Date.now())
+
+      request.response = response
+
+      response.set('iopa.StatusCode', 200)
+      response.set('iopa.Size', 0)
+      response.set('iopa.StatusText', 'OK')
+      response.set('iopa.Headers', new Map<string, string>())
+
+      response.end = async body => {
+        if (body && body.length) {
+          response.set('iopa.Size', response.get('iopa.Size') + body.length)
+        }
+        response.set('iopa.Body', body)
+        context.get('iopa.Events').emit('end', response)
+      }
+
+      response.send = async (body, sendoptions) => {
+        if (sendoptions) {
+          if (sendoptions.headers) {
+            response.set(
+              'iopa.Headers',
+              new Map(
+                Array.from(((sendoptions.headers as any).entries as Function)())
+              )
+            )
+          }
+          if (sendoptions.status) {
+            response.set('iopa.StatusCode', sendoptions.status)
+          }
+          if (sendoptions.statustext) {
+            response.set('iopa.StatusText', sendoptions.statustext)
+          }
+        }
+        return response.end(body)
+      }
+
+      delete options.withResponse
     }
 
     context.create = this.createChildContext.bind(this, context)
 
     mergeContext(context, options)
 
-    return context
+    return context as T
   }
 
   /** Creates a new IOPA Context that is a child request/response of a parent Context */
-  public createChildContext(parentContext, url, options) {
-    options = this.validOptions(options)
+  public createChildContext(
+    parentContext: IopaMap<IopaRequestBase>,
+    url,
+    options
+  ): T {
+    options = _validOptions(options)
 
-    var context = this.createContext()
-    this.mergeCapabilities(context, parentContext)
+    const context = this.createContext()
+    _mergeCapabilities(context, parentContext)
 
-    context[IOPA.Path] = parentContext[IOPA.Path] + (url || '')
-    context[IOPA.Scheme] = parentContext[IOPA.Scheme]
-    context[IOPA.Host] = parentContext[IOPA.Host]
-    context[IOPA.Port] = parentContext[IOPA.Port]
+    context.set('iopa.Path', parentContext.get('iopa.Path') + url || '')
+    context.set('iopa.Scheme', parentContext.get('iopa.Scheme'))
+    context['iopa.Host'] = parentContext['iopa.Host']
+    context['iopa.Port'] = parentContext['iopa.Port']
 
     mergeContext(context, options)
 
     return context
   }
 
-  /** Merges SERVER.Capabilities of parent Context onto child Context */
-  private mergeCapabilities(childContext, parentContext) {
-    childContext[SERVER.ParentContext] = parentContext
-    merge(
-      childContext[SERVER.Capabilities],
-      cloneDoubleLayer(parentContext[SERVER.Capabilities])
-    )
-
-    if (childContext.response && parentContext.response)
-      merge(
-        childContext.response[SERVER.Capabilities],
-        cloneDoubleLayer(parentContext.response[SERVER.Capabilities])
-      )
-  }
-
   /** Release the memory used by a given IOPA Context */
-  private _dispose(context) {
-    if (context == null || context[SERVER.CancelTokenSource] == null) return
+  private _dispose(context: T & IopaRequestBase & { response: IopaResponse }) {
+    if (context == null || context.get('server.CancelTokenSource') == null) {
+      return
+    }
 
     if (context.response) {
-      var response = context.response
-      for (var prop in response) {
-        if (response.hasOwnProperty(prop)) {
-          response[prop] = null
-        }
-      }
-      this._factory.free(response)
+      const { response } = context
+
+      Object.keys(response).forEach(prop => {
+        response[prop] = null
+      })
+
+      this._factory.free(response as any)
     }
 
-    for (var prop in context) {
-      if (context.hasOwnProperty(prop)) {
-        context[prop] = null
-      }
-    }
+    Object.keys(context).forEach(prop => {
+      context[prop] = null
+    })
 
     this._factory.free(context)
   }
+}
 
-  /** Clean Options;  allows overide for future validation  */
-  private validOptions(options) {
-    if (typeof options === 'string' || options instanceof String) {
-      var result = {}
-      result[IOPA.Method] = options
-      return result
-    } else return options || {}
+/** Merges server.Capabilities of parent Context onto child Context */
+function _mergeCapabilities(childContext, parentContext) {
+  childContext['server.ParentContext'] = parentContext
+  merge(
+    childContext['server.Capabilities'],
+    cloneDoubleLayer(parentContext['server.Capabilities'])
+  )
+
+  if (childContext.response && parentContext.response) {
+    merge(
+      childContext.response['server.Capabilities'],
+      cloneDoubleLayer(parentContext.response['server.Capabilities'])
+    )
+  }
+}
+
+/** Clean Options;  allows overide for future validation  */
+function _validOptions(options) {
+  if (typeof options === 'string' || options instanceof String) {
+    const result = {}
+    result['iopa.Method'] = options
+    return result
+  }
+  return options || {}
+}
+
+const maxSequence = 2 ** 16
+let _lastSequence = Math.floor(Math.random() * (maxSequence - 1))
+
+function _nextSequence() {
+  _lastSequence += 1
+  if (_lastSequence === maxSequence) {
+    _lastSequence = 1
   }
 
-  /** Creates a new IOPA Context for Connect */
-  private _createRaw() {
-    var context = this._factory.alloc().init()
-    context.dispose = this._dispose.bind(this, context)
-    context[SERVER.Logger] = this._logger
-    return context
-  }
+  return _lastSequence.toString()
 }
