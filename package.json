@@ -1,22 +1,12 @@
 {
   "name": "iopa",
   "version": "3.0.0",
+  "description": "API-first, Internet of Things (IoT) stack for Typescript, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "types": "src/index.ts",
-  "description": "API-first, Internet of Things (IoT) stack for Typescript, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
   "author": "IOPA",
-  "license": "Apache-2.0",
-  "maintainers": [
-    {
-      "name": "iopa",
-      "email": "build@iopa.io"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/iopa-io/iopa.git"
-  },
+  "homepage": "https://iopa.io",
   "keywords": [
     "iopa",
     "owin",
@@ -32,17 +22,27 @@
     "node",
     "tasks"
   ],
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "name": "iopa",
+      "email": "build@iopa.io"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iopa-io/iopa.git"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "lint": "berun-dev lint"
   },
-  "homepage": "https://iopa.io",
   "dependencies": {
     "iopa-types": "^3.0.0"
   },
   "devDependencies": {
-    "@berun/dev-scripts": "^3.0.6",
-    "@types/jest": "^24.0.19"
+    "@berun/dev-scripts": "^3.0.14",
+    "@types/jest": "^24.9.1"
   },
   "peerDependencies": {}
 }
