@@ -125,6 +125,15 @@ export default class AppBuilder {
   public use(method: string, mw?: any) {
     let id
 
+    /** Fix comnmon es6 module interop issues */
+    if (typeof method === 'object' && 'default' in method) {
+      // eslint-disable-next-line dot-notation
+      method = method['default']
+    } else if (typeof mw === 'object' && 'default' in mw) {
+      // eslint-disable-next-line dot-notation
+      method = mw['default']
+    }
+
     if (typeof method === 'function' && typeof mw === 'string') {
       /** resilience wrapper style */
       id = mw
