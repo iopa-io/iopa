@@ -47,7 +47,7 @@ constants for intellisense development, and provides a robust, tested example of
 IOPA context with automatic scope tracking).
 
 IOPA is a loose port of the [OWIN](http://owin.org) specification to expand the reach to Node.js servers but is language independent. The pattern works for Typescript,
-Node.js javascript (including V12.0+), browser-side javascript, serverless cloud function javascript, Swift V5., Objective-C and Golang. The reference implementation is written in Typescript.
+Node.js javascript (including V12.0+), browser-side javascript, edge cloud function javascript, Swift V5., Objective-C and Golang. The reference implementation is written in Typescript.
 
 Published as open-source without dependence on any implementation or platform, the IOPA specs allow applications to be developed independently of the actual server (nGinX, IIS, Node.js, Katana, node-coap, iopa-mqtt, iopa-coap, iopa-http, etc.).
 Because it is a well-defined pattern that uses only base language features it is not even necessary to include this repository in any microservices that rely on it. The entire
