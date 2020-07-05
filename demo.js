@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016 Internet of Protocols Alliance
+ * Copyright (c) 2016 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ test.use((context, next) => {
   return next()
 })
 
-test.use(next => {
+test.use((next) => {
   this.log.info('HELLO WORLD')
   return Promise.resolve('DONE') // stop processing in chain
 })

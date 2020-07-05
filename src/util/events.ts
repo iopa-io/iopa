@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,13 @@ export class DisposablesComposite {
     this.disposables = new Set()
   }
 
-  add(disposable) {
+  add(disposable: Disposable) {
     this.disposables.add(disposable)
     return disposable
   }
 
   dispose() {
-    this.disposables.forEach(disposable => {
+    this.disposables.forEach((disposable) => {
       disposable.dispose.apply(disposable)
     })
   }
@@ -60,14 +60,14 @@ export class EventEmitter implements IEventEmitter {
     this.onceListeners = new Map()
   }
 
-  emit(event: string, ...args) {
+  emit(event: string, ...args: any[]) {
     const callbacks = this.listeners.get(event)
     if (callbacks) {
-      callbacks.forEach(cb => cb(...args))
+      callbacks.forEach((cb) => cb(...args))
     }
     const onceCallbacks = this.onceListeners.get(event)
     if (onceCallbacks) {
-      onceCallbacks.forEach(cb => cb(...args))
+      onceCallbacks.forEach((cb) => cb(...args))
       this.onceListeners.delete(event)
     }
   }
@@ -94,9 +94,9 @@ export class EventEmitter implements IEventEmitter {
     })
   }
 
-  emitWithReturn<K>(event: string, ...args): K[] {
+  emitWithReturn<K>(event: string, ...args: any[]): K[] {
     const callbacks = Array.from(this.listeners.get(event) || [])
-    return callbacks.map(cb => cb(...args))
+    return callbacks.map((cb) => cb(...args))
   }
 
   clear(event?: string) {

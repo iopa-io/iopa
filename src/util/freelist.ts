@@ -37,19 +37,19 @@ export default class FreeList<T> {
 
   max: number
 
-  _constructor: (...args) => T
+  _constructor: (...args: any[]) => T
 
   list: T[]
 
-  constructor(name: string, max: number, factory: (...args) => T) {
+  constructor(name: string, max: number, factory: (...args: any[]) => T) {
     this.name = name
     this._constructor = factory
     this.max = max
     this.list = []
   }
 
-  alloc(...args) {
-    return this.list.length ? this.list.shift() : this._constructor(...args)
+  alloc(...args: any[]): T {
+    return this.list.length ? this.list.shift()! : this._constructor(...args)
   }
 
   free(obj: T) {

@@ -7,7 +7,7 @@
 ## About
 
 This repository `iopa` is an API-first, Internet of Things (IoT) fabric
-It is the official implementation of the Internet of Protocols Alliance (IOPA) reference pattern
+It is the official implementation of the Internet Open Protocol Alliance (IOPA) reference pattern
 
 ## Target Audience
 

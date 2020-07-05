@@ -1,7 +1,7 @@
 {
   "name": "iopa",
   "version": "3.0.0",
-  "description": "API-first, Internet of Things (IoT) stack for Typescript, official implementation of the Internet of Protocols Alliance (IOPA) reference pattern",
+  "description": "API-first, Internet of Things (IoT) stack for Typescript, official implementation of the Internet Open Protocol Alliance (IOPA) reference pattern",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "types": "src/index.ts",

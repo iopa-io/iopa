@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import * as iopa from '../src/index'
 const { constants } = iopa
 const { IOPA } = constants
 const { SERVER } = constants
+
+let app
 
 describe('#IOPA()', () => {
   const factory = new iopa.Factory('TestFactory')
@@ -80,13 +82,13 @@ describe('#IOPA()', () => {
     }
     test.use(pseudoClass)
 
-    this.app = test.build()
+    app = test.build()
   })
 
-  test('should call app with context updated', done => {
+  test('should call app with context updated', (done) => {
     const context = factory.createContext()
 
-    this.app(context).then(value => {
+    app(context).then((value) => {
       expect(context[IOPA.Method]).toBe('PUT')
       context.dispose()
       expect(context[IOPA.Method] == null).toBe(true)

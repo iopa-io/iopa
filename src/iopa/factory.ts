@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ export default class Factory<
       withResponse?: boolean
     }
   ): T {
-    options = _validOptions(options)
+    const optionsValid = _validOptions(options)
 
     const context: T & {
       init: Function
@@ -58,7 +58,7 @@ export default class Factory<
     context.dispose = this._dispose.bind(this, context)
     context.set('server.Id', `#${_nextSequence()}`)
 
-    if (options.withResponse) {
+    if (optionsValid.withResponse) {
       const response: IopaMap<IopaResponseBase> &
         IopaResponseBase = this._factory.alloc().init()
 
@@ -69,7 +69,7 @@ export default class Factory<
       request.set('iopa.Labels', new Map())
       request.set('iopa.Method', 'GET')
       request.set('iopa.OriginalUrl', url || 'https://localhost/factory')
-      request.set('iopa.Url', new URL(request.get('iopa.OriginalUrl')))
+      request.set('iopa.Url', new URL(request.get('iopa.OriginalUrl')!))
       request.set('iopa.Path', '/')
       request.set('iopa.Protocol', 'HTTPS/2.0')
       request.set('iopa.QueryString', '')
@@ -85,7 +85,7 @@ export default class Factory<
       response.set('iopa.StatusText', 'OK')
       response.set('iopa.Headers', new Map<string, string>())
 
-      response.end = async body => {
+      response.end = async (body) => {
         if (body && body.length) {
           response.set('iopa.Size', response.get('iopa.Size') + body.length)
         }
@@ -113,12 +113,12 @@ export default class Factory<
         return response.end(body)
       }
 
-      delete options.withResponse
+      delete optionsValid.withResponse
     }
 
     context.create = this.createChildContext.bind(this, context)
 
-    mergeContext(context, options)
+    mergeContext(context, optionsValid)
 
     return context as T
   }
@@ -126,13 +126,13 @@ export default class Factory<
   /** Creates a new IOPA Context that is a child request/response of a parent Context */
   public createChildContext(
     parentContext: IopaMap<IopaRequestBase>,
-    url,
-    options
+    url: string,
+    options: any
   ): T {
     options = _validOptions(options)
 
     const context = this.createContext()
-    _mergeCapabilities(context, parentContext)
+    _mergeCapabilities(context as any, parentContext as any)
 
     context.set('iopa.Path', parentContext.get('iopa.Path') + url || '')
     context.set('iopa.Scheme', parentContext.get('iopa.Scheme'))
@@ -153,14 +153,14 @@ export default class Factory<
     if (context.response) {
       const { response } = context
 
-      Object.keys(response).forEach(prop => {
+      Object.keys(response).forEach((prop) => {
         response[prop] = null
       })
 
       this._factory.free(response as any)
     }
 
-    Object.keys(context).forEach(prop => {
+    Object.keys(context).forEach((prop) => {
       context[prop] = null
     })
 
@@ -169,7 +169,10 @@ export default class Factory<
 }
 
 /** Merges server.Capabilities of parent Context onto child Context */
-function _mergeCapabilities(childContext, parentContext) {
+function _mergeCapabilities(
+  childContext: { response: any; ['server.ParentContext']: any },
+  parentContext: { response: any; ['server.Capabilities']: any }
+) {
   childContext['server.ParentContext'] = parentContext
   merge(
     childContext['server.Capabilities'],
@@ -185,7 +188,7 @@ function _mergeCapabilities(childContext, parentContext) {
 }
 
 /** Clean Options;  allows overide for future validation  */
-function _validOptions(options) {
+function _validOptions(options?: any) {
   if (typeof options === 'string' || options instanceof String) {
     const result = {}
     result['iopa.Method'] = options

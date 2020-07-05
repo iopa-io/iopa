@@ -1,3 +1,5 @@
+import { IopaContext, IopaRef } from 'iopa-types'
+
 export default function polyfillIopa300(app: any) {
   app.properties['server.Capabilities'].get = (key: string) =>
     app.properties['server.Capabilities'][key]
@@ -6,9 +8,19 @@ export default function polyfillIopa300(app: any) {
     app.properties['server.Capabilities'][key] = value
   }
 
-  app.setCapability = app.properties['server.Capabilities'].set
-  app.capability = app.properties['server.Capabilities'].get
-
+  app.capability = (keyOrRef) => {
+    if (typeof keyOrRef === 'string') {
+      return app.properties['server.Capabilities'].get(keyOrRef as string)
+    }
+    return app.properties['server.Capabilities'][keyOrRef.id]
+  }
+  app.setCapability = (keyOrRef: string | IopaRef<any>, value: any) => {
+    if (typeof keyOrRef === 'string') {
+      app.properties['server.Capabilities'].set(keyOrRef as string, value)
+      return
+    }
+    app.properties['server.Capabilities'][(keyOrRef as IopaRef<any>).id] = value
+  }
   app.properties.get = (key: string) => app.properties[key]
   app.properties.set = (key: string, value: any) => {
     app.properties[key] = value
@@ -20,10 +32,19 @@ export default function polyfillIopa300(app: any) {
     app.properties['server.Capabilities']
   )
 
-  app.use(function polyfillIopa300(context, next) {
-    context.capability = (key: string) => context['server.Capabilities'][key]
+  app.use(function polyfillIopa300(
+    context: IopaContext,
+    next: () => Promise<void>
+  ) {
+    context.capability = (keyOrRef) => {
+      if (typeof keyOrRef === 'string') {
+        return context['server.Capabilities'].get(keyOrRef as string)
+      }
+      return context['server.Capabilities'][keyOrRef.id]
+    }
     return next()
-  }, 'polyfillIopa300')
+  },
+  'polyfillIopa300')
 }
 
 function toJSON<T>(this: T): T {

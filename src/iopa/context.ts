@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@
 import {
   ContextBase as IContextBase,
   IEventEmitter,
-  ContextCore as IContextCore
+  ContextCore as IContextCore,
+  IopaRef
 } from 'iopa-types'
 import CancellationTokenSource, { Token } from '../util/cancellation'
 import { VERSION } from './constants'
@@ -27,7 +28,7 @@ import { EventEmitter } from '../util/events'
 import IopaMap from './map'
 
 /** Represents IOPA Context object for any State Flow or REST Request/Response */
-export class ContextBase<T extends IContextBase> extends IopaMap<T>
+export class ContextBase<C extends IContextBase> extends IopaMap<C>
   implements IContextBase {
   readonly 'iopa.Events': IEventEmitter
 
@@ -62,28 +63,35 @@ export class ContextBase<T extends IContextBase> extends IopaMap<T>
     return this
   }
 
-  public using(appFuncPromiseOrValue) {
+  public using(appFuncPromiseOrValue: Function | Promise<any>) {
     if (typeof appFuncPromiseOrValue === 'function') {
-      return _using(this, appFuncPromiseOrValue(this))
+      return _using({ context: this, p: appFuncPromiseOrValue(this) })
     }
-    return _using(this, appFuncPromiseOrValue)
+    return _using({ context: this, p: appFuncPromiseOrValue })
   }
 
   public get 'server.TimeElapsed'(): number {
     return Date.now() - this['server.Timestamp']
   }
 
-  capability<K extends keyof T>(key: K): T[K] {
-    return this.get('server.Capabilities').get(key)
+  capability(keyOrRef: keyof C | IopaRef<any>, value: any) {
+    if (typeof keyOrRef === 'string') {
+      return this.get('server.Capabilities').get(keyOrRef as keyof C)
+    }
+    return this[(keyOrRef as IopaRef<any>).id]
   }
 
-  setCapability<K extends keyof T>(key: K, value: T[K]) {
-    this.get('server.Capabilities').set(key, value)
+  setCapability(keyOrRef: keyof C | IopaRef<any>, value: any) {
+    if (typeof keyOrRef === 'string') {
+      this.get('server.Capabilities').set(keyOrRef as keyof C, value)
+      return
+    }
+    this.get('server.Capabilities')[(keyOrRef as IopaRef<any>).id] = value
   }
 }
 
 /** Represents IOPA Context object for any State Flow or REST Request/Response */
-export class ResponseBase<T extends IContextCore> extends IopaMap<T>
+export class ResponseBase<C extends IContextCore> extends IopaMap<C>
   implements IContextCore {
   readonly 'iopa.Version': string
 
@@ -102,14 +110,20 @@ export class ResponseBase<T extends IContextCore> extends IopaMap<T>
 }
 
 /* ES6 finally/dispose pattern for IOPA Context */
-function _using(context, p) {
+function _using({
+  context,
+  p
+}: {
+  context: IContextBase
+  p?: Promise<any> | null
+}) {
   return new Promise((resolve, reject) => {
     if (typeof p === 'undefined') {
       p = null
     }
     resolve(p)
   }).then(
-    value => {
+    (value) => {
       return Promise.resolve(
         (() => {
           process.nextTick(() => {
@@ -121,7 +135,7 @@ function _using(context, p) {
         })()
       )
     },
-    err => {
+    (err) => {
       console.error(err)
       process.nextTick(() => {
         if (context.dispose) {

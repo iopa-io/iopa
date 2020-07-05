@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import { AppPropertiesBase, IopaContext } from 'iopa-types'
+import type {
+  AppProperties as IAppProperties,
+  AppPropertiesBase,
+  IopaContext,
+  FC,
+  Capabilities,
+  App,
+  IopaRef,
+  AppCapabilitiesBase
+} from 'iopa-types'
 import Middleware from './middleware'
 import guid from '../util/guid'
 import Factory from '../iopa/factory'
@@ -24,26 +33,37 @@ import IopaMap from '../iopa/map'
 
 const packageVersion = require('../../package.json').version
 
-export class AppCapabilities {
+interface AppCapabilities {
   'urn:io.iopa:app': { 'server.Version': string }
 }
-export class AppPropertiesWithCapabilities<T> extends IopaMap<
-  AppPropertiesBase<T>
+
+class AppPropertiesWithCapabilities<C> extends IopaMap<
+  AppPropertiesBase<C> & C
 > {
-  capability<K extends keyof T>(key: K): T[K] {
-    return this.get('server.Capabilities').get(key)
+  capability(keyOrRef: keyof C | IopaRef<any>, value: any) {
+    if (typeof keyOrRef === 'string') {
+      return this.get('server.Capabilities').get(keyOrRef as keyof C)
+    }
+    return this[(keyOrRef as IopaRef<any>).id]
   }
 
-  setCapability<K extends keyof T>(key: K, value: T[K]) {
-    this.get('server.Capabilities').set(key, value)
+  setCapability(keyOrRef: keyof C | IopaRef<any>, value: any) {
+    if (typeof keyOrRef === 'string') {
+      this.get('server.Capabilities').set(keyOrRef as keyof C, value)
+      return
+    }
+    this.get('server.Capabilities')[(keyOrRef as IopaRef<any>).id] = value
   }
 }
 
 /** AppBuilder Class to Compile/Build all Middleware in the Pipeline into single IOPA AppFunc */
 export default class AppBuilder {
-  public properties: AppPropertiesWithCapabilities<AppCapabilities>
+  public properties: IAppProperties<{}, AppCapabilities>
 
-  private middleware
+  private middleware: {
+    invoke: Array<FC>
+    dispatch: Array<FC>
+  }
 
   constructor(options?: Partial<AppPropertiesBase<AppCapabilities>> | string) {
     const defaults = new AppPropertiesWithCapabilities<AppCapabilities>({
@@ -63,7 +83,7 @@ export default class AppBuilder {
       Object.entries(options).forEach(([key, value]) => {
         if (key === 'server.Capabilities') {
           const capabilities = defaults.get('server.Capabilities')
-          Object.entries(value).forEach(([key2, value2]) => {
+          Object.entries(value!).forEach(([key2, value2]) => {
             capabilities.set((key2 as unknown) as any, value2)
           })
         } else {
@@ -100,7 +120,7 @@ export default class AppBuilder {
   public fork(when: (context: any) => boolean): AppBuilder {
     const subApp = new AppBuilder(this.properties.toJSON())
 
-    this.use(async (context, next) => {
+    this.use(async (context: IopaContext, next: () => Promise<void>) => {
       if (!subApp.properties.get('server.IsBuilt')) {
         subApp.build()
       }
@@ -118,11 +138,11 @@ export default class AppBuilder {
   }
 
   /** Add Middleware Function to AppBuilder pipeline */
-  public use(mw: any, id: string)
+  public use(mw: any, id: string): this
 
-  public use(mw: any)
+  public use(mw: any): this
 
-  public use(method: string, mw?: any) {
+  public use(method: 'invoke' | 'dispatch', mw?: any): this {
     let id
 
     /** Fix comnmon es6 module interop issues */
@@ -161,7 +181,13 @@ export default class AppBuilder {
     const params = _getParams(mw)
     if (params === 'app' || mw.length === 1) {
       const Mw = mw
-      const mwInstance = new Mw(this)
+      let mwInstance: any
+      try {
+        mwInstance = new Mw(this)
+      } catch (ex) {
+        // in case this is a js lambda function
+        mwInstance = Mw(this) || {}
+      }
 
       if (typeof mwInstance.invoke === 'function') {
         this.middleware.invoke.push(mwInstance.invoke.bind(mwInstance))
@@ -171,10 +197,16 @@ export default class AppBuilder {
         this.middleware.dispatch.push(mwInstance.dispatch.bind(mwInstance))
       }
     } else {
-      this.middleware[method].push(this.middlewareProxy(this, mw))
+      this.middleware[method].push(
+        this.middlewareProxy((this as unknown) as App<any, any>, mw)
+      )
     }
 
     return this
+  }
+
+  public dispose() {
+    /** noop */
   }
 
   /** Compile/Build all Middleware in the Pipeline into single IOPA AppFunc */
@@ -183,13 +215,17 @@ export default class AppBuilder {
       .get('app.DefaultMiddleware')
       .concat(this.middleware.invoke)
       .concat(this.properties.get('app.DefaultApp'))
-    const pipeline = this.compose_(middleware) as any
+
+    const pipeline: FC & {
+      properties: IAppProperties<{}, AppCapabilities>
+      dispatch: FC
+    } = this.compose_(middleware) as any
 
     if (this.middleware.dispatch.length > 0) {
       pipeline.dispatch = this.compose_(this.middleware.dispatch.reverse())
     } else {
-      pipeline.dispatch = context => {
-        return Promise.resolve(context)
+      pipeline.dispatch = (context) => {
+        return Promise.resolve()
       }
     }
 
@@ -200,29 +236,29 @@ export default class AppBuilder {
   }
 
   /** Call Dispatch Pipeline  to process given context */
-  public dispatch(context) {
+  public dispatch(context: IopaContext) {
     return this.properties.get('server.Pipeline').dispatch.call(this, context)
   }
 
   /** Call App Invoke Pipeline to process given context */
-  public invoke(context): Promise<void> {
+  public invoke(context: IopaContext): Promise<void> {
     return this.properties.get('server.Pipeline').call(this, context)
   }
 
   /** Compile/Build all Middleware in the Pipeline into single IOPA AppFunc  */
-  public compose_(middleware) {
-    let i
-    let next
-    let curr
+  public compose_(middleware: Array<FC>) {
+    let i: number
+    let next: (context: IopaContext) => Promise<IopaContext>
+    let curr: FC
     i = middleware.length
-    next = context => {
+    next = (context: IopaContext) => {
       return Promise.resolve(context)
     }
 
     // eslint-disable-next-line no-plusplus
     while (i--) {
       curr = middleware[i]
-      next = ((fn, prev, context) => {
+      next = ((fn: FC, prev: FC, context: IopaContext) => {
         const _next = prev.bind(this, context)
         _next.invoke = prev
         return fn.call(this, context, _next)
@@ -234,25 +270,28 @@ export default class AppBuilder {
 
       context.capability =
         context.capability ||
-        ((key: any) => {
-          return context['server.Capabilities'].get(key)
+        ((keyOrRef: keyof AppCapabilitiesBase | IopaRef<any>) => {
+          if (typeof keyOrRef === 'string') {
+            return this.properties.get('server.Capabilities').get(keyOrRef)
+          }
+          return this.properties.get('server.Capabilities')[keyOrRef.id]
         })
 
       context.get =
         context.get ||
-        ((key: any) => {
-          return context[key]
+        ((key: string) => {
+          return context[key as any]
         })
 
       context.set =
         context.set ||
-        ((key: any, value: any) => {
-          context[key] = value
+        ((key: string, value: any) => {
+          context[key as any] = value
         })
 
       context.set(
         'server.Capabilities',
-        new IopaMap<AppCapabilities>(clone(capabilities)) as any
+        new IopaMap<AppCapabilities>(clone(capabilities)) as Capabilities<any>
       )
 
       if (context.response) {
@@ -280,27 +319,33 @@ export default class AppBuilder {
 }
 
 /** Default middleware handler used at start of pipeline  */
-function DefaultMiddleware(context, next) {
+function DefaultMiddleware(
+  context: IopaContext,
+  next: () => Promise<void>
+): Promise<void> {
   const value = next()
 
   if (typeof value === 'undefined') {
     console.error(
       'Server Error: One of the middleware functions on this server returned no value'
     )
-  } else {
-    return value
+    return Promise.resolve()
   }
+  return value
 }
 
 /** Default app used at end of pipeline if not handled by any other middleware */
-function DefaultApp(context: IopaContext, _: () => Promise<void>) {
-  return Promise.resolve(context)
+function DefaultApp(
+  context: IopaContext,
+  next: () => Promise<void>
+): Promise<void> {
+  return Promise.resolve()
 }
 
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm
 
-/** Gets the parameter names of a javascript function */
-function _getParams(func) {
+/** Gets the parameter names of a javascript function as a comma separated string */
+function _getParams(func: Function): string {
   const fnStr = func.toString().replace(STRIP_COMMENTS, '')
   let result = fnStr
     .slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')'))
@@ -308,6 +353,5 @@ function _getParams(func) {
   if (result === null) {
     result = []
   }
-  result = result.join()
-  return result
+  return result.join()
 }

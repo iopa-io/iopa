@@ -1,7 +1,7 @@
 /* eslint-disable  */
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ export function assign(target: any) {
   return target
 }
 
-export function copy(source, target) {
+export function copy(source: any, target: any) {
   if (!source) {
     source = {}
   }
@@ -79,7 +79,7 @@ export function copy(source, target) {
   return target
 }
 
-export function clone(source) {
+export function clone(source: any) {
   const clone = Object.create(Object.getPrototypeOf(source))
 
   for (const key in source) {
@@ -91,7 +91,7 @@ export function clone(source) {
   return clone
 }
 
-export function cloneDoubleLayer(source) {
+export function cloneDoubleLayer(source: any) {
   const clone = Object.create(Object.getPrototypeOf(source))
 
   for (const key1 in source) {
@@ -115,7 +115,7 @@ export function cloneDoubleLayer(source) {
   return clone
 }
 
-export function cloneTripleLayer(source) {
+export function cloneTripleLayer(source: any) {
   const clone = Object.create(Object.getPrototypeOf(source))
 
   for (const key1 in source) {
@@ -151,7 +151,7 @@ export function cloneTripleLayer(source) {
   return clone
 }
 
-export function cloneFilter(source, blacklist: string[]) {
+export function cloneFilter(source: any, blacklist: string[]) {
   const clone = Object.create(Object.getPrototypeOf(source))
 
   for (const key in source) {
@@ -177,7 +177,7 @@ export function mergeContext(target: any, defaults: Partial<IopaRequestBase>) {
       target[key] = defaults[key]
     } else {
       const targetHeaders = target[key] || {}
-      const sourceHeaders = defaults[key]
+      const sourceHeaders = defaults[key]!
 
       Object.keys(sourceHeaders).forEach(headerkey => {
         targetHeaders[headerkey] = sourceHeaders[headerkey]

@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 
+import { FC, App } from 'iopa-types'
+
 /** Assures that the middleware is represented as IOPA middleware promise format (promise) fn(context, next)  where next = (promise) function()  */
-export default function Middleware(app, middleware, action = 'invoke') {
+export default function Middleware(
+  app: App<any, any>,
+  middleware: any,
+  action: 'invoke' | 'dispatch' = 'invoke'
+): FC {
   let args
 
   if (typeof middleware === 'function') {
@@ -89,7 +95,7 @@ export default function Middleware(app, middleware, action = 'invoke') {
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm
 
 /** Gets the parameter names of a javascript function */
-function _getParamNames(func) {
+function _getParamNames(func: Function) {
   const fnStr = func.toString().replace(STRIP_COMMENTS, '')
   let result = fnStr
     .slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')'))
@@ -101,7 +107,7 @@ function _getParamNames(func) {
 }
 
 /** Check if two arrays have same elements */
-function arrayEqual(array1, array2) {
+function arrayEqual(array1: Array<any>, array2: Array<any>) {
   // if the other array is a falsy value, return
   if (!array2) {
     return false

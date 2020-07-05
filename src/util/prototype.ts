@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,14 @@
  * @private
  */
 export default function cloneKeyBehaviors(
-  targetObjectPrototype,
-  sourceObjectprototype,
-  iopaContextKey,
-  response
+  targetObjectPrototype: any,
+  sourceObjectprototype: any,
+  iopaContextKey: string,
+  response: any
 ) {
-  Object.getOwnPropertyNames(sourceObjectprototype).forEach(_property => {
+  Object.getOwnPropertyNames(sourceObjectprototype).forEach((_property) => {
     if (typeof sourceObjectprototype[_property] === 'function') {
-      targetObjectPrototype[_property] = (...rest) => {
+      targetObjectPrototype[_property] = (...rest: any[]) => {
         let item
         if (response) {
           item = targetObjectPrototype[iopaContextKey]

@@ -1,6 +1,6 @@
 /*
  * Internet Open Protocol Abstraction (IOPA)
- * Copyright (c) 2016-2020 Internet of Protocols Alliance
+ * Copyright (c) 2016-2020 Internet Open Protocol Alliance
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ export class TokenSource implements CancellationTokenSource {
   private data: {
     reason: string
     isCancelled: boolean
-    listeners: Function[]
+    listeners: ((reason: string) => void)[]
   }
 
   constructor() {
@@ -57,7 +57,7 @@ export class TokenSource implements CancellationTokenSource {
     return this.data.reason
   }
 
-  public register(cb: Function) {
+  public register(cb: (reason: string) => void) {
     this.data.listeners.push(cb)
   }
 }
@@ -74,7 +74,7 @@ export class Token implements CancellationToken {
     return this.source.isCancelled
   }
 
-  onCancelled(callback) {
+  onCancelled(callback: (reason: string) => void) {
     this.source.register(callback)
   }
 
@@ -83,7 +83,7 @@ export class Token implements CancellationToken {
       throw new Error(this.source.reason)
     }
 
-    this.onCancelled(reason => {
+    this.onCancelled((reason) => {
       throw new Error(reason)
     })
   }
