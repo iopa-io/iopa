@@ -73,7 +73,7 @@ The version 3.0 upgrade of the iopa reference implementation added in ~2020 is i
 
 Use `app.capability("urn:io.iopa:my.great.capability")` and `app.setCapability("urn:io.iopa:my.great.capability", this)` to get and set capabilities on strongly typed `App` objects.
 
-use `context.get("iopa.Headers")`, `context.response.set("iopa.StatusCode", "awseast-205020-55")`, `context.capability("urn:io.iopa:my.great.capability")` to get field, set a field, and get a capability respectively.
+use `context['iopa.Headers].get('iopa.StatusCode')`, `context.response['iopa.Headers].set('iopa.StatusCode', 'awseast-205020-55')`, `context.capability('urn:io.iopa:my.great.capability')` to get field, set a field, and get a capability respectively.
 
 Contribute to `iopa-types` with globally used reference capabilities and field definitions (kept in a separate repository so that the core `iopa` package stays relatively stable)
 

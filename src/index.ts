@@ -18,29 +18,37 @@
 import * as shallow from './util/shallow'
 import cloneKeyBehaviors from './util/prototype'
 import {
-  TokenSource as CancellationTokenSource,
-  Token as CancellationToken
+    TokenSource as CancellationTokenSource,
+    Token as CancellationToken,
 } from './util/cancellation'
 import * as constants from './iopa/constants'
 import { Disposable, EventEmitter } from './util/events'
 import App from './appBuilder/appBuilder'
 import Factory from './iopa/factory'
 import { ContextBase, ResponseBase } from './iopa/context'
-import IopaMap from './iopa/map'
+import IopaMap, { IopaHeaders } from './iopa/map'
 
-export { App, IopaMap, ContextBase, ResponseBase, Factory, constants }
+export {
+    App,
+    IopaMap,
+    IopaHeaders,
+    ContextBase,
+    ResponseBase,
+    Factory,
+    constants,
+}
 
 export { IopaContext as Context, FC } from 'iopa-types'
 
 export const iopaPrototype = {
-  cloneKeyBehaviors
+    cloneKeyBehaviors,
 }
 
 export const util = {
-  shallow,
-  prototype: iopaPrototype,
-  Disposable,
-  EventEmitter,
-  CancellationToken,
-  CancellationTokenSource
+    shallow,
+    prototype: iopaPrototype,
+    Disposable,
+    EventEmitter,
+    CancellationToken,
+    CancellationTokenSource,
 }

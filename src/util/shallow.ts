@@ -17,6 +17,7 @@
  */
 
 import { IopaRequestBase } from 'iopa-types'
+import { IopaHeaders } from '../iopa/map'
 
 export function merge(target: any, defaults: any, replace?: boolean) {
   if (!target) {
@@ -176,14 +177,7 @@ export function mergeContext(target: any, defaults: Partial<IopaRequestBase>) {
     if (key !== 'iopa.Headers') {
       target[key] = defaults[key]
     } else {
-      const targetHeaders = target[key] || {}
-      const sourceHeaders = defaults[key]!
-
-      Object.keys(sourceHeaders).forEach(headerkey => {
-        targetHeaders[headerkey] = sourceHeaders[headerkey]
-      })
-
-      target[key] = targetHeaders
+      target[key] = new IopaHeaders(target[key], defaults[key])
     }
   })
 }

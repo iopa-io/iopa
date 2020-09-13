@@ -19,74 +19,74 @@ import { CancellationToken, CancellationTokenSource } from 'iopa-types'
 
 /**  A Cancellation Token Source */
 export class TokenSource implements CancellationTokenSource {
-  private data: {
-    reason: string
-    isCancelled: boolean
-    listeners: ((reason: string) => void)[]
-  }
-
-  constructor() {
-    this.data = {
-      reason: null!,
-      isCancelled: false,
-      listeners: []
+    private data: {
+        reason: string
+        isCancelled: boolean
+        listeners: ((reason: string) => void)[]
     }
-  }
 
-  /**  cancel  :signals cancel for all tokens issued by this source */
-  public cancel(reason: string) {
-    this.data.isCancelled = true
-    this.data.reason = reason
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < this.data.listeners.length; i++) {
-      if (typeof this.data.listeners[i] === 'function') {
-        this.data.listeners[i](reason)
-      }
+    constructor() {
+        this.data = {
+            reason: null!,
+            isCancelled: false,
+            listeners: [],
+        }
     }
-  }
 
-  public get token() {
-    return new Token(this)
-  }
+    /**  cancel  :signals cancel for all tokens issued by this source */
+    public cancel(reason: string) {
+        this.data.isCancelled = true
+        this.data.reason = reason
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < this.data.listeners.length; i++) {
+            if (typeof this.data.listeners[i] === 'function') {
+                this.data.listeners[i](reason)
+            }
+        }
+    }
 
-  public get isCancelled() {
-    return this.data.isCancelled
-  }
+    public get token() {
+        return new Token(this)
+    }
 
-  public get reason() {
-    return this.data.reason
-  }
+    public get isCancelled() {
+        return this.data.isCancelled
+    }
 
-  public register(cb: (reason: string) => void) {
-    this.data.listeners.push(cb)
-  }
+    public get reason() {
+        return this.data.reason
+    }
+
+    public register(cb: (reason: string) => void) {
+        this.data.listeners.push(cb)
+    }
 }
 
 /** Helper Method to return a Cancellation Token */
 export class Token implements CancellationToken {
-  private source: TokenSource
+    private source: TokenSource
 
-  constructor(source: TokenSource) {
-    this.source = source
-  }
-
-  get isCancelled() {
-    return this.source.isCancelled
-  }
-
-  onCancelled(callback: (reason: string) => void) {
-    this.source.register(callback)
-  }
-
-  throwIfCancelled() {
-    if (this.isCancelled) {
-      throw new Error(this.source.reason)
+    constructor(source: TokenSource) {
+        this.source = source
     }
 
-    this.onCancelled((reason) => {
-      throw new Error(reason)
-    })
-  }
+    get isCancelled() {
+        return this.source.isCancelled
+    }
+
+    onCancelled(callback: (reason: string) => void) {
+        this.source.register(callback)
+    }
+
+    throwIfCancelled() {
+        if (this.isCancelled) {
+            throw new Error(this.source.reason)
+        }
+
+        this.onCancelled((reason) => {
+            throw new Error(reason)
+        })
+    }
 }
 
 export const empty = Object.freeze(new TokenSource().token)
