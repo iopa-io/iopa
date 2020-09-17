@@ -71,11 +71,13 @@ export default class IopaMap<T> implements IopaRefMap<T>, IopaMapType<T> {
         }
     }
 
-    default<K extends keyof T>(key: K, valueFn: () => T[K]) {
+    default<K extends keyof T>(key: K, valueFn: T[K] | (() => T[K])) {
         if (key in this) {
             /** noop */
+        } else if (typeof valueFn === 'function') {
+            this.set(key, (valueFn as Function)())
         } else {
-            this.set(key, valueFn())
+            this.set(key, valueFn)
         }
         return this.get(key)
     }
@@ -154,6 +156,14 @@ export class IopaHeaders extends IopaMap<HEADERS> {
         }
 
         return val
+    }
+
+    set(data: any, value?: string): void {
+        if (typeof data === 'string') {
+            return super.set(find(this, data) || data, value)
+        }
+
+        return super.set(data, value)
     }
 
     has(name: keyof HEADERS): boolean {

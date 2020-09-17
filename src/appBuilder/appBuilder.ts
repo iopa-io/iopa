@@ -26,6 +26,7 @@ import type {
     IopaRef,
     AppCapabilitiesBase,
     IopaMapInit,
+    IopaApp,
 } from 'iopa-types'
 import Middleware from './middleware'
 import guid from '../util/guid'
@@ -59,12 +60,19 @@ class AppPropertiesWithCapabilities<C> extends IopaMap<
 }
 
 /** AppBuilder Class to Compile/Build all Middleware in the Pipeline into single IOPA AppFunc */
-export default class AppBuilder {
+export default class AppBuilder implements IopaApp {
     public properties: IAppProperties<{}, AppCapabilities>
 
     private middleware: {
         invoke: Array<FC>
         dispatch: Array<FC>
+    }
+
+    logging: {
+        flush(): void
+        log(context: IopaContext, message: any, ...optionalParams: any): void
+        warn(context: IopaContext, message: any, ...optionalParams: any): void
+        error(context: IopaContext, message: any, ...optionalParams: any): void
     }
 
     constructor(
@@ -76,6 +84,8 @@ export default class AppBuilder {
             'server.AppId': guid(),
             'app.DefaultApp': DefaultApp,
             'app.DefaultMiddleware': [DefaultMiddleware],
+            'server.Testing': new IopaMap(),
+            'server.Related': [],
             'server.Capabilities': new IopaMap<AppCapabilities>({
                 'urn:io.iopa:app': { 'server.Version': packageVersion },
             }),
@@ -121,11 +131,14 @@ export default class AppBuilder {
     public Factory = new Factory()
 
     public createContext(url?: string, options?: any) {
-        const context = this.Factory.createContext(url, options)
+        const context = (this.Factory.createContext(
+            url,
+            options
+        ) as unknown) as IopaContext
         return context
     }
 
-    public fork(when: (context: any) => boolean): AppBuilder {
+    public fork(when: (context: any) => boolean): IopaApp {
         const subApp = new AppBuilder(this.properties.toJSON())
 
         this.use(async function forkFunction(
