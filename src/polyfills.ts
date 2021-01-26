@@ -38,7 +38,7 @@ export default function polyfillIopa300(app: any) {
   ) {
     context.capability = (keyOrRef) => {
       if (typeof keyOrRef === 'string') {
-        return context['server.Capabilities'].get(keyOrRef as string)
+        return context['server.Capabilities'].get(keyOrRef as any)
       }
       return context['server.Capabilities'][keyOrRef.id]
     }
@@ -50,7 +50,7 @@ export default function polyfillIopa300(app: any) {
 function toJSON<T>(this: T): T {
   return Object.entries(this)
     .filter(
-      ([key, _]) =>
+      ([key]) =>
         [
           'get',
           'set',
