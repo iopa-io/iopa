@@ -41,7 +41,7 @@
     "iopa-types": "^3.0.0"
   },
   "devDependencies": {
-    "@berun/dev-scripts": "^7.0.3",
+    "@berun/dev-scripts": "^7.3.6",
     "@types/jest": "^25.2.3"
   },
   "peerDependencies": {}
